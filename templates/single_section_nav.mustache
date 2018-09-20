@@ -14,6 +14,37 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
+{{!
+    @template format_tiles/single_section
+
+    Single Section content template.
+
+    The purpose of this template is to render the content of a single section
+    (i.e. the contents of one "tile" represeting a course topic".
+    This is a separate template because it is called from externallib.php (i.e. from web service via JS)
+    as well as being called from other templates (i.e. single_section_page) when rendering from PHP
+
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+        * courseid
+        * previous_tile_id
+        * next_tile_id
+
+    Example context (json):
+    {
+    tileid
+        courseid: 66,
+        previous_tile_id: 3,
+        next_tile_id: 5
+        }
+}}
+
 <div class="navigation-arrows">
     {{#previous_tile_id}}
         <a class="navigation-arrow"

@@ -32,10 +32,19 @@
     * none
 
     Context variables required for this template:
-    *
+        hidden - is this tile hidden?
+        isactive - is this tile current?
+        tileid - tile id in course
+        courseid - cours id
+        restricted - is the tile restricted?
 
     Example context (json):
-    {}
+    {   hidden: 0,
+        isactive: 1,
+        tileid: 3,
+        courseid: 5,
+        restricted: 0
+        }
 }}
 <li class="tile{{#hidden}} tile-hidden{{/hidden}}{{#isactive}} current{{/isactive}}" id="tile-{{tileid}}" data-section="{{tileid}}"
     data-sectionid="{{secid}}" tabindex="2" aria-role="button">
@@ -58,7 +67,7 @@
             </div>
             <div class="tile-text" id="tileText-{{tileid}}" title="{{activity_summary}}"{{^ismobile}} data-toggle="tooltip" data-html="true"{{/ismobile}}>
                 <span class="tile-textinner{{titleclass}}" id="tileTextin-{{tileid}}">
-                  <h3>{{{title}}}</h3>
+                  {{#title}}<h3>{{{title}}}</h3>{{/title}}
                 </span>
             </div>
         </div>

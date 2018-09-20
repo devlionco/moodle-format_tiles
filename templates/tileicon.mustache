@@ -30,13 +30,21 @@
     * none
 
     Context variables required for this template:
-    *
+        * isediting - is the user editing
+        * secid - which section id in the sections table, not just the tile num in this course
+        * tileid - which tile num in this course
+        * title: - the section title for the icon alt text
 
-    Example context (json):
-    {}
+    Example json:
+        {
+        isediting: false,
+        secid: 33,
+        tileid: 3
+        title: 'Introduction"
+        }
 }}
 
-<div class="tileiconcontainer" {{#isediting}}data-toggle="tooltip"{{/isediting}} id="tileicon_{{tileid}}" data-sectionid="{{secid}}"
+<div class="tileiconcontainer" {{#isediting}}data-toggle="tooltip"{{/isediting}} data-sectionid="{{secid}}"
      data-section="{{tileid}}"{{#isediting}} data-original-title="{{#str}}tooltipchangeicon, format_tiles{{/str}}"{{/isediting}}>
     <span class="launchiconpicker" data-toggle="modal" id="tileicon_{{tileid}}" data-sectionid="{{secid}}"
           data-section="{{tileid}}" data-target="#iconpickermodal">

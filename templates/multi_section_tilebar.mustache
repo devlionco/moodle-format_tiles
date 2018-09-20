@@ -53,7 +53,7 @@
             {{^isediting}}
                 <span class="tile_bar_text">
                   <span class="tile-textinner{{titleclass}}" id="tileTextin-{{tileid}}">
-                    <h3 id="tileText-{{tileid}}">{{{title}}}</h3>
+                    {{#title}}<h3 id="tileText-{{tileid}}">{{{title}}}</h3>{{/title}}
                   </span>
               </span>
             {{/isediting}}
