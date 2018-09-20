@@ -1,0 +1,119 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+{{!
+    @template format_tiles/inline_css
+
+    Inline css template.
+
+    The purpose of this template is to render inline CSS to change the colour
+    of various items according to plugin or course settings
+    These can be changed by the user so have to be included dynamically rather than
+    in a status css file
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    *
+
+    Example context (json):
+    {
+        base_colour: "rgba(119,37,131, 1)",
+        tile_light_colour: "rgba(119,37,131, 0.05)"
+        tile_hover_colour: "#ED8B00"
+        button_hover_colour: "rgba(119,37,131, 0.1)"
+        shade_heading_bar: 0
+    }
+}}
+
+<style type="text/css">
+    .format-tiles .course-content ul.tiles .tile,
+    .format-tiles .course-content ul.tiles .tile_bar {
+        border-top-color: {{base_colour}};
+        background-color: {{tile_light_colour}};
+        border-radius: 0;
+    }
+    .format-tiles ul.tiles .tile {
+        border-top-color: {{base_colour}};
+        transition: border-top-color 0s;
+    }
+    .format-tiles ul.tiles .tile:hover,
+    .format-tiles ul.tiles .tile_bar.clickable:hover,
+    .format-tiles ul.tiles .tile.current:hover{
+        border-top-color: {{tile_hover_colour}};
+        transition: border-top-color 0s;
+    }
+    .format-tiles ul.tiles .tile.selected {
+        border-top-color: {{tile_hover_colour}};
+    }
+    .format-tiles ul.tiles .current .sectiontitle::after{
+        background-color: red;
+    }
+    .format-tiles ul.tiles .headerabovetiles button.selected,
+    .headerabovetiles button:active, .headerabovetiles button:focus,
+    .format-tiles .modal-header {
+        background-color: {{base_colour}};
+        color: #fff;
+    }
+    .format-tiles .embed_cm_modal .modal-header {
+        border-top: 5px solid {{base_colour}};
+    }
+    .format-tiles .sectiontitle::after{
+        background-color: {{base_colour}};
+    }
+    .format-tiles ul.tiles .headerabovetiles button:hover {
+        border-color: {{tile_hover_colour}};
+    }
+
+    .format-tiles .course-content .single-section .navigation-arrows .navigation-arrow:hover,
+    .format-tiles .embed_cm_modal .embed_file_button:hover {
+        background-color: {{button_hover_colour}};
+    }
+
+    /*boost theme item selected in left hand menu*/
+    .format-tiles .filterbutton:hover,
+    .sectionbutton:hover {
+        background-color: {{button_hover_colour}};
+        transition: all 0.1s ease-in-out;
+    }
+
+    .format-tiles .filterbutton.selected{
+        background-color: {{button_hover_colour}};
+    }
+
+    .format-tiles #buttonhidesec0:hover {
+        background-color: {{button_hover_colour}};
+    }
+    {{#shade_heading_bar}}
+        .format-tiles .course-content li.activity.label h1,
+        .format-tiles .course-content .section li.activity.label h2,
+        .format-tiles .course-content li.activity.label h3,
+        .format-tiles .course-content li.activity.label h4,
+        .format-tiles .editor_atto_content_wrap h1,
+        .format-tiles .editor_atto_content_wrap h2,
+        .format-tiles .editor_atto_content_wrap h3,
+        .format-tiles .editor_atto_content_wrap h4 {
+            border-left-color: {{base_colour}};
+            border-left-style: solid;
+        }
+    {{/shade_heading_bar}}
+</style>
+{{#custom_css}}<style type="text/css">{{{custom_css}}}</style>{{/custom_css}}

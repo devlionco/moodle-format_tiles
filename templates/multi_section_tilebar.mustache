@@ -1,0 +1,101 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+{{!
+    @template format_tiles/multi_section_tilebar
+
+    Tile bar template.
+
+    The purpose of this template is to render a single tile bar
+    which is a stretched tile displayed to represent a tile when
+    the user is in editing mode
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    *
+
+    Example context (json):
+    {}
+}}
+
+<li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#isactive}}current {{/isactive}}clearfix" role="region"
+    aria-label="{{{title}}}">
+    {{!hidden section requried for drag and drop to work, left side and right side for edit controls}}
+    <span class="hidden sectionname">{{{title}}}</span>
+    <div class="left side">{{{leftcontent}}}</div>
+    <div class="right side">
+        {{{rightcontent}}}
+        {{#isediting}}{{{section_edit_control}}}{{/isediting}}
+    </div>
+
+    <div class="content">
+        <div class="tile_bar narrow">
+              {{>format_tiles/tileicon}}
+            {{^isediting}}
+                <span class="tile_bar_text">
+                  <span class="tile-textinner{{titleclass}}" id="tileTextin-{{tileid}}">
+                    <h3 id="tileText-{{tileid}}">{{{title}}}</h3>
+                  </span>
+              </span>
+            {{/isediting}}
+            {{#isediting}}
+                <span class="tile_bar_text">
+                    {{{inplace_editable_title}}}
+                </span>
+                <div class="icon20 pull-right" id="hiddeneye{{tileid}}" title="Hidden"></div>
+
+                {{^is_expanded}}
+                    <a class="expand-section pull-right"
+                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand={{tileid}}#section-{{tileid}}">
+                      <span class="icon20" id="expand{{tileid}}" data-toggle="tooltip" data-placement="left"
+                            data-original-title="{{#str}}expand, format_tiles{{/str}}">
+                          {{#pix}}e/resize, core, {{#str}}expand, format_tiles{{/str}}{{/pix}}
+                      </span>
+                    </a>
+                {{/is_expanded}}
+            {{/isediting}}
+        </div>
+        {{#isediting}}
+            <div class="summary">{{{section_summary}}}</div>
+            <div class="section_availability">
+                {{{availabilityinfo}}}
+            </div>
+                <ul class="section img-text {{^useSubtiles}}no{{/useSubtiles}}subtiles">
+                    {{#is_expanded}}
+                            {{#course_modules}}
+                                {{>format_tiles/course_module}}
+                            {{/course_modules}}
+                    {{/is_expanded}}
+                </ul>
+                {{#is_expanded}}
+                    {{{single_sec_add_cm_control_html}}}
+                {{/is_expanded}}
+                {{^is_expanded}}
+                    <a href="{{{ config.wwwroot }}}/course/view.php?id={{courseid}}&section={{tileid}}">
+                        <div class="section-summary-activities mdl-right">{{{activity_summary}}}</div>
+                    </a>
+                {{/is_expanded}}
+
+        {{/isediting}}
+
+    </div>
+</li>

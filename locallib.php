@@ -1,0 +1,178 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * This file contains local methods for the course format Tiles
+ * They are included here instead of lib.php, as lib.php is included
+ * on every moodle page
+ *
+ * @since     Moodle 2.7
+ * @package   format_tiles
+ * @copyright 2018 David Watson
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+
+/**
+ * Deletes the user preference entries for the given course upon course deletion.
+ * Now called from format/tiles/db/events.php
+ * (used to be contained in lib.php and called from remove_course_contents in moodlelib.php)
+ * @param stdClass $event
+ * @throws dml_exception
+ */
+function format_tiles_delete_course($event)
+{
+    global $DB;
+    $courseid = $event->objectid;
+    $DB->delete_records("user_preferences", array("name" => 'format_tiles_stopjsnav_' . $courseid));
+}
+
+/**
+ * Experimental feature allowing a teacher to click and convert any label into a page
+ * @param int $cmid the course module id of the label (which is recycled)
+ * @param stdClass $course
+ * @throws dml_exception
+ * @throws required_capability_exception
+ * @throws coding_exception
+ */
+function convert_label_to_page($cmid, $course){
+    global $DB;
+    $cm = $DB->get_record('course_modules', array('id'=>$cmid), '*', MUST_EXIST);
+    $labelmoduleid = $DB->get_record('modules', array('name'=>'label'), 'id', MUST_EXIST)->id;
+    if($cm->module != $labelmoduleid){
+        debugging("Cannot convert a non label - course module id " . $cmid, DEBUG_DEVELOPER);
+        return;
+    }
+    $label = $DB->get_record('label', array('id'=>$cm->instance), '*', MUST_EXIST);
+    if($label->course !== $course->id || $cm->course !== $course->id){
+        debugging("Cannot convert label - incorrect course id " . $course->id, DEBUG_DEVELOPER);
+        return;
+    }
+    $coursecontext = context_course::instance($course->id);
+    require_capability('mod/page:addinstance', $coursecontext);
+    require_capability('moodle/course:manageactivities', $coursecontext);
+
+    // prepare the new page database object using the label as a basis
+    $newpage = $label;
+
+    // new page display name - label names may be multi line but we only want first line
+    $newpage->name = get_first_line($label->name);
+
+    // now the content - if the first line contains a repetition of the 'name', remove the repetition
+    $newpage->content = $label->intro;
+    $firstline = get_first_line($newpage->content);
+    if(strpos($firstline, $newpage->name) !== false && strpos($firstline, 'PLUGINFILE') === false){
+        // the first line seems to include what we are using for the name,
+        // and does not seem to contain a file link so is not adding anything - remove it
+        $remainder = substr($newpage->content,strpos($newpage->content, $firstline) + strlen($firstline));
+        $newfirstline = str_replace($newpage->name, '', $firstline);
+        $newpage->content = $newfirstline . $remainder;
+    }
+    $newpage->intro = '';
+    $newpage->contentformat = FORMAT_HTML;
+    $newpage->display = 0;
+    $newpage->displayoptions = serialize(array(
+        'printheading' => get_config('page', 'printheading'),
+        'printintro' =>   get_config('page', 'printintro')
+    ));
+    $newpage->timemodified = time();
+    $newpage->revision = 0;
+    // $newpage->legacyfiles and $newpage->legacyfileslast are left null
+
+    // now add new record to the page table
+    $newpageid = $DB->insert_record('page', $newpage, true);
+
+    // make necessary changes to the course modules table
+    $cm->module = $DB->get_record('modules', array('name'=>'page'), 'id', MUST_EXIST)->id;
+    $cm->instance = $newpageid;
+    $cm->timemodified = time();
+    $DB->update_record('course_modules', $cm);
+
+    // if the label contained embedded files (e.g. images), update the files table to reflect that they now relate to a page not a label
+    $contextid = $DB->get_record('context', array('contextlevel'=> CONTEXT_MODULE, 'instanceid' => $cmid), 'id', MUST_EXIST)->id;
+    $files = $DB->get_records('files', array('component' => 'mod_label', 'contextid' => $contextid));
+    if(sizeof($files) > 0) {
+        $fs = get_file_storage();
+        foreach ($files as $file) {
+            // We modify only the fields we need to in order to convert label to page i.e. component and filearea
+            // We ensure that we leave the others including contextid unchanged as they are needed to generate
+            // the file URL, which is  embedded in the page HTML
+            // They are contextid, filepath ('/') and itemid ('0')
+            // We do change the pathnamehash as it is a hash of the other values so needs recalculating
+            // The embedded URL is like [wwwroot]/pluginfile.php/[contextid]/[component]/[filearea]/[itemid][filepath][filename]
+            // e.g. [wwwroot]/pluginfile.php/7577/mod_page/content/0/an_image.png
+            $pathnamehash = $fs->get_pathname_hash(
+                $file->contextid,
+                'mod_page', // new component
+                'content', // new filearea
+                $file->itemid,
+                $file->filepath,
+                $file->filename
+            );
+            $params = array(
+                'pathnamehash' => $pathnamehash,
+                'timemodified' => time(),
+                'id' => $file->id
+            );
+            $DB->execute(
+                "UPDATE {files} SET pathnamehash = :pathnamehash, component = 'mod_page', filearea='content', timemodified = :timemodified WHERE id = :id",
+                $params
+            );
+        }
+    }
+    // finally remove the old label
+    $DB->delete_records('label', array('id'=>$label->id));
+    rebuild_course_cache($course->id, true);
+    \core\notification::info(get_string('labelconverted', 'format_tiles'));
+    $cm->modname = "page";
+    $cm->name = $newpage->name;
+    $event = \format_tiles\event\label_converted::create_from_cm($cm);
+    $event->trigger();
+}
+
+/**
+ * Get the first line of some text, i.e. all the text
+ * before char with ASCII code 10 or 13
+ * @param string $text the text to search
+ * @return string the resulting text
+ */
+function get_first_line($text){
+    $text = explode(chr(13), $text)[0];  // \n newline char
+    if(strpos($text, chr(10))){ // \r char in case it is used instead
+        $text = explode(chr(10), $text)[0];
+    }
+    return $text;
+}
+
+/**
+ * Which course modules is the site administrator allowing to be displayed in a modal?
+ * @return array the permitted modules including resource types e.g. page, pdf, HTML
+ */
+function get_allowed_modal_modules() {
+    $devicetype = \core_useragent::get_device_type();
+    if($devicetype != \core_useragent::DEVICETYPE_TABLET && $devicetype != \core_useragent::DEVICETYPE_MOBILE){
+        return array(
+            'resources' => explode(",", get_config('format_tiles', 'modalresources')),
+            'modules' => explode(",", get_config('format_tiles', 'modalmodules'))
+        );
+    } else {
+        return array();
+    }
+}
+
+

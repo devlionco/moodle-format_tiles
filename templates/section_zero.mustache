@@ -1,0 +1,116 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+{{!
+    @template format_tiles/section_zero
+
+    Section zero template.
+
+    The purpose of this template is to render section zero
+    i.e. the top section of the course
+    which may be displayed on the course landing page or above any other section
+    It includes other items displayed at the top of the course such as filter buttons
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    *
+
+    Example context (json):
+    {
+        show: 1,
+        isediting: 0,
+        hasNoSections: 0,
+        secid: 212,
+        summary: "This is the section zero summary text",
+        content: {
+            [see single_section template]
+        },
+        is_multi_section: 1,
+        has_filter_buttons: 0,
+        fiternumberedbuttons: [],
+        fiteroutcomebuttons: [],
+        overall_progress_indicator: {
+            [see progress template]
+        },
+        section_zero_add_cm_control_html: "[html]"
+    }
+}}
+
+{{^isediting}}
+    {{#show}}<div class="buttonhidesec0 open" id="buttonhidesec0"></div>{{/show}}
+{{/isediting}}
+{{#show}}
+    <li id="section-0" data-section="0" class="section main clearfix" role="region">
+        <span class="hidden sectionname">{{title}}</span>
+        {{#isediting}}
+            <a title="{{#str}}editsummary, core{{/str}}" href="{{{config.wwwroot}}}/course/editsection.php?id={{secid}}&sr={{tileid}}">
+            {{#pix}}i/settings, core{{/pix}}
+            </a>
+        {{/isediting}}
+        <div class="left side"></div>
+        <div class="right side"></div>
+        <div class="content">
+            <div class="summary">{{{summary}}}</div>
+            <ul class="section img-text {{#usesubtilesseczero}}subtiles{{/usesubtilesseczero}}{{^usesubtilesseczero}}nosubtiles{{/usesubtilesseczero}}
+                {{#useSubtiles}}{{#usesubtilesseczero}}subtiles{{/usesubtilesseczero}}{{/useSubtiles}}">
+                {{#content}}
+                    {{#course_modules}}
+                        {{>format_tiles/course_module}}
+                    {{/course_modules}}
+                {{/content}}
+            </ul>
+            {{#isediting}}
+                {{{section_zero_add_cm_control_html}}}
+            {{/isediting}}
+        </div>
+    </li>
+{{/show}}
+
+{{^isediting}}
+    <div id="abovetiles">
+        <div id="headerabovetiles" class="headerabovetiles" aria-hidden="true">
+            {{^isediting}}
+                {{#is_multi_section}}
+                    {{#has_filter_buttons}}
+                        <div id="filterbuttons">
+                                <span id="filterintro">
+                                    {{#pix}}filter, format_tiles{{/pix}}
+                                </span>
+                            {{#fiternumberedbuttons}}
+                                {{> format_tiles/filterbutton}}
+                            {{/fiternumberedbuttons}}
+                            {{#fiteroutcomebuttons}}
+                                {{> format_tiles/filterbutton}}
+                            {{/fiteroutcomebuttons}}
+                            <div id="filterbutton-all" class="filterbutton" data-buttonid="all" data-sections="[all]">
+                                {{#str}}all, format_tiles{{/str}}
+                            </div>
+                            {{#overall_progress_indicator}}
+                                {{> format_tiles/progress}}
+                            {{/overall_progress_indicator}}
+                        </div>
+                    {{/has_filter_buttons}}
+                {{/is_multi_section}}
+            {{/isediting}}
+        </div>
+    </div>
+{{/isediting}}

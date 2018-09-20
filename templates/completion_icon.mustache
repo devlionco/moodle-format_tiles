@@ -1,0 +1,85 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+{{!
+    @template format_tiles/completion_icon
+
+    Course module completion icon template
+
+    The purpose of this template is to render a check box
+    for the user to check which will be used to toggle completion
+    via AJAX
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    *
+
+    Example context (json):
+    {
+        cmid: 123,
+        tileid: 1,
+        completionstate: "0",
+        completionstateInverse: "1",
+        isediting: 0,
+        sesskey: 1234567890,
+        modtitle: "Lecture 1 slides",
+        completionIsManual: 1,
+        completionstring: "Click to toggle completion status",
+    }
+}}
+{{^isediting}}
+    {{#completionIsManual}}
+        <form method="post" action="{{{ config.wwwroot }}}/course/togglecompletion.php"
+              class="togglecompletion" data-cmid="{{cmid}}" data-section="{{tileid}}" data-toggle="tooltip" data-ismanual="1"
+              title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}">
+            <div class="completioncheckbox">
+                <input type="hidden" name="id" value="{{cmid}}">
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <input type="hidden" name="modulename" value="{{modtitle}}">
+                <input type="hidden" name="completionstate" id="completionstate_{{cmid}}" value="{{completionstateInverse}}">
+                <button class="btn">
+                    <span class="completion_img_{{cmid}}">
+                        {{#completionstate}}{{#pix}}completion-y, format_tiles{{/pix}}{{/completionstate}}
+                        {{^completionstate}}{{#pix}}completion-n, format_tiles{{/pix}}{{/completionstate}}
+                    </span>
+                </button>
+                    {{! completion_img_[id] is the **class** if the img, not its id, because we have two per page, one on the main page and one in the modal }}
+            </div>
+        </form>
+    {{/completionIsManual}}
+    {{^completionIsManual}}
+        <span class="completioncheckbox"
+              title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}"
+              data-ismanual="0" data-toggle="tooltip">
+            {{#completionstate}}{{#pix}}completion-y, format_tiles{{/pix}}{{/completionstate}}
+            {{^completionstate}}{{#pix}}completion-n, format_tiles{{/pix}}{{/completionstate}}
+        </span>
+    {{/completionIsManual}}
+{{/isediting}}
+
+{{#isediting}}
+    <div class="completioncheckbox"
+    title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}" data-ismanual="0">
+        {{#completionstate}}{{#pix}}completion-y, format_tiles{{/pix}}{{/completionstate}}
+        {{^completionstate}}{{#pix}}completion-n, format_tiles{{/pix}}{{/completionstate}}
+    </div>
+{{/isediting}}
