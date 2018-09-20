@@ -66,7 +66,7 @@ function format_tiles_upgrade_remove_numsections() {
         }
 
         // For this course (i.e. each course in this format), check if sec zero is hidden and unhide it if so.
-        if ($section = $DB->get_record("course_sections", array("course" => $courseid, "section" => 0))){
+        if ($section = $DB->get_record("course_sections", array("course" => $courseid, "section" => 0))) {
             if (!$section->visible) {
                 // Set section zero to visible if it is hidden.
                 // (It should never be hidden see https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256).
@@ -107,7 +107,7 @@ function format_tiles_upgrade_hide_extra_sections($courseid, $numsections) {
     $tohide = [];
     $todelete = [];
     foreach ($sections as $section) {
-        // $section->sequence contains the cm id list for this section so if it's empty, the section contains no content
+        // Variable $section->sequence contains the cm id list for this section.  If empty, section contains no content.
         if ($candelete && (!empty($section->summary) || !empty($section->sequence) || !empty($section->name))) {
             $candelete = false;
         }

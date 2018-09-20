@@ -18,8 +18,7 @@
 /**
  * Renderer for outputting the tiles course format.
  *
- * @package course/format
- * @subpackage tiles
+ * @package format_tiles
  * @copyright 2018 David Watson
  * @copyright Based partly on previous topics format renderer and general course format renderer
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,8 +32,7 @@ require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
 
 /**
  * Basic renderer for tiles format.
- * @package course/format
- * @subpackage tiles
+ * @package format_tiles
  * @copyright 2016 David Watson
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -48,11 +46,8 @@ class format_tiles_renderer extends format_section_renderer_base
      */
     public function __construct(moodle_page $page, $target) {
         parent::__construct($page, $target);
-        /**
-         * Since format_tiles_renderer::section_edit_controls() only displays the 'Set current section' control
-         * when editing mode is on, we need to be sure that the link 'Turn editing mode on' is available
-         * for a user who does not have any other managing capability.
-         */
+        // Method format_tiles_renderer::section_edit_controls() only displays the 'Set current section' control when editing mode is on.
+        // We need to be sure that the link 'Turn editing mode on' is available for a user who does not have any other managing capability.
         $page->set_other_editing_capability('moodle/course:setcurrentsection');
     }
 
@@ -149,7 +144,7 @@ class format_tiles_renderer extends format_section_renderer_base
                 'name' => get_string('entersection', 'format_tiles'),
                 'attr' => array('class' => 'editing_activities', 'title' => get_string('entersection', 'format_tiles')));
 
-            if (optional_param('expand', 0, PARAM_INT) == $section->section){
+            if (optional_param('expand', 0, PARAM_INT) == $section->section) {
                 // This section is already expanded, so display a collapse link.
                 $url = new moodle_url('/course/view.php', array('id' => $course->id), 'section-' . $section->section);
                 $controls['collapseactivities'] = array('url' => $url, "icon" => 'i/up',
@@ -288,7 +283,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param stdClass $section
      * @return string
      */
-    public function format_summary_text($section){
+    public function format_summary_text($section) {
         // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::format_summary_text($section);
     }
@@ -354,7 +349,7 @@ class format_tiles_renderer extends format_section_renderer_base
 
         // Output section activities summary.
         $o = '';
-        if (!$PAGE->user_is_editing()){
+        if (!$PAGE->user_is_editing()) {
             // Added for tiles.
             $contents = '<b>' . get_string('contents', 'format_tiles') . ':</b><br>';
             $extraclass = '';
@@ -362,7 +357,8 @@ class format_tiles_renderer extends format_section_renderer_base
             $contents = '';
             $extraclass = ' pull-right';
         }
-        $o .= html_writer::start_tag('div', array('class' => 'section-summary-activities' . $extraclass));  // For tiles removed mdl-right class
+        // For tiles removed mdl-right class.
+        $o .= html_writer::start_tag('div', array('class' => 'section-summary-activities' . $extraclass));
         $o .= $contents;
         foreach ($sectionmods as $mod) {
             $o .= html_writer::start_tag('span', array('class' => 'activity-count'));

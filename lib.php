@@ -33,8 +33,7 @@ define('FORMAT_TILES_FILTERBAR_BOTH', 3);
 require_once($CFG->dirroot . '/course/format/lib.php');
 
 /**
- * Enable a renderable object to be generated for the course footer,
- * as explained under
+ * Enable a renderable object to be generated for the course footer
  * @see format_tiles::course_footer()
  * @see \format_tiles_renderer::render_format_tiles_icon_picker_icons()
  * @copyright 2018 David Watson
@@ -247,7 +246,7 @@ class format_tiles extends format_base {
                 $generalsection->remove();
             }
         }
-        if (get_config('format_tiles', 'usejavascriptnav') && !$PAGE->user_is_editing()){
+        if (get_config('format_tiles', 'usejavascriptnav') && !$PAGE->user_is_editing()) {
             if (!get_user_preferences('format_tiles_stopjsnav', 0)) {
                 $url = new moodle_url('/course/view.php', array('id' => $course->id, 'stopjsnav' => 1));
                 $settingnode = $node->add(
@@ -261,7 +260,7 @@ class format_tiles extends format_base {
                 $settingnode->add_class('tiles_coursenav hidden');
 
                 // Now the Data Preference menu item.
-                if (!get_config('format_tiles', 'assumedatastoreconsent')){
+                if (!get_config('format_tiles', 'assumedatastoreconsent')) {
                     $url = new moodle_url('/course/view.php', array('id' => $course->id, 'datapref' => 1));
                     $settingnode = $node->add(
                         get_string('datapref', 'format_tiles'),
@@ -652,12 +651,9 @@ class format_tiles extends format_base {
         $elements = parent::create_edit_form_elements($mform, $forsection);
 
         if (!$forsection && (empty($COURSE->id) || $COURSE->id == SITEID)) {
-            /**
-             * Add "numsections" element to the create course form - it will force new course to be pre-populated
-             * with empty sections.
-             * The "Number of sections" option is no longer available when editing course, instead teachers should
-             * delete and add sections when needed.
-             */
+            // Add "numsections" to create course form - will force the course pre-populated with empty sections.
+            // The "Number of sections" option is no longer available when editing course.
+            // Instead teachers should delete and add sections when needed.
 
             $courseconfig = get_config('moodlecourse');
             $max = (int)$courseconfig->maxsections;
@@ -702,18 +698,17 @@ class format_tiles extends format_base {
                 }
             }
         }
-        /**
-         * While we are changing the format options, set section zero to visible if it is hidden
-         * should never be hidden but rarely it happens, for reasons which are not clear esp with onetopic format
-         * see https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256)
-         */
+        // While we are changing the format options, set section zero to visible if it is hidden.
+        // Should never be hidden but rarely it happens, for reasons which are not clear esp with onetopic format.
+        // See https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256)
+
         if (isset($data['id'])
             && $section = $DB->get_record("course_sections", array('course' => $data['id'], 'section' => 0))) {
             if (!$section->visible) {
                 set_section_visible($section->course, 0, 1);
             }
         }
-        if (isset($data['courseusesubtiles']) && $data['courseusesubtiles'] == 0){
+        if (isset($data['courseusesubtiles']) && $data['courseusesubtiles'] == 0) {
             // we are deactivating sub tiles at course level so do it at sec zero level too
             $data['usesubtilesseczero'] = 0;
         }
@@ -759,7 +754,7 @@ class format_tiles extends format_base {
 
         // Now remove any default values such as '' or '0' which the update stored in the database as they are redundant.
         $keystoremove = ['tileicon', 'tileoutcomeid'];
-        foreach ($keystoremove as $key){
+        foreach ($keystoremove as $key) {
             if (!isset($data[$key])) {
                 $DB->delete_records('course_format_options', ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => $key]);
                 if (isset($oldvalues[$key]) && $oldvalues[$key]) {
@@ -918,8 +913,8 @@ class format_tiles extends format_base {
      * @throws dml_exception
      */
     public function page_set_course(moodle_page $page) {
-        if (get_config('format_tiles', 'usejavascriptnav')){
-            if (optional_param('stopjsnav', 0, PARAM_INT) == 1){
+        if (get_config('format_tiles', 'usejavascriptnav')) {
+            if (optional_param('stopjsnav', 0, PARAM_INT) == 1) {
                 // User is toggling JS nav setting.
                 $existingstoppref = get_user_preferences('format_tiles_stopjsnav', 0);
                 if (!$existingstoppref) {

@@ -68,7 +68,7 @@ class provider implements \core_privacy\local\metadata\provider,
      * @param collection $collection
      * @return collection
      */
-    public static function get_metadata(collection $collection): collection {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_user_preference('format_tiles_stopjsnav', 'privacy:metadata:preference:format_tiles_stopjsnav');
         return $collection;
     }

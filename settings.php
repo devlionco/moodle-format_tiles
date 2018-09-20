@@ -17,8 +17,7 @@
 /**
  * Settings used by the tiles course format
  *
- * @package    course/format
- * @subpackage tiles
+ * @package format_tiles
  * @copyright  2016 David Watson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
  **/
@@ -28,10 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/course/format/tiles/lib.php');
 
 if ($ADMIN->fulltree) {
-
-    /**
-     * Javascript navigation settings
-     */
+    // Javascript navigation settings.
     $settings->add(new admin_setting_heading('jsnavsettings', get_string('jsnavsettings', 'format_tiles'), ''));
     $name = 'format_tiles/usejavascriptnav';
     $title = get_string('usejavascriptnav', 'format_tiles');
@@ -51,12 +47,12 @@ if ($ADMIN->fulltree) {
     $default = 1;
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
-    // Modal windows for course modules
+    // Modal windows for course modules.
     $allowedmodtypes = ['page'];
     $allmodtypes = get_module_types_names();
     $options = [];
     foreach ($allowedmodtypes as $modtype) {
-        if (isset($allmodtypes[$modtype])){
+        if (isset($allmodtypes[$modtype])) {
             $options[$modtype] = $allmodtypes[$modtype];
         }
     }
@@ -125,7 +121,7 @@ if ($ADMIN->fulltree) {
         $choices);
     $settings->add($setting);
 
-    //Colour settings.
+    // Colour settings.
 
     $settings->add(new admin_setting_heading('coloursettings', get_string('coloursettings', 'format_tiles'), ''));
     $name = 'format_tiles/followthemecolour';
@@ -152,7 +148,7 @@ if ($ADMIN->fulltree) {
                 get_string('brandcolour', 'format_tiles') . ' ' . $colournumber, ''
             )
         );
-        // colour picker for this brand
+        // Colour picker for this brand.
         $setting = new admin_setting_configcolourpicker(
             'format_tiles/tilecolour' . $colournumber,
             get_string('tilecolourgeneral', 'format_tiles') . ' ' . $colournumber,
@@ -183,7 +179,7 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $settings->add($setting);
 
-    // Hover colour display name
+    // Hover colour display name.
     $name = 'format_tiles/hovercolourname';
     $title = get_string('hovercolourname', 'format_tiles');
     $description = get_string('colourname_descr', 'format_tiles');
@@ -191,9 +187,9 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configtext($name, $title, $description, $default, PARAM_RAW, 30);
     $settings->add($setting);
 
-    // Other settings
+    // Other settings.
 
-    // Custom css
+    // Custom css.
     $settings->add(new admin_setting_heading('othersettings', get_string('othersettings', 'format_tiles'), ''));
     $name = 'format_tiles/customcss';
     $title = get_string('customcss', 'format_tiles');

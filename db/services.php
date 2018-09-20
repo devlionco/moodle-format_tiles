@@ -64,7 +64,7 @@ $functions = array (
         'type'        => 'write',
         'ajax'        => true,
         'loginrequired' => true,
-        'capabilities' => ''  // enrolment check, not capability - see externallib.php.
+        'capabilities' => ''  // Enrolment check, not capability - see externallib.php.
     ),
     'format_tiles_get_mod_page_html' => array(
         'classname'   => 'format_tiles_external',

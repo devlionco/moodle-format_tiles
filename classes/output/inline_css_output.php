@@ -16,8 +16,6 @@
 
 /**
  * Tiles course format, inline css output class
- * Prepares data for echoing inline css via template
- * to provide custom colour for tiles in course (if used)
  *
  * @package format_tiles
  * @copyright 2018 David Watson
@@ -30,7 +28,6 @@ global $CFG;
 require_once($CFG->dirroot .'/course/format/lib.php');
 
 /**
- * Tiles course format, inline css output class
  * Prepares data for echoing inline css via template
  * to provide custom colour for tiles in course (if used)
  *
@@ -51,8 +48,8 @@ class inline_css_output implements \renderable, \templatable {
     public function __construct($course) {
         $this->course = $course;
     }
-
     /**
+     * Export the data for the mustache template.
      * @param \renderer_base $output
      * @return array|\stdClass
      * @throws \dml_exception
@@ -68,7 +65,8 @@ class inline_css_output implements \renderable, \templatable {
             'button_hover_colour' => $this->rgbacolour($basecolour, 0.1)
         );
         if ($this->course->courseusebarforheadings != 0 && $this->course->courseusebarforheadings != 'standard') {
-            // Will be 1 or 0 for use or not use now (legacy values could be 'standard' for not use, or a colour for use, but in that case treat as 'use').
+            // Will be 1 or 0 for use or not use now.
+            // (Legacy values could be 'standard' for not use, or a colour for use, but in that case treat as 'use').
             $outputdata['shade_heading_bar'] = true;
         }
         return $outputdata;
@@ -104,7 +102,7 @@ class inline_css_output implements \renderable, \templatable {
             }
         }
         // We are following theme's main colour so find out what it is.
-        if (!$basecolour){
+        if (!$basecolour) {
             // If boost theme is in use, it uses "brandcolor" so try to get that if current theme has it.
             $basecolour = get_config('theme_' . $PAGE->theme->name, 'brandcolor');
             if (!$basecolour) {

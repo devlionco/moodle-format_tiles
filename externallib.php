@@ -64,12 +64,12 @@ class format_tiles_external extends external_api
         self::validate_context($context);
         require_capability('moodle/course:update', $context);
 
-        $availableicons= \course_get_format($courseid)->format_tiles_available_icons();
-        if (!isset($availableicons[$data['icon']])){
+        $availableicons = \course_get_format($courseid)->format_tiles_available_icons();
+        if (!isset($availableicons[$data['icon']])) {
             throw new invalid_parameter_exception('Icon is invalid');
         }
 
-        if ($data['sectionid'] === 0){
+        if ($data['sectionid'] === 0) {
             $optionname = 'defaulttileicon'; // All default icon for whole course.
         } else {
             $optionname = 'tileicon'; // Icon for just this tile.
@@ -79,7 +79,7 @@ class format_tiles_external extends external_api
             'course_format_options',
             ['format' => 'tiles', 'name' => $optionname, 'courseid' => $data['courseid'], 'sectionid' => $data['sectionid']]
         );
-        if (!isset($existingicon->value)){
+        if (!isset($existingicon->value)) {
             // No icon is presently stored for this so we need to insert new record.
             $record = new stdClass();
             $record->format = 'tiles';
@@ -110,7 +110,7 @@ class format_tiles_external extends external_api
             $existingicon->value = $data['icon'];
             $result = $DB->update_record('course_format_options', $existingicon);
         }
-        if ($result){
+        if ($result) {
             return true;
         } else {
             return false;
@@ -177,17 +177,14 @@ class format_tiles_external extends external_api
 
         $course = get_course($params['courseid']);
         $renderer = $PAGE->get_renderer('format_tiles');
-        $templateable = new \format_tiles\output\course_output($course,true, $params['sectionid']);
+        $templateable = new \format_tiles\output\course_output($course, true, $params['sectionid']);
         $data = $templateable->export_for_template($renderer);
         $result = array(
             'html' => $renderer->render_from_template('format_tiles/single_section', $data)
         );
-        /**
-         * This session var is used later, when the user revisits the main course landing page, or a single section
-         * page, for a course using this format.  If set to true, the page can safely be rendered from PHP in the
-         * javascript friendly format, albeit with a <noscript> box displayed only to users who have JS disabled with a link to switch
-         * to non JS format
-         */
+        // This session var is used later, when user revisits main course landing page, or a single section, for a course using this format.
+        // If set to true, the page can safely be rendered from PHP in the javascript friendly format.
+        // (A <noscript> box will be displayed only to users who have JS disabled with a link to switch to non JS format).
         if ($params['setjsusedsession']) {
             $SESSION->format_tiles_jssuccessfullyused = 1;
         }
@@ -252,11 +249,11 @@ class format_tiles_external extends external_api
         $result = array('status' => false, 'warnings' => [], 'html' => '');
         $mod = get_fast_modinfo($params['courseid'])->get_cm($params['cmid']);
         require_capability('mod/' . $mod->modname . ':view', $modcontext);
-        if ($mod && $mod->available){
-            if (array_search($mod->modname, explode(",", get_config('format_tiles', 'modalmodules'))) === false){
+        if ($mod && $mod->available) {
+            if (array_search($mod->modname, explode(",", get_config('format_tiles', 'modalmodules'))) === false) {
                 throw new invalid_parameter_exception('Not allowed to call this mod type - disabled by site admin');
             }
-            if ($mod->modname == 'page'){
+            if ($mod->modname == 'page') {
                 // Record from the page table.
                 $record = $DB->get_record($mod->modname, array('id' => $mod->instance), 'content, revision, contentformat');
                 $renderer = $PAGE->get_renderer('format_tiles');
@@ -337,7 +334,7 @@ class format_tiles_external extends external_api
         return new external_function_parameters(
             array(
                 'courseid' => new external_value(PARAM_INT, 'Course id'),
-                'sectionid' => new external_value(PARAM_INT, 'Section id viewed',VALUE_DEFAULT, 0, true),
+                'sectionid' => new external_value(PARAM_INT, 'Section id viewed', VALUE_DEFAULT, 0, true),
             )
         );
     }
@@ -386,7 +383,7 @@ class format_tiles_external extends external_api
         require_capability('mod/' . $cm->modname . ':view', $context);
 
         $allowedmodalmodules  = get_allowed_modal_modules();
-        if (array_search($cm->modname, $allowedmodalmodules['modules']) === false && count($allowedmodalmodules['resources']) == 0){
+        if (array_search($cm->modname, $allowedmodalmodules['modules']) === false && count($allowedmodalmodules['resources']) == 0) {
             throw new invalid_parameter_exception('Not allowed to log views of this mod type - disabled by site admin');
         }
         $modobject = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);

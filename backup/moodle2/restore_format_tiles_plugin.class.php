@@ -104,11 +104,9 @@ class restore_format_tiles_plugin extends restore_format_plugin {
         );
         if ($currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY
             || $currentfilterbarsetting->value == FILTER_OUTCOMES_AND_NUMBERS) {
-            /**
-             * If the new course has the filter bar set to use outcomes then switch it, as tile outcomes
-             * will not work correctly in the new course as they include ids from the old course
-             * this is a temporary solution until the tile outcomes code can be refactored not to use outcome ids.
-             */
+            // If the new course has the filter bar set to use outcomes then switch it.
+            // Tile outcomes will not work correctly in the new course as they include ids from the old course.
+            // This is a temporary solution until the tile outcomes code can be refactored not to use outcome ids.
             $newrecord = new stdClass;
             $newrecord->id = $currentfilterbarsetting->id;
             if ($currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY) {
@@ -119,7 +117,7 @@ class restore_format_tiles_plugin extends restore_format_plugin {
                 $DB->update_record('course_format_options', $newrecord);
             }
 
-            // Delete any references to tile outcomes under section format options, as these will now be incorrect in restored course.
+            // Delete references to tile outcomes under section format options (now incorrect in restored course).
             // Users will have to set out up outcomes in new course for now if they want to.
             $DB->delete_records(
                 'course_format_options',
@@ -158,14 +156,12 @@ class restore_format_tiles_plugin extends restore_format_plugin {
         }
 
         $numsections = (int)$data['tags']['numsections'];
+        // Check each section from the backup file.
+        // If it was "orphaned" in the original course, mark it as hidden.
+        // This will leave all activities in it visible and available just as it was in the original course.
+        // Exception is when we restore with merging and the course already had a section with this section number.
+        // In this case we don't modify the visibility.
         foreach ($backupinfo->sections as $key => $section) {
-            /**
-             * For each section from the backup file check if it was restored and if was "orphaned" in the original
-             * course and mark it as hidden. This will leave all activities in it visible and available just as it was
-             * in the original course.
-             * Exception is when we restore with merging and the course already had a section with this section number,
-             * in this case we don't modify the visibility.
-             */
             if ($this->step->get_task()->get_setting_value($key . '_included')) {
                 $sectionnum = (int)$section->title;
                 if ($sectionnum > $numsections && $sectionnum > $this->originalnumsections) {

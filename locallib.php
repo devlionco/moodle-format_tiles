@@ -50,12 +50,12 @@ function convert_label_to_page($cmid, $course) {
     global $DB;
     $cm = $DB->get_record('course_modules', array('id' => $cmid), '*', MUST_EXIST);
     $labelmoduleid = $DB->get_record('modules', array('name' => 'label'), 'id', MUST_EXIST)->id;
-    if ($cm->module != $labelmoduleid){
+    if ($cm->module != $labelmoduleid) {
         debugging("Cannot convert a non label - course module id " . $cmid, DEBUG_DEVELOPER);
         return;
     }
     $label = $DB->get_record('label', array('id' => $cm->instance), '*', MUST_EXIST);
-    if ($label->course !== $course->id || $cm->course !== $course->id){
+    if ($label->course !== $course->id || $cm->course !== $course->id) {
         debugging("Cannot convert label - incorrect course id " . $course->id, DEBUG_DEVELOPER);
         return;
     }
@@ -63,18 +63,18 @@ function convert_label_to_page($cmid, $course) {
     require_capability('mod/page:addinstance', $coursecontext);
     require_capability('moodle/course:manageactivities', $coursecontext);
 
-    // prepare the new page database object using the label as a basis
+    // Prepare the new page database object using the label as a basis.
     $newpage = $label;
 
-    // new page display name - label names may be multi line but we only want first line
+    // New page display name - label names may be multi line but we only want first line.
     $newpage->name = get_first_line($label->name);
 
-    // now the content - if the first line contains a repetition of the 'name', remove the repetition
+    // Now the content - if the first line contains a repetition of the 'name', remove the repetition.
     $newpage->content = $label->intro;
     $firstline = get_first_line($newpage->content);
-    if (strpos($firstline, $newpage->name) !== false && strpos($firstline, 'PLUGINFILE') === false){
-        // the first line seems to include what we are using for the name,
-        // and does not seem to contain a file link so is not adding anything - remove it
+    if (strpos($firstline, $newpage->name) !== false && strpos($firstline, 'PLUGINFILE') === false) {
+        // The first line seems to include what we are using for the name.
+        // Also it does not seem to contain a file link so is not adding anything - remove it.
         $remainder = substr($newpage->content, strpos($newpage->content, $firstline) + strlen($firstline));
         $newfirstline = str_replace($newpage->name, '', $firstline);
         $newpage->content = $newfirstline . $remainder;
@@ -84,36 +84,34 @@ function convert_label_to_page($cmid, $course) {
     $newpage->display = 0;
     $newpage->displayoptions = serialize(array(
         'printheading' => get_config('page', 'printheading'),
-        'printintro' =>   get_config('page', 'printintro')
+        'printintro' => get_config('page', 'printintro')
     ));
     $newpage->timemodified = time();
     $newpage->revision = 0;
-    // $newpage->legacyfiles and $newpage->legacyfileslast are left null
+    // Vars $newpage->legacyfiles and $newpage->legacyfileslast are left null.
 
-    // now add new record to the page table
+    // Now add new record to the page table.
     $newpageid = $DB->insert_record('page', $newpage, true);
 
-    // make necessary changes to the course modules table
+    // Make necessary changes to the course modules table.
     $cm->module = $DB->get_record('modules', array('name' => 'page'), 'id', MUST_EXIST)->id;
     $cm->instance = $newpageid;
     $cm->timemodified = time();
     $DB->update_record('course_modules', $cm);
 
-    // if the label contained embedded files (e.g. images), update the files table to reflect that they now relate to a page not a label
+    // If the label contained embedded files (e.g. images), update the files table to reflect that they now relate to a page not a label.
     $contextid = $DB->get_record('context', array('contextlevel' => CONTEXT_MODULE, 'instanceid' => $cmid), 'id', MUST_EXIST)->id;
     $files = $DB->get_records('files', array('component' => 'mod_label', 'contextid' => $contextid));
     if (count($files) > 0) {
         $fs = get_file_storage();
         foreach ($files as $file) {
-            /**
-             *  We modify only the fields we need to in order to convert label to page i.e. component and filearea
-             * We ensure that we leave the others including contextid unchanged as they are needed to generate
-             * the file URL, which is  embedded in the page HTML
-             * They are contextid, filepath ('/') and itemid ('0')
-             * We do change the pathnamehash as it is a hash of the other values so needs recalculating
-             * The embedded URL is like [wwwroot]/pluginfile.php/[contextid]/[component]/[filearea]/[itemid][filepath][filename]
-             * e.g. [wwwroot]/pluginfile.php/7577/mod_page/content/0/an_image.png
-             */
+            // We modify only the fields we need to in order to convert label to page i.e. component and filearea.
+            // We ensure that we leave the others including contextid unchanged as they are needed to generate the file URL.
+            // They are contextid, filepath ('/') and itemid ('0').
+            // We do change the pathnamehash as it is a hash of the other values so needs recalculating.
+            // The embedded URL is like [wwwroot]/pluginfile.php/[contextid]/[component]/[filearea]/[itemid][filepath][filename].
+            // e.g. [wwwroot]/pluginfile.php/7577/mod_page/content/0/an_image.png.
+
             $pathnamehash = $fs->get_pathname_hash(
                 $file->contextid,
                 'mod_page', // new component
@@ -133,7 +131,7 @@ function convert_label_to_page($cmid, $course) {
             );
         }
     }
-    // finally remove the old label
+    // Finally remove the old label.
     $DB->delete_records('label', array('id' => $label->id));
     rebuild_course_cache($course->id, true);
     \core\notification::info(get_string('labelconverted', 'format_tiles'));
@@ -150,8 +148,8 @@ function convert_label_to_page($cmid, $course) {
  * @return string the resulting text
  */
 function get_first_line($text) {
-    $text = explode(chr(13), $text)[0];  // \n newline char
-    if (strpos($text, chr(10))){ // \r char in case it is used instead
+    $text = explode(chr(13), $text)[0];  // Newline char \n.
+    if (strpos($text, chr(10))) { // Return char \r in case it is used instead.
         $text = explode(chr(10), $text)[0];
     }
     return $text;
@@ -163,7 +161,7 @@ function get_first_line($text) {
  */
 function get_allowed_modal_modules() {
     $devicetype = \core_useragent::get_device_type();
-    if ($devicetype != \core_useragent::DEVICETYPE_TABLET && $devicetype != \core_useragent::DEVICETYPE_MOBILE){
+    if ($devicetype != \core_useragent::DEVICETYPE_TABLET && $devicetype != \core_useragent::DEVICETYPE_MOBILE) {
         return array(
             'resources' => explode(",", get_config('format_tiles', 'modalresources')),
             'modules' => explode(",", get_config('format_tiles', 'modalmodules'))

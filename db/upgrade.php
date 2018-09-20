@@ -55,13 +55,14 @@ function xmldb_format_tiles_upgrade($oldversion) {
     // Put any upgrade step following this.
 
     if ($oldversion < 2018080103) {
-        // Rename the field "tiletopleftthistile" to "tileicon" as the latter is much simpler and the former was only used for legacy reasons.
+        // Rename the field "tiletopleftthistile" to "tileicon".
+        // The latter is much simpler and the former was only used for legacy reasons.
         $DB->set_field('course_format_options', 'name', 'tileicon',
-            array('format'=> 'tiles', 'name' => 'tiletopleftthistile'));
+            array('format' => 'tiles', 'name' => 'tiletopleftthistile'));
 
         // same for "defaulttiletopleftdisplay"
         $DB->set_field('course_format_options', 'name', 'defaulttileicon',
-            array('format'=> 'tiles', 'name' => 'defaulttiletopleftdisplay'));
+            array('format' => 'tiles', 'name' => 'defaulttiletopleftdisplay'));
 
         // Delete any 'course default' records for tile icons as these are no longer used.
         $DB->delete_records_select(
@@ -112,11 +113,11 @@ function xmldb_format_tiles_upgrade($oldversion) {
             "format='tiles' AND value='calendar-check' and (name='tileicon' or name='defaulttileicon')"
         );
 
-        unset_config('persistfilterbuttons', 'format_tiles'); // removed functionality
-        unset_config('fontimporttext', 'format_tiles'); // removed functionality
-        unset_config('fontfamilytext', 'format_tiles'); // removed functionality
-        unset_config('displaytileitems', 'format_tiles'); // removed functionality
-        unset_config('showiconslist', 'format_tiles'); // removed functionality
+        unset_config('persistfilterbuttons', 'format_tiles'); // Removed functionality.
+        unset_config('fontimporttext', 'format_tiles'); // Removed functionality.
+        unset_config('fontfamilytext', 'format_tiles'); // Removed functionality.
+        unset_config('displaytileitems', 'format_tiles'); // Removed functionality.
+        unset_config('showiconslist', 'format_tiles'); // Removed functionality.
 
         upgrade_plugin_savepoint(true, 2018080103, 'format', 'tiles');
     }

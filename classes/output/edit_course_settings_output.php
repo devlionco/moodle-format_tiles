@@ -16,7 +16,6 @@
 
 /**
  * Tiles course format, edit course settings course output class (Course admin > edit settings)
- * Gets icon picker data ready
  *
  * @package format_tiles
  * @copyright 2018 David Watson
@@ -29,8 +28,9 @@ global $CFG;
 require_once($CFG->dirroot .'/course/format/lib.php');
 
 /**
- * Tiles course format, edit course settings course output class (Course admin > edit settings)
  * Gets icon picker data ready
+ * @copyright 2018 David Watson
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edit_course_settings_output implements \renderable, \templatable {
 

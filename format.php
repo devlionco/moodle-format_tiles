@@ -62,16 +62,13 @@ if ($isediting && $cmid = optional_param('labelconvert', 0, PARAM_INT)) {
 $usejsnav = get_config('format_tiles', 'usejavascriptnav')
     && !get_user_preferences('format_tiles_stopjsnav', 0);
 /**
- * We display the multi section page if
- * (1) the user is not requesting a specific single section or
- * (2) the user is requesting a specific single section (URL &section=xx)
- * BUT we know that they have JS enabled ($SESSION->format_tiles_jssuccessfullyused is set),
- * in which case we don't want to show them the old style PHP single section page,
- * but instead we show them the multi section page and use JS to open the section
- * they want (using the &section URL param and $jssectionnum)
+ * We display the multi section page if the user is not requesting a specific single section.
+ * We also display it if user is requesting a specific section (URL &section=xx) with JS enabled.
+ * We know they have JS if $SESSION->format_tiles_jssuccessfullyused is set.
+ * In that case we show them the multi section page and use JS to open the section.
  */
-if (optional_param('canceljssession', false, PARAM_BOOL)){
-    // the user is shown a link to cancel the successful JS flag for this session in <noscript> tags if their JS is off
+if (optional_param('canceljssession', false, PARAM_BOOL)) {
+    // The user is shown a link to cancel the successful JS flag for this session in <noscript> tags if their JS is off.
     unset($SESSION->format_tiles_jssuccessfullyused);
 }
 
@@ -91,9 +88,9 @@ if (empty($displaysection) || (
 $PAGE->requires->js('/course/format/tiles/format.js');
 
 // Include amd module required for AJAX calls to change tile icon, filter buttons etc.
-if (!empty($displaysection)){
+if (!empty($displaysection)) {
     $jssectionnum = $displaysection;
-} else if (! $jssectionnum = optional_param('expand', 0, PARAM_INT)){
+} else if (! $jssectionnum = optional_param('expand', 0, PARAM_INT)) {
     $jssectionnum = 0;
 }
 
@@ -115,18 +112,18 @@ $jsparams = array(
 $PAGE->requires->js_call_amd(
     'format_tiles/format_tiles', 'init', $jsparams
 );
-if (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0){
+if (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0) {
     $PAGE->requires->js_call_amd(
         'format_tiles/course_mod_modal', 'init', array($course->id)
     );
 }
-if ($isediting && get_config('format_tiles', 'allowsubtilesview') && $course->courseusesubtiles){
+if ($isediting && get_config('format_tiles', 'allowsubtilesview') && $course->courseusesubtiles) {
     $PAGE->requires->js_call_amd(
-        'format_tiles/course_mod_edit', 'init', array(optional_param('labelconvert', 0,PARAM_INT))
+        'format_tiles/course_mod_edit', 'init', array(optional_param('labelconvert', 0, PARAM_INT))
     );
 }
 // This is also called from lib.php, if the user is on course/edit.php (edit course settings).
-if ($isediting){
+if ($isediting) {
     $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init',
         array(
             'courseId' => $course->id,
@@ -134,6 +131,6 @@ if ($isediting){
         )
     );
 }
-if ($course->enablecompletion){
+if ($course->enablecompletion) {
     $PAGE->requires->js_call_amd('format_tiles/completion', 'init', array());
 }
