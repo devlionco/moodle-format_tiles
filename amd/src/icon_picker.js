@@ -94,8 +94,6 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
             var watchLaunchButtons = function () {
                 $(".launchiconpicker").click(function (e) {
                     var clickedIcon = $(e.currentTarget);
-                    console.log('click');
-                    console.log(e.currentTarget);
                     require(["core/modal_factory"], function (modalFact) {
                         str.get_string("pickicon", "format_tiles")
                             .done(function (pickAnIcon) {
@@ -111,8 +109,6 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                                     modalRoot.attr("data-sectionid", clickedIcon.attr("data-section"));
                                     modalRoot.addClass("icon_picker_modal");
                                     modalRoot.on("click", ".pickericon", function (e) {
-                                        console.log('click2');
-                                        console.log(e.currentTarget);
                                         setIcon(
                                             clickedIcon.attr("data-sectionid"),
                                             clickedIcon.attr("data-section"),
@@ -128,7 +124,6 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
             };
 
             $(document).ready(function () {
-                console.log('ready');
                 if (pageType === "course-edit") {
                     selectBox = $("#id_defaulttileicon");
                 } else if (pageType === "course-editsection") {
