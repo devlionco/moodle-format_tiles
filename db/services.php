@@ -1,4 +1,29 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Format tiles web services defintions
+ *
+ * @package   format_tiles
+ * @category  event
+ * @copyright 2018 David Watson
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
 
 $functions = array (
     'format_tiles_set_icon' => array(
@@ -7,7 +32,7 @@ $functions = array (
         'classpath'   => 'course/format/tiles/externallib.php',
         'description' => 'Set tile icon (intended to be used from AJAX)',
         'type'        => 'write',
-        'ajax'        =>  true,
+        'ajax'        => true,
         'loginrequired' => true,
         'capabilities' => 'moodle/course:update'
     ),
@@ -17,7 +42,7 @@ $functions = array (
         'classpath'   => 'course/format/tiles/externallib.php',
         'description' => 'Trigger course module view event (for log) for a resource (for modal use)',
         'type'        => 'write',
-        'ajax'        =>  true,
+        'ajax'        => true,
         'loginrequired' => true,
         'capabilities' => 'mod/[modulename]:view'
     ),
@@ -27,9 +52,9 @@ $functions = array (
         'classpath'   => 'course/format/tiles/externallib.php',
         'description' => 'Get HTML for single section page for this course (i.e. tile contents)',
         'type'        => 'read',
-        'ajax'        =>  true,
+        'ajax'        => true,
         'loginrequired' => true,
-        'capabilities' => '' // enrolment check, not capability - see externallib.php
+        'capabilities' => '' // Enrolment check, not capability - see externallib.php.
     ),
     'format_tiles_log_tile_click' => array(
         'classname'   => 'format_tiles_external',
@@ -37,9 +62,9 @@ $functions = array (
         'classpath'   => 'course/format/tiles/externallib.php',
         'description' => 'Trigger course view event for a section (for log) on section tile click',
         'type'        => 'write',
-        'ajax'        =>  true,
+        'ajax'        => true,
         'loginrequired' => true,
-        'capabilities' => ''  // enrolment check, not capability - see externallib.php
+        'capabilities' => ''  // enrolment check, not capability - see externallib.php.
     ),
     'format_tiles_get_mod_page_html' => array(
         'classname'   => 'format_tiles_external',
@@ -47,7 +72,7 @@ $functions = array (
         'classpath'   => 'course/format/tiles/externallib.php',
         'description' => 'Return the HTML for a page course module (for modal use)',
         'type'        => 'read',
-        'ajax'        =>  true,
+        'ajax'        => true,
         'loginrequired' => true,
         'capabilities' => 'mod/page:view'
     ),

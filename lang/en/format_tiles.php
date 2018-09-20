@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -129,7 +128,7 @@ $string['nojswarning'] = 'Your browser does not seem to support javascript, or i
 $string['none'] = 'None';
 $string['noconnectionerror'] = 'Unable to load content.  Check your internet connection';
 $string['other'] = 'Other';
-$string['othersettings']= 'Other settings';
+$string['othersettings'] = 'Other settings';
 $string['outcomes'] = 'outcomes';
 $string['outcomesunavailable'] = 'Outcomes unavailable';
 $string['overallprogress'] = 'Activity completion - progress overall';
@@ -165,9 +164,8 @@ $string['usesubtilesseczero'] = 'Use sub tiles in top section';
 $string['usesubtilesseczero_help'] = 'If selected, sub tiles will be used in top section of course as well as within all tiles.  This is as the sub tiles take up a lot of room at the very top of the course.  It may be better to leave this unselected, so that any items in the top section are shown in standard list format instead.';
 $string['yourprogress'] = 'Your progress';
 
-/**
- * Admin Settings page
- **/
+// Admin Settings page.
+
 $string['addsections'] = 'Add Tiles';
 $string['assumedatastoreconsent'] = 'Assume consent to browser local storage';
 $string['assumedatastoreconsent_desc'] = 'If selected, user will <b>not</b> be shown a dialogue asking for consent to store data in browser local storage';

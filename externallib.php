@@ -27,6 +27,15 @@ defined('MOODLE_INTERNAL') || die;
 require_once("$CFG->libdir/externallib.php");
 require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
 
+/**
+ * Format tiles external functions
+ *
+ * @package    format_tiles
+ * @category   external
+ * @copyright  2018 David Watson
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @since      Moodle 3.3
+ */
 class format_tiles_external extends external_api
 {
     /**
@@ -41,35 +50,37 @@ class format_tiles_external extends external_api
      * @throws required_capability_exception
      * @throws restricted_context_exception
      */
-    public static function set_icon($courseid, $sectionid, $icon)
-    {
+    public static function set_icon($courseid, $sectionid, $icon) {
         global $DB;
 
         $data = self::validate_parameters(self::set_icon_parameters(),
             array(
-                'courseid'=>$courseid,
+                'courseid' => $courseid,
                 'sectionid' => $sectionid,
                 'icon' => $icon,
             )
         );
-        $context = context_course::instance($params['courseid']);
+        $context = context_course::instance($data['courseid']);
         self::validate_context($context);
         require_capability('moodle/course:update', $context);
 
         $availableicons= \course_get_format($courseid)->format_tiles_available_icons();
-        if(!isset($availableicons[$data['icon']])){
+        if (!isset($availableicons[$data['icon']])){
             throw new invalid_parameter_exception('Icon is invalid');
         }
 
-        if($data['sectionid'] === 0){
-            $optionname = 'defaulttileicon'; // all default icon for whole course
+        if ($data['sectionid'] === 0){
+            $optionname = 'defaulttileicon'; // All default icon for whole course.
         } else {
-            $optionname = 'tileicon'; // icon for just this tile
+            $optionname = 'tileicon'; // Icon for just this tile.
         }
 
-        $existingicon = $DB->get_record('course_format_options', ['format'=>'tiles', 'name'=> $optionname, 'courseid'=>$data['courseid'], 'sectionid'=>$data['sectionid']]);
-        if(!isset($existingicon->value)){
-            // no icon is presently stored for this so we need to insert new record
+        $existingicon = $DB->get_record(
+            'course_format_options',
+            ['format' => 'tiles', 'name' => $optionname, 'courseid' => $data['courseid'], 'sectionid' => $data['sectionid']]
+        );
+        if (!isset($existingicon->value)){
+            // No icon is presently stored for this so we need to insert new record.
             $record = new stdClass();
             $record->format = 'tiles';
             $record->courseid = $data['courseid'];
@@ -77,23 +88,29 @@ class format_tiles_external extends external_api
             $record->name = $optionname;
             $record->value = $data['icon'];
             $result = $DB->insert_record('course_format_options', $record);
-        } else if($data['sectionid'] != 0) {
-            // we are dealing with a tile icon for one particular section, so check if user has picked the course default
-            $defaulticonthiscourse = $DB->get_record('course_format_options', ['format' => 'tiles', 'name' => 'defaulttileicon', 'courseid' => $data['courseid'], 'sectionid' => 0])->value;
+        } else if ($data['sectionid'] != 0) {
+            // We are dealing with a tile icon for one particular section, so check if user has picked the course default.
+            $defaulticonthiscourse = $DB->get_record(
+                'course_format_options',
+                ['format' => 'tiles', 'name' => 'defaulttileicon', 'courseid' => $data['courseid'], 'sectionid' => 0]
+            )->value;
             if ($params['icon'] == $defaulticonthiscourse) {
-                // using default icon for a tile do don't store anything in database = default
-                $result = $DB->delete_records('course_format_options', ['format' => 'tiles', 'name' => 'tileicon', 'courseid' => $data['courseid'], 'sectionid' => $data['sectionid']]);
+                // Using default icon for a tile do don't store anything in database = default.
+                $result = $DB->delete_records(
+                    'course_format_options',
+                    ['format' => 'tiles', 'name' => 'tileicon', 'courseid' => $data['courseid'], 'sectionid' => $data['sectionid']]
+                );
             } else {
-                // user has not picked default and there is an existing record so update it
+                // User has not picked default and there is an existing record so update it.
                 $existingicon->value = $data['icon'];
                 $result = $DB->update_record('course_format_options', $existingicon);
             }
         } else {
-            // updating existing course icon record
+            // Updating existing course icon record.
             $existingicon->value = $data['icon'];
             $result = $DB->update_record('course_format_options', $existingicon);
         }
-        if($result){
+        if ($result){
             return true;
         } else {
             return false;
@@ -153,24 +170,25 @@ class format_tiles_external extends external_api
         );
 
         // Request and permission validation.
-        // Ensure user has access to course context
-        // validate_context() below ends up calling require_login($courseid)
+        // Ensure user has access to course context.
+        // validate_context() below ends up calling require_login($courseid).
         $context = context_course::instance($params['courseid']);
         self::validate_context($context);
 
         $course = get_course($params['courseid']);
         $renderer = $PAGE->get_renderer('format_tiles');
-        $templateable = new \format_tiles\output\course_output($course,True, $params['sectionid']);
+        $templateable = new \format_tiles\output\course_output($course,true, $params['sectionid']);
         $data = $templateable->export_for_template($renderer);
         $result = array(
             'html' => $renderer->render_from_template('format_tiles/single_section', $data)
         );
-
-        // This session var is used later, when the user revisits the main course landing page, or a single section
-        // page, for a course using this format.  If set to true, the page can safely be rendered from PHP in the
-        // javascript friendly format, albeit with a <noscript> box displayed only to users who have JS disabled with a link to switch
-        // to non JS format
-        if($params['setjsusedsession']) {
+        /**
+         * This session var is used later, when the user revisits the main course landing page, or a single section
+         * page, for a course using this format.  If set to true, the page can safely be rendered from PHP in the
+         * javascript friendly format, albeit with a <noscript> box displayed only to users who have JS disabled with a link to switch
+         * to non JS format
+         */
+        if ($params['setjsusedsession']) {
             $SESSION->format_tiles_jssuccessfullyused = 1;
         }
         return $result;
@@ -187,7 +205,13 @@ class format_tiles_external extends external_api
             array(
                 'courseid' => new external_value(PARAM_INT, 'Course id'),
                 'sectionid' => new external_value(PARAM_INT, 'Section id'),
-                'setjsusedsession' => new external_value(PARAM_BOOL, 'Whether to set the session flag for JS successfully used', VALUE_DEFAULT, 0, True)
+                'setjsusedsession' => new external_value(
+                    PARAM_BOOL,
+                    'Whether to set the session flag for JS successfully used',
+                    VALUE_DEFAULT,
+                    0,
+                    true
+                )
             )
         );
     }
@@ -219,21 +243,21 @@ class format_tiles_external extends external_api
         global $DB, $PAGE;
         $params = self::validate_parameters(
             self::get_mod_page_html_parameters(),
-            array('courseid'=> $courseid, 'cmid' => $cmid)
+            array('courseid' => $courseid, 'cmid' => $cmid)
         );
         // Request and permission validation.
         $modcontext = context_module::instance($params['cmid']);
         self::validate_context($modcontext);
 
-        $result = array('status'=>false, 'warnings'=>[], 'html' => '');
+        $result = array('status' => false, 'warnings' => [], 'html' => '');
         $mod = get_fast_modinfo($params['courseid'])->get_cm($params['cmid']);
         require_capability('mod/' . $mod->modname . ':view', $modcontext);
-        if($mod && $mod->available){
-            if(array_search($mod->modname, explode(",", get_config('format_tiles', 'modalmodules'))) === false){
+        if ($mod && $mod->available){
+            if (array_search($mod->modname, explode(",", get_config('format_tiles', 'modalmodules'))) === false){
                 throw new invalid_parameter_exception('Not allowed to call this mod type - disabled by site admin');
             }
             if ($mod->modname == 'page'){
-                // record from the page table
+                // Record from the page table.
                 $record = $DB->get_record($mod->modname, array('id' => $mod->instance), 'content, revision, contentformat');
                 $renderer = $PAGE->get_renderer('format_tiles');
                 $content = $renderer->format_cm_content_text($mod, $record);
@@ -292,14 +316,14 @@ class format_tiles_external extends external_api
     public static function log_tile_click($courseid, $sectionid) {
         $params = self::validate_parameters(
             self::log_tile_click_parameters(),
-            array('courseid'=> $courseid, 'sectionid' => $sectionid)
+            array('courseid' => $courseid, 'sectionid' => $sectionid)
         );
         // Request and permission validation.
         $coursecontext = context_course::instance($params['courseid']);
         self::validate_context($coursecontext);
 
         course_view(context_course::instance($courseid), $sectionid);
-        $result = array('status'=>true, 'warnings'=>[]);
+        $result = array('status' => true, 'warnings' => []);
         return $result;
     }
 
@@ -313,7 +337,7 @@ class format_tiles_external extends external_api
         return new external_function_parameters(
             array(
                 'courseid' => new external_value(PARAM_INT, 'Course id'),
-                'sectionid' => new external_value(PARAM_INT, 'Section id viewed',VALUE_DEFAULT, 0, True),
+                'sectionid' => new external_value(PARAM_INT, 'Section id viewed',VALUE_DEFAULT, 0, true),
             )
         );
     }
@@ -346,7 +370,7 @@ class format_tiles_external extends external_api
      * @throws moodle_exception
      */
     public static function log_mod_view($courseid, $cmid) {
-        global $DB, $CFG;
+        global $DB;
         $params = self::validate_parameters(
             self::log_mod_view_parameters(),
             array(
@@ -362,7 +386,7 @@ class format_tiles_external extends external_api
         require_capability('mod/' . $cm->modname . ':view', $context);
 
         $allowedmodalmodules  = get_allowed_modal_modules();
-        if(array_search($cm->modname, $allowedmodalmodules['modules']) === false && sizeof($allowedmodalmodules['resources']) == 0){
+        if (array_search($cm->modname, $allowedmodalmodules['modules']) === false && count($allowedmodalmodules['resources']) == 0){
             throw new invalid_parameter_exception('Not allowed to log views of this mod type - disabled by site admin');
         }
         $modobject = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
@@ -377,7 +401,7 @@ class format_tiles_external extends external_api
                 break;
             default:
                 throw new invalid_parameter_exception('No logging method provided for type ' . $cm->modname);
-            //todo add more to these if more modules added.
+            // TODO add more to these if more modules added.
         }
         $result = array();
         $result['status'] = true;

@@ -33,16 +33,25 @@ define('FORMAT_TILES_FILTERBAR_BOTH', 3);
 require_once($CFG->dirroot . '/course/format/lib.php');
 
 /**
- * Class format_tiles_icon_picker_icons
- * This class exists to enable a renderable object to be generated for the course footer,
+ * Enable a renderable object to be generated for the course footer,
  * as explained under
  * @see format_tiles::course_footer()
  * @see \format_tiles_renderer::render_format_tiles_icon_picker_icons()
+ * @copyright 2018 David Watson
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_tiles_icon_picker_icons implements renderable {}
+class format_tiles_icon_picker_icons implements renderable {
+}
 
-class format_tiles extends format_base
-{
+/**
+ * Main class for the course format Tiles
+ *
+ * @since     Moodle 2.7
+ * @package   format_tiles
+ * @copyright 2016 David Watson
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class format_tiles extends format_base {
     /**
      * Creates a new instance of class
      *
@@ -51,8 +60,7 @@ class format_tiles extends format_base
      * @param string $format
      * @param int $courseid
      */
-    protected function __construct($format, $courseid)
-    {
+    protected function __construct($format, $courseid) {
         if ($courseid === 0) {
             global $COURSE;
             $courseid = $COURSE->id;  // Save lots of global $COURSE as we will never be the site course.
@@ -65,8 +73,7 @@ class format_tiles extends format_base
      *
      * @return bool
      */
-    public function uses_sections()
-    {
+    public function uses_sections() {
         return true;
     }
 
@@ -79,8 +86,7 @@ class format_tiles extends format_base
      * @return string Display name that the course format prefers, e.g. "Topic 2"
      * @throws moodle_exception
      */
-    public function get_section_name($section)
-    {
+    public function get_section_name($section) {
         $section = $this->get_section($section);
         if ((string)$section->name !== '') {
             return format_string($section->name, true,
@@ -103,14 +109,12 @@ class format_tiles extends format_base
      * @return string The default value for the section name.
      * @throws coding_exception
      */
-    public function get_default_section_name($section)
-    {
+    public function get_default_section_name($section) {
         if ($section->section == 0) {
             // Return the general section.
             return get_string('section0name', 'format_tiles');
         } else {
-            // Use format_base::get_default_section_name implementation which
-            // will display the section name in "Topic n" format.
+            // Use format_base::get_default_section_name implementation which will display the section name in "Topic n" format.
             return parent::get_default_section_name($section);
         }
     }
@@ -121,8 +125,7 @@ class format_tiles extends format_base
      *
      * @return bool
      */
-    public function supports_news()
-    {
+    public function supports_news() {
         return true;
     }
 
@@ -137,8 +140,7 @@ class format_tiles extends format_base
      * @return null|moodle_url
      * @throws moodle_exception
      */
-    public function get_view_url($section, $options = array())
-    {
+    public function get_view_url($section, $options = array()) {
         $course = $this->get_course();
         $url = new moodle_url('/course/view.php', array('id' => $course->id));
 
@@ -175,8 +177,7 @@ class format_tiles extends format_base
      *
      * @return stdClass
      */
-    public function supports_ajax()
-    {
+    public function supports_ajax() {
         $ajaxsupport = new stdClass();
         $ajaxsupport->capable = true;
         return $ajaxsupport;
@@ -194,15 +195,18 @@ class format_tiles extends format_base
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function edit_form_validation($data, $files, $errors)
-    {
+    public function edit_form_validation($data, $files, $errors) {
         $courseid = $data['id'];
         $reterrors = array();
         if (!$data['enablecompletion'] && $data['courseshowtileprogress']) {
             $reterrors['courseshowtileprogress'] = get_string('courseshowtileprogress_error', 'format_tiles');
         }
-        if (($data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_OUTCOMES || $data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_BOTH) && empty($this->format_tiles_get_course_outcomes($courseid))) {
-            $outcomeslink = html_writer::link(new moodle_url('/grade/edit/outcome/course.php', array('id' => $courseid)), new lang_string('outcomes', 'format_tiles'));
+        if (($data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_OUTCOMES || $data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_BOTH)
+            && empty($this->format_tiles_get_course_outcomes($courseid))) {
+            $outcomeslink = html_writer::link(
+                new moodle_url('/grade/edit/outcome/course.php', array('id' => $courseid)),
+                new lang_string('outcomes', 'format_tiles')
+            );
             $reterrors['displayfilterbar'] = get_string('displayfilterbar_error', 'format_tiles') . ' ' . $outcomeslink;
         }
         return $reterrors;
@@ -217,10 +221,9 @@ class format_tiles extends format_base
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function extend_course_navigation($navigation, navigation_node $node)
-    {
+    public function extend_course_navigation($navigation, navigation_node $node) {
         global $PAGE;
-        // if section is specified in course/view.php, make sure it is expanded in navigation
+        // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
             if ($selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
@@ -228,7 +231,7 @@ class format_tiles extends format_base
                 $navigation->includesectionnum = $selectedsection;
             }
         }
-        // check if there are callbacks to extend course navigation
+        // Check if there are callbacks to extend course navigation.
         parent::extend_course_navigation($navigation, $node);
 
         // We want to remove the general section if it is empty.
@@ -244,7 +247,7 @@ class format_tiles extends format_base
                 $generalsection->remove();
             }
         }
-        if(get_config('format_tiles', 'usejavascriptnav') && !$PAGE->user_is_editing()){
+        if (get_config('format_tiles', 'usejavascriptnav') && !$PAGE->user_is_editing()){
             if (!get_user_preferences('format_tiles_stopjsnav', 0)) {
                 $url = new moodle_url('/course/view.php', array('id' => $course->id, 'stopjsnav' => 1));
                 $settingnode = $node->add(
@@ -253,12 +256,12 @@ class format_tiles extends format_base
                     navigation_node::TYPE_SETTING
                 );
                 $settingnode->nodetype = navigation_node::NODETYPE_LEAF;
-                // can't add classes or ids here if using boost (works in clean)
+                // Can't add classes or ids here if using boost (works in clean).
                 $settingnode->id = 'tiles_stopjsnav';
                 $settingnode->add_class('tiles_coursenav hidden');
 
-                // now the Data Preference menu item
-                if(!get_config('format_tiles', 'assumedatastoreconsent')){
+                // Now the Data Preference menu item.
+                if (!get_config('format_tiles', 'assumedatastoreconsent')){
                     $url = new moodle_url('/course/view.php', array('id' => $course->id, 'datapref' => 1));
                     $settingnode = $node->add(
                         get_string('datapref', 'format_tiles'),
@@ -267,7 +270,7 @@ class format_tiles extends format_base
                     );
                     $settingnode->nodetype = navigation_node::NODETYPE_LEAF;
 
-                    // can't add classes or ids here if using boost (works in clean)
+                    // Can't add classes or ids here if using boost (works in clean).
                     $settingnode->id = 'tiles_datapref';
                     $settingnode->add_class('tiles_coursenav hidden');
                 }
@@ -280,7 +283,7 @@ class format_tiles extends format_base
                 );
                 $settingnode->nodetype = navigation_node::NODETYPE_LEAF;
 
-                // can't add classes or ids here if using boost (works in clean)
+                // Can't add classes or ids here if using boost (works in clean).
                 $settingnode->id = 'tiles_stopjsnav';
                 $settingnode->add_class('tiles_coursenav hidden');
             }
@@ -295,8 +298,7 @@ class format_tiles extends format_base
      * @return array This will be passed in ajax response
      * @throws moodle_exception
      */
-    function ajax_section_move()
-    {
+    public function ajax_section_move() {
         global $PAGE;
         $titles = array();
         $course = $this->get_course();
@@ -316,8 +318,7 @@ class format_tiles extends format_base
      * @return array of default blocks, must contain two keys BLOCK_POS_LEFT and BLOCK_POS_RIGHT
      *     each of values is an array of block names (for left and right side columns)
      */
-    public function get_default_blocks()
-    {
+    public function get_default_blocks() {
         return array(
             BLOCK_POS_LEFT => array(),
             BLOCK_POS_RIGHT => array()
@@ -329,8 +330,7 @@ class format_tiles extends format_base
      * @return array list of all the colours and their names for use in the settings forms
      * @throws dml_exception
      */
-    private function format_tiles_get_tiles_palette()
-    {
+    private function format_tiles_get_tiles_palette() {
         $palette = array();
         for ($i = 1; $i <= 10; $i++) {
             $colourname = get_config('format_tiles', 'colourname' . $i);
@@ -348,12 +348,11 @@ class format_tiles extends format_base
      * the relevant directory and generates a suitable menu option for each icon.
      * @return array of tile icons
      */
-    public function format_tiles_available_icons()
-    {
+    public function format_tiles_available_icons() {
         global $CFG;
         $availableicons = [];
-        // first identify which of the font awesome icons used by this plugin are intended for use as tile icons
-        // i.e. they have the path tileicon/...
+        // First identify which of the font awesome icons used by this plugin are intended for use as tile icons.
+        // I.e. they have the path tileicon/...
         $fontawesomeicons = array_keys(format_tiles_get_fontawesome_icon_map());
         foreach ($fontawesomeicons as $faicon) {
             if (strpos($faicon, 'tileicon/') !== false) {
@@ -362,7 +361,7 @@ class format_tiles extends format_base
                 $availableicons[$iconname] = $displayname;
             }
         }
-        // now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons and add them to the list
+        // Now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons and add them to the list.
         $iconsindirectory = get_directory_list($CFG->dirroot . '/course/format/tiles/pix/tileicon', '', false, false, true);
         foreach ($iconsindirectory as $icon) {
             $filename = explode('.', $icon)[0];
@@ -382,8 +381,7 @@ class format_tiles extends format_base
      * @param int|stdClass|section_info $section
      * @return bool
      */
-    public function can_delete_section($section)
-    {
+    public function can_delete_section($section) {
         return true;
     }
 
@@ -396,8 +394,7 @@ class format_tiles extends format_base
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function course_format_options($foreditform = false)
-    {
+    public function course_format_options($foreditform = false) {
         static $courseformatoptions = false;
         if ($courseformatoptions === false) {
             $courseformatoptions = array(
@@ -500,7 +497,11 @@ class format_tiles extends format_base
             $outcomeslink = '(' . new lang_string('outcomesunavailable', 'format_tiles') . ')';
             global $CFG;
             if (!empty($CFG->enableoutcomes)) {
-                $outcomeslink = html_writer::link(new moodle_url('/grade/edit/outcome/course.php', array('id' => $this->get_courseid())), '(' . new lang_string('outcomes', 'format_tiles') . ')');
+                $outcomeslink = html_writer::link(
+                    new moodle_url('/grade/edit/outcome/course.php',
+                        array('id' => $this->get_courseid())),
+                    '(' . new lang_string('outcomes', 'format_tiles') . ')'
+                );
                 $attributes[FORMAT_TILES_FILTERBAR_OUTCOMES] = new lang_string('filteroutcomes', 'format_tiles');
                 $attributes[FORMAT_TILES_FILTERBAR_BOTH] = new lang_string('filterboth', 'format_tiles');
             }
@@ -582,8 +583,7 @@ class format_tiles extends format_base
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function section_format_options($foreditform = false)
-    {
+    public function section_format_options($foreditform = false) {
         $course = $this->get_course();
         $sectionformatoptions = array(
             'tileicon' => array(
@@ -612,8 +612,12 @@ class format_tiles extends format_base
                 'help' => 'tileicon',
             );
 
-            if ($course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES || $course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
-                $outcomeslink = html_writer::link(new moodle_url('/grade/edit/outcome/course.php', array('id' => $course->id)), '(' . new lang_string('outcomes', 'format_tiles') . ')');
+            if ($course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES
+                || $course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
+                $outcomeslink = html_writer::link(
+                    new moodle_url('/grade/edit/outcome/course.php', array('id' => $course->id)),
+                    '(' . new lang_string('outcomes', 'format_tiles') . ')'
+                );
                 $label = get_string('tileoutcome', 'format_tiles') . ' ' . $outcomeslink;
                 $outcomes = $this->format_tiles_get_course_outcomes($course->id);
                 if (!empty($outcomes)) {
@@ -643,16 +647,18 @@ class format_tiles extends format_base
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function create_edit_form_elements(&$mform, $forsection = false)
-    {
+    public function create_edit_form_elements(&$mform, $forsection = false) {
         global $COURSE;
         $elements = parent::create_edit_form_elements($mform, $forsection);
 
         if (!$forsection && (empty($COURSE->id) || $COURSE->id == SITEID)) {
-            // Add "numsections" element to the create course form - it will force new course to be prepopulated
-            // with empty sections.
-            // The "Number of sections" option is no longer available when editing course, instead teachers should
-            // delete and add sections when needed.
+            /**
+             * Add "numsections" element to the create course form - it will force new course to be pre-populated
+             * with empty sections.
+             * The "Number of sections" option is no longer available when editing course, instead teachers should
+             * delete and add sections when needed.
+             */
+
             $courseconfig = get_config('moodlecourse');
             $max = (int)$courseconfig->maxsections;
             $element = $mform->addElement('select', 'numsections', get_string('numberweeks'), range(0, $max ?: 52));
@@ -681,8 +687,7 @@ class format_tiles extends format_base
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function update_course_format_options($data, $oldcourse = null)
-    {
+    public function update_course_format_options($data, $oldcourse = null) {
         global $DB;
 
         $data = (array)$data;
@@ -697,16 +702,18 @@ class format_tiles extends format_base
                 }
             }
         }
-
-        // while we are changing the format options, set section zero to visible if it is hidden
-        // should never be hidden but rarely it happens, for reasons which are not clear esp with onetopic format
-        // see https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256)
-        if (isset($data['id']) && $section = $DB->get_record("course_sections", array('course' => $data['id'], 'section' => 0))) {
+        /**
+         * While we are changing the format options, set section zero to visible if it is hidden
+         * should never be hidden but rarely it happens, for reasons which are not clear esp with onetopic format
+         * see https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256)
+         */
+        if (isset($data['id'])
+            && $section = $DB->get_record("course_sections", array('course' => $data['id'], 'section' => 0))) {
             if (!$section->visible) {
                 set_section_visible($section->course, 0, 1);
             }
         }
-        if(isset($data['courseusesubtiles']) && $data['courseusesubtiles'] ==0){
+        if (isset($data['courseusesubtiles']) && $data['courseusesubtiles'] == 0){
             // we are deactivating sub tiles at course level so do it at sec zero level too
             $data['usesubtilesseczero'] = 0;
         }
@@ -725,16 +732,21 @@ class format_tiles extends format_base
      * @return bool whether there were any changes to the options values
      * @throws dml_exception
      */
-    public function update_section_format_options($data)
-    {
+    public function update_section_format_options($data) {
         global $DB;
         $data = (array)$data;
         $oldvalues = array(
-            'iconthistile' => $DB->get_field('course_format_options', 'value', ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileicon']),
-            'outcomethistile' => $DB->get_record('course_format_options', ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileoutcomeid'])
+            'iconthistile' => $DB->get_field(
+                'course_format_options', 'value',
+                ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileicon']
+            ),
+            'outcomethistile' => $DB->get_record(
+                'course_format_options',
+                ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileoutcomeid']
+            )
         );
 
-        //unset the new values before we send to update so that we don't get a false positive as to whether it has changed or not
+        // Unset the new values before we send to update so that we don't get a false positive as to whether it has changed or not.
         if ($data['tileicon'] == '') {
             unset($data['tileicon']);
         }
@@ -745,13 +757,13 @@ class format_tiles extends format_base
         // now send the update
         $result = $this->update_format_options($data, $data['id']);
 
-        // now remove any default values such as '' or '0' which the update stored in the database as they are redundant
+        // Now remove any default values such as '' or '0' which the update stored in the database as they are redundant.
         $keystoremove = ['tileicon', 'tileoutcomeid'];
-        foreach($keystoremove as $key){
+        foreach ($keystoremove as $key){
             if (!isset($data[$key])) {
                 $DB->delete_records('course_format_options', ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => $key]);
                 if (isset($oldvalues[$key]) && $oldvalues[$key]) {
-                    // used to have a value so return true to indicate it changed
+                    // Used to have a value so return true to indicate it changed.
                     $result = true;
                 }
             }
@@ -771,8 +783,7 @@ class format_tiles extends format_base
      * @throws coding_exception
      */
     public function inplace_editable_render_section_name($section, $linkifneeded = true,
-                                                         $editable = null, $edithint = null, $editlabel = null)
-    {
+                                                         $editable = null, $edithint = null, $editlabel = null) {
         if (empty($edithint)) {
             $edithint = new lang_string('editsectionname', 'format_tiles');
         }
@@ -792,8 +803,7 @@ class format_tiles extends format_base
      * @param int $courseid
      * @return array|null
      */
-    public function format_tiles_get_course_outcomes($courseid)
-    {
+    public function format_tiles_get_course_outcomes($courseid) {
         global $CFG;
         if (!empty($CFG->enableoutcomes)) {
             require_once($CFG->libdir . '/gradelib.php');
@@ -818,8 +828,7 @@ class format_tiles extends format_base
      * @param stdClass|section_info $section section where this module is located or will be added to
      * @return bool
      */
-    public function allow_stealth_module_visibility($cm, $section)
-    {
+    public function allow_stealth_module_visibility($cm, $section) {
         // Allow the third visibility state inside visible sections or in section 0.
         return !$section->section || $section->visible;
     }
@@ -839,8 +848,7 @@ class format_tiles extends format_base
      * @throws moodle_exception
      * @throws required_capability_exception
      */
-    public function section_action($section, $action, $sr)
-    {
+    public function section_action($section, $action, $sr) {
         global $PAGE;
 
         if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
@@ -874,16 +882,17 @@ class format_tiles extends format_base
      * @return null|format_tiles_icon_picker_icons null for no output or object with data for plugin renderer
      * @throws moodle_exception
      */
-    public function course_content_footer()
-    {
+    public function course_content_footer() {
         global $PAGE;
         if ($PAGE->has_set_url()) {
             if ($PAGE->user_allowed_editing()) {
                 $courseid = $PAGE->course->id;
-                $editingcoursesettings = $PAGE->pagetype == 'course-edit' && $PAGE->url->compare(new moodle_url('/course/edit.php', array('id' => $courseid)), URL_MATCH_EXACT);
-                $editingcoursesection = $PAGE->pagetype == 'course-editsection' && $PAGE->url->compare(new moodle_url('/course/editsection.php'), URL_MATCH_BASE);
+                $editingcoursesettings = $PAGE->pagetype == 'course-edit'
+                    && $PAGE->url->compare(new moodle_url('/course/edit.php', array('id' => $courseid)), URL_MATCH_EXACT);
+                $editingcoursesection = $PAGE->pagetype == 'course-editsection'
+                    && $PAGE->url->compare(new moodle_url('/course/editsection.php'), URL_MATCH_BASE);
                 if ($editingcoursesettings) {
-                    // only require this on the edit course settings page, not edit section
+                    // Only require this on the edit course settings page, not edit section.
                     $PAGE->requires->js_call_amd('format_tiles/edit_form_helper', 'init', array());
                 }
                 if ($editingcoursesettings || $editingcoursesection) {
@@ -908,17 +917,16 @@ class format_tiles extends format_base
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function page_set_course(moodle_page $page)
-    {
-        if(get_config('format_tiles', 'usejavascriptnav')){
+    public function page_set_course(moodle_page $page) {
+        if (get_config('format_tiles', 'usejavascriptnav')){
             if (optional_param('stopjsnav', 0, PARAM_INT) == 1){
-                // user is toggling JS nav setting
+                // User is toggling JS nav setting.
                 $existingstoppref = get_user_preferences('format_tiles_stopjsnav', 0);
-                if(!$existingstoppref) {
-                    // did not already have it disabled
+                if (!$existingstoppref) {
+                    // Did not already have it disabled.
                     set_user_preference('format_tiles_stopjsnav', 1);
                 } else {
-                    // user previously disabled it, but now is re-enabling
+                    // User previously disabled it, but now is re-enabling.
                     unset_user_preference('format_tiles_stopjsnav');
                     \core\notification::success(get_string('jsreactivated', 'format_tiles'));
                 }
@@ -936,8 +944,7 @@ class format_tiles extends format_base
  * @return \core\output\inplace_editable | null
  * @throws dml_exception
  */
-function format_tiles_inplace_editable($itemtype, $itemid, $newvalue)
-{
+function format_tiles_inplace_editable($itemtype, $itemid, $newvalue) {
     global $DB, $CFG;
     require_once($CFG->dirroot . '/course/lib.php');
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
@@ -958,7 +965,7 @@ function format_tiles_inplace_editable($itemtype, $itemid, $newvalue)
  */
 function format_tiles_get_fontawesome_icon_map() {
     return [
-        // first the general icons (not specific to tiles)
+        // First the general icons (not specific to tiles).
         'format_tiles:bullhorn' => 'fa-bullhorn',
         'format_tiles:check' => 'fa-check',
         'format_tiles:chevron-down' => 'fa-chevron-down',
@@ -974,7 +981,8 @@ function format_tiles_get_fontawesome_icon_map() {
         'format_tiles:file-pdf-o' => 'fa-file-pdf-o',
         'format_tiles:home' => 'fa-home',
         'format_tiles:list' => 'fa-list',
-        'format_tiles:lock' => 'fa-lock','format_tiles:star-o' => 'fa-star-o',
+        'format_tiles:lock' => 'fa-lock',
+        'format_tiles:star-o' => 'fa-star-o',
         'format_tiles:pencil' => 'fa-pencil',
         'format_tiles:random' => 'fa-random',
         'format_tiles:star' => 'fa-star',
@@ -983,7 +991,7 @@ function format_tiles_get_fontawesome_icon_map() {
         'format_tiles:trash-o' => 'fa-trash-o',
         'format_tiles:volume-up' => 'fa-volume-up',
 
-// sub tile icons
+        // Sub tile icons.
         'format_tiles:subtile/comments-o' => 'fa-comments-o',
         'format_tiles:subtile/database' => 'fa-database',
         'format_tiles:subtile/feedback' => 'fa-bullhorn',
@@ -1003,7 +1011,7 @@ function format_tiles_get_fontawesome_icon_map() {
         'format_tiles:subtile/survey' => 'fa-bar-chart',
         'format_tiles:subtile/volume-up' => 'fa-volume-up',
 
-        // now the tile icons
+        // Now the tile icons.
         'format_tiles:tileicon/asterisk' => 'fa-asterisk',
         'format_tiles:tileicon/address-book' => 'fa-address-book-o',
         'format_tiles:tileicon/balance-scale' => 'fa-balance-scale',

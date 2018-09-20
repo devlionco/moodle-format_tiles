@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,11 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Settings used by the tiles course format
  *
- * @package    format
+ * @package    course/format
  * @subpackage tiles
  * @copyright  2016 David Watson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
@@ -53,34 +51,38 @@ if ($ADMIN->fulltree) {
     $default = 1;
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
-    // modal windows for course modules?
+    // Modal windows for course modules
     $allowedmodtypes = ['page'];
     $allmodtypes = get_module_types_names();
     $options = [];
-    foreach($allowedmodtypes as $modtype){
-        if(isset($allmodtypes[$modtype])){
+    foreach ($allowedmodtypes as $modtype) {
+        if (isset($allmodtypes[$modtype])){
             $options[$modtype] = $allmodtypes[$modtype];
         }
     }
     $name = 'format_tiles/modalmodules';
     $title = get_string('modalmodules', 'format_tiles');
     $description = get_string('modalmodules_desc', 'format_tiles');
-    $setting = new admin_setting_configmulticheckbox($name, $title, $description, array('page' => 1), $options);
+    $setting = new admin_setting_configmulticheckbox(
+        $name,
+        $title,
+        $description,
+        array('page' => 1),
+        $options
+    );
     $settings->add($setting);
 
-    // modal windows for resources?
-    $allowedresourcetypes = array('pdf' => 'PDF','html' => 'HTML');
+    // Modal windows for resources.
+    $allowedresourcetypes = array('pdf' => 'PDF', 'html' => 'HTML');
     $name = 'format_tiles/modalresources';
     $title = get_string('modalresources', 'format_tiles');
     $description = get_string('modalresources_desc', 'format_tiles');
     $setting = new admin_setting_configmulticheckbox($name, $title, $description,  array('pdf' => 1, 'html' => 1), $allowedresourcetypes);
     $settings->add($setting);
 
-    /**
-     * Browser Session Storage (storing course content)
-     */
+    // Browser Session Storage (storing course content).
     $choices = [];
-    for($x = 0; $x<=20; $x++){
+    for ($x = 0; $x <= 20; $x++) {
         $choices[$x] = $x;
     }
     $settings->add(new admin_setting_heading('browsersessionstorage', get_string('browsersessionstorage', 'format_tiles'), ''));
@@ -100,7 +102,7 @@ if ($ADMIN->fulltree) {
     $settings->add($setting);
 
     $choices = [];
-    for($x = 30; $x<=300; $x += 30){
+    for ($x = 30; $x <= 300; $x += 30) {
         $choices[$x] = $x;
     }
     $setting = new admin_setting_configselect(
@@ -112,7 +114,7 @@ if ($ADMIN->fulltree) {
     $settings->add($setting);
 
     $choices = [];
-    for($x = 2; $x<=30; $x += 2){
+    for ($x = 2; $x <= 30; $x += 2) {
         $choices[$x] = $x;
     }
     $setting = new admin_setting_configselect(
@@ -123,9 +125,8 @@ if ($ADMIN->fulltree) {
         $choices);
     $settings->add($setting);
 
-    /**
-     * Colour settings
-     */
+    //Colour settings.
+
     $settings->add(new admin_setting_heading('coloursettings', get_string('coloursettings', 'format_tiles'), ''));
     $name = 'format_tiles/followthemecolour';
     $title = get_string('followthemecolour', 'format_tiles');
@@ -134,18 +135,23 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
     $brandcolourdefaults = array(
-        '#772583'=>'Purple',
-        '#00A9CE'=>'Light blue',
-        '#7A9A01'=>'Green',
-        '#009681'=>'Dark Green',
-        '#D13C3C'=>'Red',
-        '#1670CC'=>'Mid blue'
+        '#772583' => 'Purple',
+        '#00A9CE' => 'Light blue',
+        '#7A9A01' => 'Green',
+        '#009681' => 'Dark Green',
+        '#D13C3C' => 'Red',
+        '#1670CC' => 'Mid blue'
     );
-    // originally had the above default colour names as language strings, but no point,
-    // as they are only default names and only every seen by site admin
+    // Originally had the above default colour names as language strings, but no point).
+    // (As they are only default names and only every seen by site admin).
     $colournumber = 1;
-    foreach($brandcolourdefaults as $hex => $displayname) {
-        $settings->add(new admin_setting_heading('brand' . $colournumber, get_string('brandcolour', 'format_tiles') . ' ' . $colournumber, ''));
+    foreach ($brandcolourdefaults as $hex => $displayname) {
+        $settings->add(
+            new admin_setting_heading(
+                'brand' . $colournumber,
+                get_string('brandcolour', 'format_tiles') . ' ' . $colournumber, ''
+            )
+        );
         // colour picker for this brand
         $setting = new admin_setting_configcolourpicker(
             'format_tiles/tilecolour' . $colournumber,
@@ -155,7 +161,7 @@ if ($ADMIN->fulltree) {
         );
         $settings->add($setting);
 
-        //display name for this brand
+        // Display name for this brand.
         $setting = new admin_setting_configtext(
             'format_tiles/colourname' . $colournumber,
             get_string('colournamegeneral', 'format_tiles') . ' ' . $colournumber,
@@ -177,7 +183,7 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $settings->add($setting);
 
-    /* Hover colour display name*/
+    // Hover colour display name
     $name = 'format_tiles/hovercolourname';
     $title = get_string('hovercolourname', 'format_tiles');
     $description = get_string('colourname_descr', 'format_tiles');
@@ -185,10 +191,9 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configtext($name, $title, $description, $default, PARAM_RAW, 30);
     $settings->add($setting);
 
-    /**
-     * Other settings
-     */
-    /* Custom css */
+    // Other settings
+
+    // Custom css
     $settings->add(new admin_setting_heading('othersettings', get_string('othersettings', 'format_tiles'), ''));
     $name = 'format_tiles/customcss';
     $title = get_string('customcss', 'format_tiles');
@@ -208,5 +213,4 @@ if ($ADMIN->fulltree) {
     $description = get_string('allowlabelconversion_desc', 'format_tiles');
     $default = 0;
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
-
 }

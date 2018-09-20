@@ -98,11 +98,17 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     public function after_restore_course() {
         global $DB;
 
-        $currentfilterbarsetting = $DB->get_record('course_format_options', array('name'=>'displayfilterbar', 'format'=>'tiles', 'courseid'=>$this->step->get_task()->get_courseid()));
-        if($currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY || $currentfilterbarsetting->value == FILTER_OUTCOMES_AND_NUMBERS) {
-            // if the new course has the filter bar set to use outcomes then switch it, as tile outcomes
-            // will not work correctly in the new course as they include ids from the old course
-            // this is a temporary solution until the tile outcomes code can be refactored not to use outcome ids
+        $currentfilterbarsetting = $DB->get_record(
+            'course_format_options',
+            array('name' => 'displayfilterbar', 'format' => 'tiles', 'courseid' => $this->step->get_task()->get_courseid())
+        );
+        if ($currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY
+            || $currentfilterbarsetting->value == FILTER_OUTCOMES_AND_NUMBERS) {
+            /**
+             * If the new course has the filter bar set to use outcomes then switch it, as tile outcomes
+             * will not work correctly in the new course as they include ids from the old course
+             * this is a temporary solution until the tile outcomes code can be refactored not to use outcome ids.
+             */
             $newrecord = new stdClass;
             $newrecord->id = $currentfilterbarsetting->id;
             if ($currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY) {
@@ -113,27 +119,30 @@ class restore_format_tiles_plugin extends restore_format_plugin {
                 $DB->update_record('course_format_options', $newrecord);
             }
 
-            // delete any references to tile outcomes under section format options, as these will now be incorrect in restored course
-            // users will have to set out up outcomes in new course for now if they want to
-            $DB->delete_records('course_format_options', array('name' => 'tileoutcomeid', 'format' => 'tiles', 'courseid' => $this->step->get_task()->get_courseid()));
+            // Delete any references to tile outcomes under section format options, as these will now be incorrect in restored course.
+            // Users will have to set out up outcomes in new course for now if they want to.
+            $DB->delete_records(
+                'course_format_options',
+                array('name' => 'tileoutcomeid', 'format' => 'tiles', 'courseid' => $this->step->get_task()->get_courseid())
+            );
             core\notification::add(get_string('filteroutcomesrestore', 'format_tiles'), core\notification::SUCCESS);
         }
 
-        // the name of course format option "defaulttileicon" for a course used to be "defaulttiletopleftdisplay"
-        // before this was changed for clarity in summer 2018 release, so change it if present in the backup
-        // same for the topic level option "tiletopleftthistile" which becomes "tileicon"
+        // The name of course format option "defaulttileicon" for a course used to be "defaulttiletopleftdisplay".
+        // Before this was changed for clarity in summer 2018 release, so change it if present in the backup.
+        // Same for the topic level option "tiletopleftthistile" which becomes "tileicon".
         $courseid = $this->step->get_task()->get_courseid();
         $DB->set_field('course_format_options', 'name', 'defaulttileicon',
-            array('format'=>'tiles', 'name' => 'defaulttiletopleftdisplay', 'courseid' => $courseid));
+            array('format' => 'tiles', 'name' => 'defaulttiletopleftdisplay', 'courseid' => $courseid));
         $DB->set_field('course_format_options', 'name', 'tileicon',
-            array('format'=>'tiles', 'name' => 'tiletopleftthistile', 'courseid' => $courseid));
+            array('format' => 'tiles', 'name' => 'tiletopleftthistile', 'courseid' => $courseid));
 
-        // old versions of this plugin used to refer to "course default" for each icon if the user had not selected one
-        // this no longer applies so delete them
+        // Old versions of this plugin used to refer to "course default" for each icon if the user had not selected one.
+        // This no longer applies so delete them.
         $DB->delete_records_select(
             'course_format_options',
             "format  = 'tiles' AND name = 'tileicon' AND value = 'course default' AND courseid = :courseid",
-            array("courseid"=>$courseid)
+            array("courseid" => $courseid)
         );
 
         if (!$this->need_restore_numsections()) {
@@ -150,11 +159,13 @@ class restore_format_tiles_plugin extends restore_format_plugin {
 
         $numsections = (int)$data['tags']['numsections'];
         foreach ($backupinfo->sections as $key => $section) {
-            // For each section from the backup file check if it was restored and if was "orphaned" in the original
-            // course and mark it as hidden. This will leave all activities in it visible and available just as it was
-            // in the original course.
-            // Exception is when we restore with merging and the course already had a section with this section number,
-            // in this case we don't modify the visibility.
+            /**
+             * For each section from the backup file check if it was restored and if was "orphaned" in the original
+             * course and mark it as hidden. This will leave all activities in it visible and available just as it was
+             * in the original course.
+             * Exception is when we restore with merging and the course already had a section with this section number,
+             * in this case we don't modify the visibility.
+             */
             if ($this->step->get_task()->get_setting_value($key . '_included')) {
                 $sectionnum = (int)$section->title;
                 if ($sectionnum > $numsections && $sectionnum > $this->originalnumsections) {

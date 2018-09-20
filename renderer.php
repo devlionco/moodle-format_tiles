@@ -1,25 +1,25 @@
 <?php
-/** Tiles format
- * This file is part of Moodle - http://moodle.org/
- *
- * Moodle is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Moodle is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- */
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 
 /**
  * Renderer for outputting the tiles course format.
  *
- * @package format_tiles
+ * @package course/format
+ * @subpackage tiles
  * @copyright 2018 David Watson
  * @copyright Based partly on previous topics format renderer and general course format renderer
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,7 +33,8 @@ require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
 
 /**
  * Basic renderer for tiles format.
- *
+ * @package course/format
+ * @subpackage tiles
  * @copyright 2016 David Watson
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -45,28 +46,29 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param moodle_page $page
      * @param string $target one of rendering target constants
      */
-    public function __construct(moodle_page $page, $target)
-    {
+    public function __construct(moodle_page $page, $target) {
         parent::__construct($page, $target);
-        // Since format_tiles_renderer::section_edit_controls() only displays the 'Set current section' control when editing mode is on
-        // we need to be sure that the link 'Turn editing mode on' is available for a user who does not have any other managing capability.
+        /**
+         * Since format_tiles_renderer::section_edit_controls() only displays the 'Set current section' control
+         * when editing mode is on, we need to be sure that the link 'Turn editing mode on' is available
+         * for a user who does not have any other managing capability.
+         */
         $page->set_other_editing_capability('moodle/course:setcurrentsection');
     }
 
     /**
      * Generate the starting container html for a list of sections as <ul class="tiles">
-     * @param boolean $is_single_sec true if rendering a single section
+     * @param boolean $issinglesec true if rendering a single section
      * so that can add this to id and then use in css
      * @return string HTML to output.
      * @throws coding_exception
      */
-    protected function start_section_list($is_single_sec = false)
-    {
+    protected function start_section_list($issinglesec = false) {
         $class = 'tiles';
         if (optional_param('expanded', 0, PARAM_INT) == 1) {
             $class .= ' expanded';
         }
-        if($is_single_sec) {
+        if ($issinglesec) {
             $id = 'single_section_tiles';
         } else {
             $id = 'multi_section_tiles';
@@ -78,8 +80,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * Generate the closing container html for a list of sections
      * @return string HTML to output.
      */
-    protected function end_section_list()
-    {
+    protected function end_section_list() {
         return html_writer::end_tag('ul');
     }
 
@@ -88,8 +89,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * @return string the page title
      * @throws coding_exception
      */
-    protected function page_title()
-    {
+    protected function page_title() {
         return get_string('topicoutline');
     }
 
@@ -103,8 +103,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function section_edit_control_items($course, $section, $onsectionpage = false)
-    {
+    public function section_edit_control_items($course, $section, $onsectionpage = false) {
         global $PAGE;
 
         if (!$PAGE->user_is_editing()) {
@@ -144,21 +143,21 @@ class format_tiles_renderer extends format_section_renderer_base
         }
 
         if (!$onsectionpage && $section->section && has_capability('moodle/course:update', $coursecontext)) {
-            // add controls to drop down menu on each editing tile for teacher to enter section, expand section etc
+            // Add controls to drop down menu on each editing tile for teacher to enter section, expand section etc.
             $url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $section->section));
             $controls['entersection'] = array('url' => $url, "icon" => 'a/view_list_active',
                 'name' => get_string('entersection', 'format_tiles'),
                 'attr' => array('class' => 'editing_activities', 'title' => get_string('entersection', 'format_tiles')));
 
-            if(optional_param('expand', 0, PARAM_INT) == $section->section){
-                // this section is already expanded, so display a collapse link
+            if (optional_param('expand', 0, PARAM_INT) == $section->section){
+                // This section is already expanded, so display a collapse link.
                 $url = new moodle_url('/course/view.php', array('id' => $course->id), 'section-' . $section->section);
                 $controls['collapseactivities'] = array('url' => $url, "icon" => 'i/up',
                     'name' => get_string('collapse', 'format_tiles'),
                     'attr' => array('class' => 'editing_activities', 'title' => get_string('collapse', 'format_tiles')));
             } else {
-                // this section is collapsed, so display an expand link
-                $url = new moodle_url('/course/view.php', array('id' => $course->id, 'expand'=> $section->section), 'section-' . $section->section);
+                // This section is collapsed, so display an expand link.
+                $url = new moodle_url('/course/view.php', array('id' => $course->id, 'expand' => $section->section), 'section-' . $section->section);
                 $controls['expandactivities'] = array('url' => $url, "icon" => 'e/resize',
                     'name' => get_string('revealcontents', 'format_tiles'),
                     'attr' => array('class' => 'editing_activities', 'title' => get_string('revealcontents', 'format_tiles')));
@@ -213,9 +212,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection)
-    {
-        $templateable = new \format_tiles\output\course_output($course, False, $displaysection, $this->courserenderer);
+    public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
+        $templateable = new \format_tiles\output\course_output($course, false, $displaysection, $this->courserenderer);
         $data = $templateable->export_for_template($this);
         echo $this->render_from_template('format_tiles/single_section_page', $data);
     }
@@ -234,7 +232,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * @throws moodle_exception
      */
     public function print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused) {
-        $templateable = new \format_tiles\output\course_output($course, False, 0, $this->courserenderer);
+        $templateable = new \format_tiles\output\course_output($course, false, 0, $this->courserenderer);
         $data = $templateable->export_for_template($this);
         echo $this->render_from_template('format_tiles/multi_section_page', $data);
     }
@@ -271,24 +269,27 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title($section, $course)
-    {
+    public function section_title($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
 
-    public function section_title_without_link($section, $course)
-    {
+    /**
+     * Get the section title but not as a link
+     * @param stdClass $section the section object
+     * @param stdClass $course the course object
+     * @return string the section title
+     */
+    public function section_title_without_link($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
 
     /**
      * Generate html for a section summary text
-     * Override this here so we have access from the output class,
-     * but just call the parent (protected)
      * @param stdClass $section
      * @return string
      */
     public function format_summary_text($section){
+        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::format_summary_text($section);
     }
 
@@ -313,7 +314,7 @@ class format_tiles_renderer extends format_section_renderer_base
             return '';
         }
 
-        // Generate array with count of activities in this section:
+        // Generate array with count of activities in this section.
         $sectionmods = array();
         $total = 0;
         $complete = 0;
@@ -347,28 +348,28 @@ class format_tiles_renderer extends format_section_renderer_base
         }
 
         if (empty($sectionmods)) {
-            // No sections
+            // No sections.
             return '';
         }
 
-        // Output section activities summary:
+        // Output section activities summary.
         $o = '';
-        if(!$PAGE->user_is_editing()){
-            //added for tiles
+        if (!$PAGE->user_is_editing()){
+            // Added for tiles.
             $contents = '<b>' . get_string('contents', 'format_tiles') . ':</b><br>';
             $extraclass = '';
         } else {
             $contents = '';
             $extraclass = ' pull-right';
         }
-        $o.= html_writer::start_tag('div', array('class' => 'section-summary-activities' . $extraclass));  // for tiles removed mdl-right clas
+        $o .= html_writer::start_tag('div', array('class' => 'section-summary-activities' . $extraclass));  // For tiles removed mdl-right class
         $o .= $contents;
         foreach ($sectionmods as $mod) {
-            $o.= html_writer::start_tag('span', array('class' => 'activity-count'));
-            $o.= $mod['name'].': '.$mod['count'];
-            $o.= html_writer::end_tag('span');
+            $o .= html_writer::start_tag('span', array('class' => 'activity-count'));
+            $o .= $mod['name'].': '.$mod['count'];
+            $o .= html_writer::end_tag('span');
         }
-        $o.= html_writer::end_tag('div');
+        $o .= html_writer::end_tag('div');
 
         return $o;
     }
@@ -377,36 +378,52 @@ class format_tiles_renderer extends format_section_renderer_base
      * If section is not visible, display the message about that ('Not available
      * until...', that sort of thing). Otherwise, returns blank.
      *
-     * Override this here so we have access from the output class,
-     * but just call the parent (protected)
-     *
      * @param section_info $section The course_section entry from DB
      * @param bool $canviewhidden True if user can view hidden sections
      * @return string HTML to output
      */
     public function section_availability_message($section, $canviewhidden) {
+        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_availability_message($section, $canviewhidden);
     }
 
     /**
      * Show if something is on on the course clipboard (moving around)
      *
-     * Override this here so we have access from the output class,
-     * but just call the parent (protected)
-     *
      * @param stdClass $course The course entry from DB
      * @param int $sectionno The section number in the coruse which is being dsiplayed
      * @return string HTML to output.
      */
     public function course_activity_clipboard($course, $sectionno = null) {
+        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::course_activity_clipboard($course, $sectionno);
     }
 
+    /**
+     * Generate the content to displayed on the left part of a section
+     * before course modules are included
+     *
+     * @param stdClass $section The course_section entry from DB
+     * @param stdClass $course The course entry from DB
+     * @param bool $onsectionpage true if being printed on a section page
+     * @return string HTML to output.
+     */
     public function section_left_content($section, $course, $onsectionpage) {
+        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_left_content($section, $course, $onsectionpage);
     }
 
+    /**
+     * Generate the content to displayed on the right part of a section
+     * before course modules are included
+     *
+     * @param stdClass $section The course_section entry from DB
+     * @param stdClass $course The course entry from DB
+     * @param bool $onsectionpage true if being printed on a section page
+     * @return string HTML to output.
+     */
     public function section_right_content($section, $course, $onsectionpage) {
+        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_right_content($section, $course, $onsectionpage);
     }
 
@@ -418,6 +435,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * @return string
      */
     public function change_number_sections($course, $sectionreturn = null) {
+        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::change_number_sections($course, $sectionreturn);
     }
 

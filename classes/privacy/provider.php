@@ -1,6 +1,4 @@
 <?php
-
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,7 +20,6 @@
  * @copyright 2018 David Watson
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 /**
  * This plugin only stores a single setting as a user_preference as indicated below
  * so that is call that is covered
@@ -38,15 +35,31 @@
  * change their preference later if they wish by clicking "Data preference" in the course menu
  *
  * This class requires PHP7, unlike the others in this plugin. Moodle 3.5 and higher do require this file and also require PHP7
- * However if this plugin is used with Moodle 3.3 (which allows PHP 5.6) or Moodle 3.4 then this file serves no purpose and be deleted
+ * However if this plugin is used with Moodle 3.3 (which allows PHP 5.6)
+ * or Moodle 3.4 then this file serves no purpose and be deleted
  *
  */
 
+/**
+ * @package    course/format
+ * @subpackage tiles
+ * @category   privacy
+ * @copyright  2018 David Watson based upon work done by Andrew Nicols <andrew@nicols.co.uk>.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
 namespace format_tiles\privacy;
 
 use core_privacy\local\metadata\collection;
 use \core_privacy\local\request\writer;
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Privacy Subsystem implementation for format_tiles
+ *
+ * @copyright  2018 David Watson
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class provider implements \core_privacy\local\metadata\provider,
     \core_privacy\local\request\user_preference_provider {
     /**

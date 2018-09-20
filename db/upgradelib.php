@@ -16,16 +16,16 @@
 
 /**
  * Upgrade scripts for course format "Tiles"
- * Copied in part from the script for format "Topics"
  *
  * @package    format_tiles
- * @copyright  2017 Marina Glancy
+ * @copyright  2018 David Watson (copied in part from the script for format "Topics" 2017 Marina Glancy)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
+ *
  * This method finds all courses in 'tiles' format that have actual number of sections
  * bigger than their 'numsections' course format option.
  * For each such course we call {@link format_tiles_upgrade_hide_extra_sections()} and
@@ -65,11 +65,13 @@ function format_tiles_upgrade_remove_numsections() {
             $needfixing[$courseid] = $coursenumrealsections;
         }
 
-        //for this course (i.e. each course in this format), check if sec zero is hidden and unhide it if so
-        if($section = $DB->get_record("course_sections", array("course"=>$courseid, "section"=>0))){
-            if(!$section->visible)
-            //set section zero to visible if it is hidden (should never be hidden see https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256)
-            set_section_visible($courseid, 0, 1);
+        // For this course (i.e. each course in this format), check if sec zero is hidden and unhide it if so.
+        if ($section = $DB->get_record("course_sections", array("course" => $courseid, "section" => 0))){
+            if (!$section->visible) {
+                // Set section zero to visible if it is hidden.
+                // (It should never be hidden see https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256).
+                set_section_visible($courseid, 0, 1);
+            }
         }
     }
     unset($coursemaxsections);
@@ -134,7 +136,7 @@ function format_tiles_upgrade_hide_extra_sections($courseid, $numsections) {
  * Remove options which are no longer supported in this version
  * @throws dml_exception
  */
-function format_tiles_remove_unused_format_options(){
+function format_tiles_remove_unused_format_options() {
     global $DB;
     $DB->delete_records('course_format_options', array('format' => 'tiles', 'name' => 'showachladderbutton'));
     $DB->delete_records('course_format_options', array('format' => 'tiles', 'name' => 'prefixtitlewithnumber'));
