@@ -27,7 +27,7 @@ M.course.format.get_config = function() {
     };
 };
 
-// M.course.format.swap_sections from topics format has been deliberately omitted as it is not necessary for tiles
+// M.course.format.swap_sections from topics format has been deliberately omitted as it is not necessary for tiles.
 
 /**
  * Process sections after ajax response
@@ -38,7 +38,6 @@ M.course.format.get_config = function() {
  * @param {array} response ajax response
  * @param {string} sectionfrom first affected section
  * @param {string} sectionto last affected section
- * @return void
  */
 M.course.format.process_sections = function(Y, sectionlist, response, sectionfrom, sectionto) {
     var CSS = {
@@ -72,9 +71,9 @@ M.course.format.process_sections = function(Y, sectionlist, response, sectionfro
             ele.setAttribute("alt", newstr);
             ele.setAttribute("title", newstr); // For FireFox as "alt" is not refreshed.
 
-            // Added for "Tiles" - swap edit activities links (x2) so they point to right place
-            ele = sectionlist.item(i).one(SELECTORS.EDITACTVITIESMENU); // right hand link
-            var ele2 = sectionlist.item(i).one(SELECTORS.EDITACTIVITIESLINK); // left hand link
+            // Added for "Tiles" - swap edit activities links (x2) so they point to right place.
+            ele = sectionlist.item(i).one(SELECTORS.EDITACTVITIESMENU); // Right hand link.
+            var ele2 = sectionlist.item(i).one(SELECTORS.EDITACTIVITIESLINK); // Left hand link.
             var url = ele.getAttribute("href");
             stridx = url.lastIndexOf("section=");
             var newurl = url.substr(0, stridx + 8) + i; // 8 is length of section=
