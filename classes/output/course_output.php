@@ -244,7 +244,6 @@ class course_output implements \renderable, \templatable
         $sectioncontent = $this->section_content($thissection, $modinfo, $completioninfo, $data['canviewhidden']);
         $data['course_modules'] = $sectioncontent['course_modules'];
 
-
         // If lots of content in this section, we include nav arrows again at bottom of page.
         // But otherwise not as looks odd when no content.
         $longsectionlength = 10000;
@@ -364,8 +363,8 @@ class course_output implements \renderable, \templatable
 
                 if ($data['isediting']
                     && (optional_param('expand', 0, PARAM_INT) == $section->section) // One section expanded.
-                    || optional_param('expanded', 0, PARAM_INT) ) // All sections expanded.
-                    {
+                    || optional_param('expanded', 0, PARAM_INT) // All sections expanded.
+                ) {
                     // The list of activities on the page (HTML).
                     $sectioncontent = $this->section_content($section, $modinfo, $completioninfo, $data['canviewhidden']);
                     $newtile['course_modules'] = $sectioncontent['course_modules'];
@@ -665,7 +664,7 @@ class course_output implements \renderable, \templatable
             if ($mod->modname == 'label') {
                 $moduleobject['is_label'] = true;
                 $moduleobject['long_label'] = strlen($mod->content) > 300 ? 1 : 0;
-                if ($index !=0 && !$previouswaslabel && $this->courseusesubtiles) {
+                if ($index != 0 && !$previouswaslabel && $this->courseusesubtiles) {
                     $moduleobject['hasSpacersBefore'] = 1;
                 }
                 $previouswaslabel = true;
@@ -889,8 +888,7 @@ class course_output implements \renderable, \templatable
                 $this->resourcedisplaynames[$resourcetype] = $str;
                 return $str;
             }
-        }
-        else {
+        } else {
             return get_string('modulename', 'mod_' . $modname);
         }
     }
@@ -915,7 +913,7 @@ class course_output implements \renderable, \templatable
         if ($currentsectionarrayindex == 0) {
             $previous = 0; // There is no previous.
         } else {
-            $previous = $visiblesectionids[$currentsectionarrayindex- 1];
+            $previous = $visiblesectionids[$currentsectionarrayindex - 1];
         }
         if ($currentsectionarrayindex == count($visiblesectionids) - 1) {
             $next = 0; // There is no next.

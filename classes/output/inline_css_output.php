@@ -28,8 +28,7 @@ global $CFG;
 require_once($CFG->dirroot .'/course/format/lib.php');
 
 /**
- * Prepares data for echoing inline css via template
- * to provide custom colour for tiles in course (if used)
+ * Prepares data for echoing inline css via template to provide custom colour for tiles
  *
  * @package format_tiles
  * @copyright 2018 David Watson

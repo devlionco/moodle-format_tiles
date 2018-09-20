@@ -41,8 +41,7 @@
  */
 
 /**
- * @package    course/format
- * @subpackage tiles
+ * @package    format_tiles
  * @category   privacy
  * @copyright  2018 David Watson based upon work done by Andrew Nicols <andrew@nicols.co.uk>.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
