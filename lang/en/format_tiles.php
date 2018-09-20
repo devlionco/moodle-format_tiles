@@ -45,8 +45,8 @@ $string['completion_help'] = "A tick to the right of an activity may be used to 
 Depending on the setting, a tick may appear automatically when you have completed the activity according to conditions set by the teacher.<br><br>
 In other cases, you can click the empty circle when you think you have completed the activity and it will turn into a solid green tick. (Clicking it again removes the tick if you change your mind.)";
 $string['completionswitchhelp'] = '<p>You have selected to show completion tracking on each tile.  We have therefore set "Completion Tracking > Enable" further down this page to "Yes".</p>
-<p>In addition, you need to switch on completion tracking for <b>each item</b> that you are tracking.  e.g. for a PDF, click "Edit settings", look under Activity Completion, and pick the setting you need.</p> 
- <p>You can also do this in <b>bulk</b> as explained in the <a href="https://docs.moodle.org/35/en/Activity_completion_settings" target="_blank">detailed explanation of completion tracking on moodle.org</a></p>';
+<p>In addition, you need to switch on completion tracking for <b>each item</b> that you are tracking.  e.g. for a PDF, click "Edit settings", look under Activity Completion, and pick the setting you need.</p>
+<p>You can also do this in <b>bulk</b> as explained in the <a href="https://docs.moodle.org/35/en/Activity_completion_settings" target="_blank">detailed explanation of completion tracking on moodle.org</a></p>';
 $string['complete-n-auto'] = 'Item not complete.  It will be marked as complete when you meet the completion criteria. You cannot change this manually.';
 $string['complete-y-auto'] = 'Item complete.  It was marked as complete when you met the completion criteria. You cannot change this manually.';
 $string['completionwarning'] = 'You have completion tracking switched on at the course level, but at the individual activity level, no items have tracking enabled, so there is nothing to track.';

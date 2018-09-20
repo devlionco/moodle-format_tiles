@@ -46,8 +46,8 @@ class format_tiles_renderer extends format_section_renderer_base
      */
     public function __construct(moodle_page $page, $target) {
         parent::__construct($page, $target);
-        // Method format_tiles_renderer::section_edit_controls() only displays the 'Set current section' control when editing mode is on.
-        // We need to be sure that the link 'Turn editing mode on' is available for a user who does not have any other managing capability.
+        // Method format_tiles_renderer::section_edit_controls() displays 'Set current section' control when editing is on.
+        // We need to ensure that 'Turn editing mode on' link is available for user who doesn't have other managing capability.
         $page->set_other_editing_capability('moodle/course:setcurrentsection');
     }
 
@@ -447,7 +447,13 @@ class format_tiles_renderer extends format_section_renderer_base
      */
     public function format_cm_content_text($mod, $record) {
         $context = context_module::instance($mod->id);
-        $text = file_rewrite_pluginfile_urls($record->content, 'pluginfile.php', $context->id, 'mod_' . $mod->modname, 'content', $record->revision);
+        $text = file_rewrite_pluginfile_urls(
+            $record->content,
+            'pluginfile.php',
+            $context->id,
+            'mod_' . $mod->modname,
+            'content', $record->revision
+        );
         $formatoptions = new stdClass;
         $formatoptions->noclean = true;
         $formatoptions->overflowdiv = true;

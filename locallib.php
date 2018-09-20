@@ -99,7 +99,7 @@ function convert_label_to_page($cmid, $course) {
     $cm->timemodified = time();
     $DB->update_record('course_modules', $cm);
 
-    // If the label contained embedded files (e.g. images), update the files table to reflect that they now relate to a page not a label.
+    // If label contained embedded images etc, update files table to show they now relate to page not label.
     $contextid = $DB->get_record('context', array('contextlevel' => CONTEXT_MODULE, 'instanceid' => $cmid), 'id', MUST_EXIST)->id;
     $files = $DB->get_records('files', array('component' => 'mod_label', 'contextid' => $contextid));
     if (count($files) > 0) {
@@ -114,8 +114,8 @@ function convert_label_to_page($cmid, $course) {
 
             $pathnamehash = $fs->get_pathname_hash(
                 $file->contextid,
-                'mod_page', // new component
-                'content', // new filearea
+                'mod_page', // New component.
+                'content', // New filearea.
                 $file->itemid,
                 $file->filepath,
                 $file->filename

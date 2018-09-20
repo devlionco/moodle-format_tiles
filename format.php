@@ -61,12 +61,11 @@ if ($isediting && $cmid = optional_param('labelconvert', 0, PARAM_INT)) {
 
 $usejsnav = get_config('format_tiles', 'usejavascriptnav')
     && !get_user_preferences('format_tiles_stopjsnav', 0);
-/**
- * We display the multi section page if the user is not requesting a specific single section.
- * We also display it if user is requesting a specific section (URL &section=xx) with JS enabled.
- * We know they have JS if $SESSION->format_tiles_jssuccessfullyused is set.
- * In that case we show them the multi section page and use JS to open the section.
- */
+
+// We display the multi section page if the user is not requesting a specific single section.
+// We also display it if user is requesting a specific section (URL &section=xx) with JS enabled.
+// We know they have JS if $SESSION->format_tiles_jssuccessfullyused is set.
+// In that case we show them the multi section page and use JS to open the section.
 if (optional_param('canceljssession', false, PARAM_BOOL)) {
     // The user is shown a link to cancel the successful JS flag for this session in <noscript> tags if their JS is off.
     unset($SESSION->format_tiles_jssuccessfullyused);

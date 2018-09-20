@@ -200,7 +200,8 @@ class format_tiles extends format_base {
         if (!$data['enablecompletion'] && $data['courseshowtileprogress']) {
             $reterrors['courseshowtileprogress'] = get_string('courseshowtileprogress_error', 'format_tiles');
         }
-        if (($data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_OUTCOMES || $data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_BOTH)
+        if (($data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_OUTCOMES
+                || $data['displayfilterbar'] == FORMAT_TILES_FILTERBAR_BOTH)
             && empty($this->format_tiles_get_course_outcomes($courseid))) {
             $outcomeslink = html_writer::link(
                 new moodle_url('/grade/edit/outcome/course.php', array('id' => $courseid)),
@@ -361,7 +362,8 @@ class format_tiles extends format_base {
             }
         }
         // Now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons and add them to the list.
-        $iconsindirectory = get_directory_list($CFG->dirroot . '/course/format/tiles/pix/tileicon', '', false, false, true);
+        $iconsindirectory = get_directory_list($CFG->dirroot
+            . '/course/format/tiles/pix/tileicon', '', false, false, true);
         foreach ($iconsindirectory as $icon) {
             $filename = explode('.', $icon)[0];
             $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $filename))));
@@ -535,7 +537,9 @@ class format_tiles extends format_base {
                 );
             }
             $courseformatoptionsedit['courseusebarforheadings'] = array(
-                'label' => new lang_string('courseusebarforheadings', 'format_tiles'),
+                'label' => new lang_string(
+                    'courseusebarforheadings', 'format_tiles'
+                ),
                 'element_type' => 'advcheckbox',
                 'element_attributes' => array(get_string('yes')),
                 'help' => 'courseusebarforheadings',
@@ -700,7 +704,7 @@ class format_tiles extends format_base {
         }
         // While we are changing the format options, set section zero to visible if it is hidden.
         // Should never be hidden but rarely it happens, for reasons which are not clear esp with onetopic format.
-        // See https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256)
+        // See https://moodle.org/mod/forum/discuss.php?d=356850 and MDL-37256).
 
         if (isset($data['id'])
             && $section = $DB->get_record("course_sections", array('course' => $data['id'], 'section' => 0))) {
@@ -709,7 +713,7 @@ class format_tiles extends format_base {
             }
         }
         if (isset($data['courseusesubtiles']) && $data['courseusesubtiles'] == 0) {
-            // we are deactivating sub tiles at course level so do it at sec zero level too
+            // We are deactivating sub tiles at course level so do it at sec zero level too.
             $data['usesubtilesseczero'] = 0;
         }
         return $this->update_format_options($data);
@@ -749,7 +753,7 @@ class format_tiles extends format_base {
             unset($data['tileoutcomeid']);
         }
 
-        // now send the update
+        // Now send the update.
         $result = $this->update_format_options($data, $data['id']);
 
         // Now remove any default values such as '' or '0' which the update stored in the database as they are redundant.

@@ -73,7 +73,13 @@ if ($ADMIN->fulltree) {
     $name = 'format_tiles/modalresources';
     $title = get_string('modalresources', 'format_tiles');
     $description = get_string('modalresources_desc', 'format_tiles');
-    $setting = new admin_setting_configmulticheckbox($name, $title, $description,  array('pdf' => 1, 'html' => 1), $allowedresourcetypes);
+    $setting = new admin_setting_configmulticheckbox(
+        $name,
+        $title,
+        $description,
+        array('pdf' => 1, 'html' => 1),
+        $allowedresourcetypes
+    );
     $settings->add($setting);
 
     // Browser Session Storage (storing course content).
