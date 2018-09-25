@@ -182,7 +182,7 @@ class format_tiles_external extends external_api
         $result = array(
             'html' => $renderer->render_from_template('format_tiles/single_section', $data)
         );
-        // This session var is used later, when user revisits main course landing page, or a single section, for a course using this format.
+        // This session var is used later, when user revisits main course page, or a single section, for a course using this format.
         // If set to true, the page can safely be rendered from PHP in the javascript friendly format.
         // (A <noscript> box will be displayed only to users who have JS disabled with a link to switch to non JS format).
         if ($params['setjsusedsession']) {
@@ -383,7 +383,8 @@ class format_tiles_external extends external_api
         require_capability('mod/' . $cm->modname . ':view', $context);
 
         $allowedmodalmodules  = get_allowed_modal_modules();
-        if (array_search($cm->modname, $allowedmodalmodules['modules']) === false && count($allowedmodalmodules['resources']) == 0) {
+        if (array_search($cm->modname, $allowedmodalmodules['modules']) === false
+            && count($allowedmodalmodules['resources']) == 0) {
             throw new invalid_parameter_exception('Not allowed to log views of this mod type - disabled by site admin');
         }
         $modobject = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);

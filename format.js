@@ -76,7 +76,7 @@ M.course.format.process_sections = function(Y, sectionlist, response, sectionfro
             var ele2 = sectionlist.item(i).one(SELECTORS.EDITACTIVITIESLINK); // Left hand link.
             var url = ele.getAttribute("href");
             stridx = url.lastIndexOf("section=");
-            var newurl = url.substr(0, stridx + 8) + i; // 8 is length of section=
+            var newurl = url.substr(0, stridx + 8) + i; // Number 8 is length of section.
             ele.setAttribute("href", newurl);
             ele2.setAttribute("href", newurl);
         }

@@ -126,7 +126,9 @@ function convert_label_to_page($cmid, $course) {
                 'id' => $file->id
             );
             $DB->execute(
-                "UPDATE {files} SET pathnamehash = :pathnamehash, component = 'mod_page', filearea='content', timemodified = :timemodified WHERE id = :id",
+                "UPDATE {files}
+                        SET pathnamehash = :pathnamehash, component = 'mod_page', filearea='content', timemodified = :timemodified
+                        WHERE id = :id",
                 $params
             );
         }

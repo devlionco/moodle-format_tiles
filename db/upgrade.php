@@ -60,7 +60,7 @@ function xmldb_format_tiles_upgrade($oldversion) {
         $DB->set_field('course_format_options', 'name', 'tileicon',
             array('format' => 'tiles', 'name' => 'tiletopleftthistile'));
 
-        // same for "defaulttiletopleftdisplay"
+        // Same for "defaulttiletopleftdisplay".
         $DB->set_field('course_format_options', 'name', 'defaulttileicon',
             array('format' => 'tiles', 'name' => 'defaulttiletopleftdisplay'));
 

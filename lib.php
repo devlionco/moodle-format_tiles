@@ -361,7 +361,8 @@ class format_tiles extends format_base {
                 $availableicons[$iconname] = $displayname;
             }
         }
-        // Now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons and add them to the list.
+        // Now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons.
+        // Add them to the list.
         $iconsindirectory = get_directory_list($CFG->dirroot
             . '/course/format/tiles/pix/tileicon', '', false, false, true);
         foreach ($iconsindirectory as $icon) {
@@ -594,7 +595,8 @@ class format_tiles extends format_base {
                 'type' => PARAM_TEXT,
             ),
         );
-        if ($course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES || $course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
+        if ($course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES
+            || $course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
             $sectionformatoptions['tileoutcomeid'] = array(
                 'default' => 0,
                 'type' => PARAM_INT,

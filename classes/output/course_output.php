@@ -123,7 +123,7 @@ class course_output implements \renderable, \templatable
         $data['userdisabledjsnav'] = get_user_preferences('format_tiles_stopjsnav');
         if (isset($SESSION->format_tiles_jssuccessfullyused)) {
             // If this flag is set, user is being shown JS versions of pages.
-            // Allow them to cancel the session var if they have no JS
+            // Allow them to cancel the session var if they have no JS.
             $data['showJScancelLink'] = 1;
         } else {
             $data['showJScancelLink'] = 0;
@@ -370,7 +370,7 @@ class course_output implements \renderable, \templatable
                     $newtile['course_modules'] = $sectioncontent['course_modules'];
                     $newtile['is_expanded'] = true;
 
-                    // Must not include the below if the section is not expanded as it will mean that none of the add activity menus work.
+                    // Must not include the below if section is not expanded - will mean that add activity menus don't work.
                     $newtile['single_sec_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control(
                         $this->course, $section->section, $section->section
                     );
@@ -693,7 +693,8 @@ class course_output implements \renderable, \templatable
                     // If this is a mobile device or tablet, override the standard URL (already allocated above).
                     // Then user can access file natively in their device (better than embedded).
                     // Otherwise the standard URL will remain i.e. mod/resource/view.php?id=...
-                    if ($this->devicetype == \core_useragent::DEVICETYPE_TABLET || $this->devicetype != \core_useragent::DEVICETYPE_MOBILE) {
+                    if ($this->devicetype == \core_useragent::DEVICETYPE_TABLET
+                        || $this->devicetype != \core_useragent::DEVICETYPE_MOBILE) {
                         $moduleobject['url'] = $this->plugin_file_url($mod);
                     }
                 }
@@ -726,7 +727,7 @@ class course_output implements \renderable, \templatable
                 if (isset($editactions['groupsseparate'])
                     || isset($editactions['groupsvisible']) || isset($editactions['groupsnone'])) {
                     $moduleobject['extraclasses'] .= " margin-rt";
-                    // we need to change the right margin in CSS if the edit menu contains a separate groups item
+                    // We need to change the right margin in CSS if the edit menu contains a separate groups item.
                 }
 
                 $moduleobject['cmeditmenu'] = $this->courserenderer->course_section_cm_edit_actions($editactions, $mod);
