@@ -185,7 +185,8 @@ class course_output implements \renderable, \templatable
             }
         }
         if ($this->courseusesubtiles && $this->usesubtilesseczero) {
-                $data['section_zero']['useSubtiles'] = 1;
+            $data['usesubtilesseczero'] = 1;
+            $data['section_zero']['useSubtiles'] = 1;
         } else {
             $data['section_zero']['useSubtiles'] = 0;
         }
