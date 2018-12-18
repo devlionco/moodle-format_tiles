@@ -747,7 +747,16 @@ class format_tiles extends format_base {
             )
         );
 
-        // Unset the new values before we send to update so that we don't get a false positive as to whether it has changed or not.
+        // If the edit is taking place from format_tiles_inplace_editable(), the data array may not contain the tile icon and outcome id at all.
+        // So add these items in if missing.
+        if(!isset($data['tileicon']) && $oldvalues['iconthistile']){
+            $data['tileicon'] = $oldvalues['iconthistile'];
+        }
+        if(!isset($data['tileoutcomeid']) && $oldvalues['outcomethistile']){
+            $data['tileoutcomeid'] = $oldvalues['outcomethistile'];
+        }
+
+        // Unset the new values if null, before we send to update, so that we don't get a false positive as to whether it has changed or not.
         if ($data['tileicon'] == '') {
             unset($data['tileicon']);
         }
