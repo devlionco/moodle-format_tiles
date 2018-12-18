@@ -76,8 +76,8 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      * @param {object} form the form and check box
      */
     var toggleCompletionTiles = function (form) {
-        // Get the existing completion state for this completion form
-        // for PDFs there will be two forms - one in the section and one within the modal - grab both with class
+        // Get the existing completion state for this completion form.
+        // For PDFs there will be two forms - one in the section and one within the modal - grab both with class.
         var completionState = $("#completionstate_" + form.attr(dataKeys.cmid));
         var data = {
             id: form.attr(dataKeys.cmid),
@@ -85,7 +85,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
             fromajax: 1,
             sesskey: config.sesskey
         };
-        // Now submit
+        // Now submit.
 
         var url = config.wwwroot + "/course/togglecompletion.php";
         $.post(url, data, function (returnData, status) {
@@ -95,7 +95,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                 var completionImage = $(".completion_img_" + form.attr(dataKeys.cmid)).find(".icon");
                 if (completionState.attr("value") === "1") {
                     // Change check box(es) to ticked,
-                    // and set the value(s) to zero so that if re-clicked, goes back to unchecked
+                    // And set the value(s) to zero so that if re-clicked, goes back to unchecked.
                     $("#completion_dynamic_change").attr("value", 1);
                     completionState.attr("value", 0);
                     progressChange = +1;
@@ -106,32 +106,32 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     progressChange = -1;
                     completionImage.attr("src", imageUrl.replace("completion-y", "completion-n"));
                 }
-                // Get the tile's new progress value
+                // Get the tile's new progress value.
                 var tileProgressIndicator = $("#tileprogress-" + form.attr(dataKeys.section));
                 var newTileProgressValue = parseInt(tileProgressIndicator.attr(dataKeys.numberComplete)) + progressChange;
                 if (newTileProgressValue > tileProgressIndicator.attr(dataKeys.numberOutOf)) {
                     newTileProgressValue = tileProgressIndicator.attr(dataKeys.numberOutOf);
                 }
-                // Get the new overall progress value
+                // Get the new overall progress value.
                 var overallProgressIndicator = $("#tileprogress-0");
                 var newOverallProgressValue = parseInt(overallProgressIndicator.attr(dataKeys.numberComplete)) + progressChange;
                 if (newOverallProgressValue > overallProgressIndicator.attr(dataKeys.numberOutOf)) {
                     newOverallProgressValue = overallProgressIndicator.attr(dataKeys.numberOutOf);
                 }
 
-                // Render and replace the progress indicator for *this tile*
+                // Render and replace the progress indicator for *this tile*.
                 Templates.render("format_tiles/progress", progressTemplateData(
                     form.attr(dataKeys.section),
                     newTileProgressValue,
                     tileProgressIndicator.attr(dataKeys.numberOutOf),
                     tileProgressIndicator.hasClass("percent")
                 )).done(function (html) {
-                    // Need to repeat jquery selector as it is being replaced (replacwith)
+                    // Need to repeat jquery selector as it is being replaced (replacwith).
                     tileProgressIndicator.replaceWith(html);
                     $("#tileprogress-" + form.attr(dataKeys.section)).tooltip();
                 });
 
-                // Render and replace the *overall* progress indicator for the *whole course*
+                // Render and replace the *overall* progress indicator for the *whole course*.
                 Templates.render("format_tiles/progress", progressTemplateData(
                     0,
                     newOverallProgressValue,
@@ -149,13 +149,11 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     return {
         init: function () {
             $(document).ready(function () {
-                /**
-                 * Trigger toggle completion event if check box is clicked
-                 * included like this so that later dynamically added boxes are covered
-                 */
+                 // Trigger toggle completion event if check box is clicked.
+                 // Included like this so that later dynamically added boxes are covered.
 
                 $("body").on("click", ".togglecompletion", function (e) {
-                    // Send the toggle to the database and change the displayed icon
+                    // Send the toggle to the database and change the displayed icon.
                     e.preventDefault();
                     toggleCompletionTiles($(e.currentTarget));
                 });

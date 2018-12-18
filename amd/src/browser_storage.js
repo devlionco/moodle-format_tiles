@@ -37,9 +37,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         session: false
     };
     var storageUserConsent = {
-        GIVEN: "yes", // What to store in local storage to indicate consent granted
-        DENIED: "no", // Or to indicate consent denied
-        userChoice: null // The user's current choice - initially null as we have not yet checked local storage or asked user
+        GIVEN: "yes", // What to store in local storage to indicate consent granted.
+        DENIED: "no", // Or to indicate consent denied.
+        userChoice: null // The user's current choice - initially null as we have not yet checked local storage or asked user.
     };
 
     var localStorageKeyElements = {
@@ -61,7 +61,6 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
     var encodeLastVistedSectionKeyName = function() {
         return localStorageKeyElements.course + courseId + localStorageKeyElements.lastSection;
     };
-
 
     /**
      The last visited section's content will be stored with a key in the format
@@ -158,7 +157,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 Math.round(Date.now() / 1000).toString()
             );
         } else {
-            // HTML is empty so remove from store if present
+            // HTML is empty so remove from store if present.
             sessionStorage.removeItem(encodeContentKeyName(sectionId));
             sessionStorage.removeItem(encodeContentLastUpdatedKeyName(sectionId));
         }
@@ -196,60 +195,60 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      * @param {number} maxNumberToKeep how many items of HTML can be kept in store in total (evict the rest)
      */
     var cleanUp = function (contentDeleteMins, clearBrowserStorage, maxNumberToKeep) {
-        // Clean localStorage first - only clear if we are clearing all browser storage,
-        // otherwise leave it (used for last visited section IDs etc)
+        // Clean localStorage first - only clear if we are clearing all browser storage.
+        // Otherwise leave it (used for last visited section IDs etc).
         if (clearBrowserStorage) {
             Object.keys(localStorage).filter(function (key) {
                 return key.substring(0, 4) === localStorageKeyElements.prefix && key !== localStorageKeyElements.userPrefStorage;
             }).forEach(function (item) {
-                // Item does relate to this plugin,
-                // and is not the user's preference about whether to use storage or not (keep that)
+                // Item does relate to this plugin.
+                // It is not the user's preference about whether to use storage or not (keep that).
                 localStorage.removeItem(item);
             });
 
-            // Now clean sessionStorage (used for course content HTML)
+            // Now clean sessionStorage (used for course content HTML).
             Object.keys(sessionStorage).filter(function (key) {
-                // Filter to only keys relating to this plugin
+                // Filter to only keys relating to this plugin.
                 return key.split("-")[0] === "mdl";
             }).forEach(function (itemKey) {
-                // Item does relate to this plugin,
+                // Item does relate to this plugin.
                 if (isContentLastUpdatedKeyName(itemKey)) {
                     var params = decodeLastUpdatedKey(itemKey);
                     if (clearBrowserStorage) {
-                        // Remove *all* items for this plugin regardless of age
-                        storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion
+                        // Remove *all* items for this plugin regardless of age.
+                        storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion.
                     } else {
-                        // Remove *stale* items for this plugin
+                        // Remove *stale* items for this plugin.
                         if (sessionStorage.getItem(itemKey) < Math.round(Date.now() / 1000) - contentDeleteMins * 60
                                 || contentDeleteMins === 0) {
-                            // Item is stale - older than contentDeleteMins settings
-                            // this key represents an item with a last update date older than the delete threshold
-                            storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion
+                            // Item is stale - older than contentDeleteMins settings.
+                            // this key represents an item with a last update date older than the delete threshold.
+                            storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion.
                         }
                     }
                 }
             });
         }
-        // Now check if we still have too many items and if we do, remove the oldest
+        // Now check if we still have too many items and if we do, remove the oldest.
         if (!clearBrowserStorage) {
             var lastUpdateKeys = Object.keys(sessionStorage).filter(function (item) {
                 return isContentLastUpdatedKeyName(item);
             });
             if (lastUpdateKeys.length > maxNumberToKeep) {
-                // We don't need this step if clearing whole browser storage as it is already cleared above
-                // get all the update times in order from newest to oldest
+                // We don't need this step if clearing whole browser storage as it is already cleared above.
+                // get all the update times in order from newest to oldest.
                 var lastUpdateTimes = lastUpdateKeys.map(function (key) {
                     return parseInt(sessionStorage[key]);
                 }).sort();
-                // Set a cut off time so that we only have maxNumberToKeep newer than the cut off
+                // Set a cut off time so that we only have maxNumberToKeep newer than the cut off.
                 var cutOffTime = lastUpdateTimes[lastUpdateTimes.length - maxNumberToKeep];
                 var params;
-                // Remove course content for all items older than the cut off time
+                // Remove course content for all items older than the cut off time.
                 lastUpdateKeys.filter(function (key) {
                     return sessionStorage[key] < cutOffTime;
                 }).forEach(function (expiredKey) {
                     params = decodeLastUpdatedKey(expiredKey);
-                    storeCourseContent(params.courseId, params.sectionId, null); // Null will remove item
+                    storeCourseContent(params.courseId, params.sectionId, null); // Null will remove item.
                 });
             }
         }
@@ -307,11 +306,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             courseId = course.toString();
             MAX_SECTIONS_TO_STORE = maxContentSectionsToStore;
 
-            /**
-             * Work out if we should be using local storage or not - does user want it and is it available
-             * Local is used for storing small items last sec visited ID etc
-             * Session is used for course content
-             */
+             // Work out if we should be using local storage or not - does user want it and is it available.
+             // Local is used for storing small items last sec visited ID etc.
+             // Session is used for course content.
             storageUserConsent.userChoice = assumeDataStoreConsent === 1
                 ? storageUserConsent.GIVEN
                 : localStorage.getItem(localStorageKeyElements.userPrefStorage);
@@ -325,36 +322,31 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             }
 
             $(document).ready(function () {
-                /**
-                 * We do not know if if user is content for us to use local storage, so find out
-                 */
+                 // We do not know if if user is content for us to use local storage, so find out.
                 if ((storageEnabled.local || storageEnabled.session) && storageUserConsent.userChoice === null) {
                     setTimeout(function () {
                         launchUserPreferenceWindow(maxContentSectionsToStore);
                     }, 500);
                 }
 
-                /**
-                 * If the user clicks the "Data preference" item in the navigation menu
-                 * show them the dialogue box to re-enter their local storage choice
-                 */
+                // If the user clicks the "Data preference" item in the navigation menu,
+                // show them the dialogue box to re-enter their local storage choice.
+
                 $('a[href*="datapref"]').click(function (e) {
                     e.preventDefault();
                     launchUserPreferenceWindow(maxContentSectionsToStore);
                 });
 
-                /**
-                 * See format_tiles/completion.js for most of the actions related to togglecomoletion
-                 */
+                 // See format_tiles/completion.js for most of the actions related to togglecomoletion.
                 $("#page").on("click", ".togglecompletion", function (e) {
                     if (storageEnabled.local) {
-                        // Replace/remove related stored content
-                        // now inaccurate as show box incorrect box ticks and completion %)
+                        // Replace/remove related stored content.
+                        // (Now inaccurate as show box incorrect box ticks and completion %).
                         storeCourseContent(courseId, 0, null);
                         var secId = $(e.currentTarget).attr("data-section");
                         setTimeout(function () {
-                            // Wait to ensure that the new check box image is displayed, then store the sec content
-                            // including that change
+                            // Wait to ensure that the new check box image is displayed.
+                            // Then store the sec content including that change.
                             storeCourseContent(
                                 courseId,
                                 secId,
@@ -365,9 +357,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 });
 
                 if (isEditing) {
-                    // Teacher is editing now so not using JS nav but set their current section for when they stop editing
+                    // Teacher is editing now so not using JS nav but set their current section for when they stop editing.
                     setLastVisitedSection(sectionNum);
-                    // Clear storage in case they just changed something
+                    // Clear storage in case they just changed something.
                     cleanUp(0, 1, 0);
                     if (storageEnabled.session) {
                         storeCourseContent(courseId, sectionNum, null);
@@ -375,7 +367,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 }
                 $("#page-content").on("click", ".tile", function () {
                     if (storageEnabled.session) {
-                        // Evict unused HTML content from session storage to reduce footprint (after a delay)
+                        // Evict unused HTML content from session storage to reduce footprint (after a delay).
                         if (countStoredContentItems() > maxContentSectionsToStore) {
                             setTimeout(function () {
                                 cleanUp(storedContentDeleteMins, 0, maxContentSectionsToStore);
@@ -456,24 +448,24 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         },
 
         storeCourseContent: function (courseId, sectionId, html) {
-            // Return object ("public") access to the "private" method above
+            // Return object ("public") access to the "private" method above.
             if (storageUserConsent.userChoice === storageUserConsent.GIVEN) {
                 storeCourseContent(courseId, sectionId, html);
             }
         },
 
         cleanUp: function (contentDeleteMins, clearBrowserStorage, maxNumberToKeep) {
-            // Return object ("public") access to the "private" method above
+            // Return object ("public") access to the "private" method above.
             cleanUp(contentDeleteMins, clearBrowserStorage, maxNumberToKeep);
         },
 
         launchUserPreferenceWindow: function () {
-            // Return object ("public") access to the "private" method above
+            // Return object ("public") access to the "private" method above.
             launchUserPreferenceWindow();
         },
 
         setLastVisitedSection: function (sectionNum) {
-            // Return object ("public") access to the "private" method above
+            // Return object ("public") access to the "private" method above.
             if (storageUserConsent.userChoice === storageUserConsent.GIVEN) {
                 setLastVisitedSection(sectionNum);
             }

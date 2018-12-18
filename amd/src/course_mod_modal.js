@@ -30,134 +30,77 @@
  */
 
 define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/notification", "core/ajax"],
-        function ($, modalFactory, config, Templates, Notification, ajax) {
-    "use strict";
+    function ($, modalFactory, config, Templates, Notification, ajax) {
+        "use strict";
 
-    /**
-     * Keep references for all modals we have already added to the page,
-     * so that we can relaunch then if needed
-     * @type {{}}
-     */
-    var modalStore = {};
-    var loadingIconHtml;
-    var win = $(window);
-    var storedModalWidth = 0;
+        /**
+         * Keep references for all modals we have already added to the page,
+         * so that we can relaunch then if needed
+         * @type {{}}
+         */
+        var modalStore = {};
+        var loadingIconHtml;
+        var win = $(window);
+        var storedModalWidth = 0;
 
-    var Selector = {
-        launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
-        launchModuleModal: '[data-action="launch-tiles-module-modal"]',
-        toggleCompletion: ".togglecompletion",
-        modal: ".modal-dialog",
-        sectionMain: ".section.main",
-        pageContent: "#page-content",
-        completionState: "#completionstate_"
-    };
+        var Selector = {
+            launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
+            launchModuleModal: '[data-action="launch-tiles-module-modal"]',
+            toggleCompletion: ".togglecompletion",
+            modal: ".modal-dialog",
+            sectionMain: ".section.main",
+            pageContent: "#page-content",
+            completionState: "#completionstate_"
+        };
 
-    var modalWidth = function () {
-        if (storedModalWidth !== 0) {
-            return storedModalWidth;
-        }
-        // Not already stored to work it out
-        var winWidth = win.width();
-        // Cap width at 900 even if screen bigger
-        if (winWidth >= 900) {
-            return 900;
-        } else if (winWidth >= 500) {
-            // Big as we can but allow 50px for download / new window icons on right
-            return winWidth - 65;
-        } else {
-            // Download and new window icons will have to float on the PDF
-            return winWidth;
-        }
-    };
-
-    /**
-     * Launch a Course Resource Modal if we have it already, or make one and launch e.g. for PDF
-     * @param {object} clickedCmObject the course module object which was clicked
-     * @returns {boolean} if successful or not
-     */
-    var launchCourseResourceModal = function (clickedCmObject) {
-        var cmid = clickedCmObject.attr("data-cmid");
-        modalFactory.create({
-            type: modalFactory.types.DEFAULT,
-            title: clickedCmObject.attr("data-title"),
-            body: loadingIconHtml
-        }).done(function (modal) {
-            modalStore[cmid] = modal;
-            modal.setLarge();
-            modal.show();
-            var modalRoot = $(modal.root);
-            modalRoot.attr("id", "embed_mod_modal_" + cmid);
-            modalRoot.addClass("embed_cm_modal");
-            var templateData = {
-                id: cmid,
-                pluginfileUrl: clickedCmObject.attr("data-url"),
-                filetype: "pdf",
-                width: modalWidth(),
-                height: Math.round(win.height() - 60), // Embedded object height in modal - make as high as poss
-                cmid: cmid,
-                tileid: clickedCmObject.closest(Selector.sectionMain).attr("data-section"),
-                isediting: 0,
-                sesskey: config.sesskey,
-                modtitle: clickedCmObject.attr("data-title"),
-                config: {wwwroot: config.wwwroot}
-            };
-            if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
-                var inverseCompletionState = parseInt(
-                    $(Selector.completionState + cmid).attr("value")
-                );
-                templateData.completionInUseForCm = 1;
-                templateData.completionstate = 1 - inverseCompletionState;
-                templateData.completionstateInverse = inverseCompletionState;
-                templateData.completionIsManual = clickedCmObject
-                    .find(Selector.toggleCompletion).attr("data-ismanual");
-            } else {
-                templateData.completionInUseForCm = 0;
+        var modalWidth = function () {
+            if (storedModalWidth !== 0) {
+                return storedModalWidth;
             }
+            // Not already stored to work it out.
+            var winWidth = win.width();
+            // Cap width at 900 even if screen bigger.
+            if (winWidth >= 900) {
+                return 900;
+            } else if (winWidth >= 500) {
+                // Big as we can but allow 50px for download / new window icons on right.
+                return winWidth - 65;
+            } else {
+                // Download and new window icons will have to float on the PDF.
+                return winWidth;
+            }
+        };
 
-            Templates.render("format_tiles/embed_file_modal_body", templateData).done(function (html) {
-                modal.setBody(html);
-                modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
-            }).fail(Notification.exception);
-            return true;
-        });
-        return false;
-    };
-
-    // TODO refactor these to avoid repetition?
-    /**
-     * Launch a Course activity Modal if we have it already, or make one and launch e.g. for "Page"
-     * @param {object} clickedCmObject the course module object which was clicked
-     * @param {number} courseId the course id for this course
-     * @returns {boolean} if successful or not
-     */
-    var launchCourseActivityModal = function (clickedCmObject, courseId) {
-        var cmid = clickedCmObject.attr("data-cmid");
-        // TODO code envisages potentially adding in other web services for other mod types, but for now we have page only
-        var methodName = "format_tiles_get_mod_" + clickedCmObject.attr("data-modtype") + "_html";
-
-        modalFactory.create({
-            type: modalFactory.types.DEFAULT,
-            title: clickedCmObject.attr("data-title"),
-            body: loadingIconHtml
-        }).done(function (modal) {
-            modalStore[cmid] = modal;
-            modal.setLarge();
-            modal.show();
-            var modalRoot = $(modal.root);
-            modalRoot.attr("id", "embed_mod_modal_" + cmid);
-            modalRoot.addClass("embed_cm_modal");
-            modalRoot.addClass(clickedCmObject.attr("data-modtype"));
-            ajax.call([{
-                methodname: methodName,
-                args: {
-                    courseid: courseId,
-                    cmid: cmid
-                }
-            }])[0].done(function(response) {
+        /**
+         * Launch a Course Resource Modal if we have it already, or make one and launch e.g. for PDF
+         * @param {object} clickedCmObject the course module object which was clicked
+         * @returns {boolean} if successful or not
+         */
+        var launchCourseResourceModal = function (clickedCmObject) {
+            var cmid = clickedCmObject.attr("data-cmid");
+            modalFactory.create({
+                type: modalFactory.types.DEFAULT,
+                title: clickedCmObject.attr("data-title"),
+                body: loadingIconHtml
+            }).done(function (modal) {
+                modalStore[cmid] = modal;
+                modal.setLarge();
+                modal.show();
+                var modalRoot = $(modal.root);
+                modalRoot.attr("id", "embed_mod_modal_" + cmid);
+                modalRoot.addClass("embed_cm_modal");
                 var templateData = {
+                    id: cmid,
+                    pluginfileUrl: clickedCmObject.attr("data-url"),
+                    filetype: "pdf",
+                    width: modalWidth(),
+                    height: Math.round(win.height() - 60), // Embedded object height in modal - make as high as poss.
                     cmid: cmid,
-                    content: response.html
+                    tileid: clickedCmObject.closest(Selector.sectionMain).attr("data-section"),
+                    isediting: 0,
+                    sesskey: config.sesskey,
+                    modtitle: clickedCmObject.attr("data-title"),
+                    config: {wwwroot: config.wwwroot}
                 };
                 if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
                     var inverseCompletionState = parseInt(
@@ -171,72 +114,131 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 } else {
                     templateData.completionInUseForCm = 0;
                 }
-                Templates.render("format_tiles/embed_activity_modal_body", templateData).done(function (html) {
+
+                Templates.render("format_tiles/embed_file_modal_body", templateData).done(function (html) {
                     modal.setBody(html);
                     modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
                 }).fail(Notification.exception);
                 return true;
-            }).fail(function(ex) {
-                if (config.developerdebug !== true) {
-                    // Load the activity using PHP instead
-                    window.location = config.wwwroot + "/mod/" + clickedCmObject.attr("data-modtype") + "/view.php?id=" + cmid;
-                } else {
-                    Notification.exception(ex);
-                }
             });
-        });
-        return false;
-    };
+            return false;
+        };
 
-    return {
-        init: function (courseId) {
-            $(document).ready(function () {
-                $(Selector.pageContent).on("click", Selector.launchResourceModal, function (e) {
-                    e.preventDefault();
-                    var clickedCmObject = $(e.currentTarget).closest("li.activity");
+        // TODO refactor these to avoid repetition?
+        /**
+         * Launch a Course activity Modal if we have it already, or make one and launch e.g. for "Page"
+         * @param {object} clickedCmObject the course module object which was clicked
+         * @param {number} courseId the course id for this course
+         * @returns {boolean} if successful or not
+         */
+        var launchCourseActivityModal = function (clickedCmObject, courseId) {
+            var cmid = clickedCmObject.attr("data-cmid");
+            // TODO code envisages potentially adding in other web services for other mod types, but for now we have page only.
+            var methodName = "format_tiles_get_mod_" + clickedCmObject.attr("data-modtype") + "_html";
 
-                    // If we already have this modal on the page, launch it
-                    var existingModal = modalStore[clickedCmObject.attr("data-cmid")];
-                    if (typeof existingModal === "object") {
-                        existingModal.show();
-                    } else {
-                        // We don't already have it, so make it
-                        launchCourseResourceModal(clickedCmObject);
-                        // Log the fact we viewed it (only do this once not every time the modal launches)
-                        ajax.call([{methodname: "format_tiles_log_mod_view", args: {
-                                courseid: courseId,
-                                cmid: clickedCmObject.attr("data-cmid")
-                            }}])[0].fail(Notification.exception);
+            modalFactory.create({
+                type: modalFactory.types.DEFAULT,
+                title: clickedCmObject.attr("data-title"),
+                body: loadingIconHtml
+            }).done(function (modal) {
+                modalStore[cmid] = modal;
+                modal.setLarge();
+                modal.show();
+                var modalRoot = $(modal.root);
+                modalRoot.attr("id", "embed_mod_modal_" + cmid);
+                modalRoot.addClass("embed_cm_modal");
+                modalRoot.addClass(clickedCmObject.attr("data-modtype"));
+                ajax.call([{
+                    methodname: methodName,
+                    args: {
+                        courseid: courseId,
+                        cmid: cmid
                     }
-                });
-
-                $(Selector.pageContent).on("click", Selector.launchModuleModal, function (e) {
-                    e.preventDefault();
-                    var clickedCmObject = $(e.currentTarget).closest("li.activity");
-                    // If we already have this modal on the page, launch it
-                    var existingModal = modalStore[clickedCmObject.attr("data-cmid")];
-                    if (typeof existingModal === "object") {
-                        existingModal.show();
+                }])[0].done(function(response) {
+                    var templateData = {
+                        cmid: cmid,
+                        content: response.html
+                    };
+                    if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
+                        var inverseCompletionState = parseInt(
+                            $(Selector.completionState + cmid).attr("value")
+                        );
+                        templateData.completionInUseForCm = 1;
+                        templateData.completionstate = 1 - inverseCompletionState;
+                        templateData.completionstateInverse = inverseCompletionState;
+                        templateData.completionIsManual = clickedCmObject
+                            .find(Selector.toggleCompletion).attr("data-ismanual");
                     } else {
-                        // We don't already have it, so make it
-                        launchCourseActivityModal(clickedCmObject, courseId);
-                        ajax.call([{methodname: "format_tiles_log_mod_view", args: {
-                                courseid: courseId,
-                                cmid: clickedCmObject.attr("data-cmid")
-                            }}])[0].fail(Notification.exception);
+                        templateData.completionInUseForCm = 0;
                     }
-                    return false;
-                });
-
-                /**
-                 * Render the loading icon and append it to body so that we can use it later
-                 */
-                Templates.render("format_tiles/loading", {})
-                    .catch(Notification.exception)
-                    .done(function (html) {
-                        loadingIconHtml = html; // TODO get this from elsewhere
+                    Templates.render("format_tiles/embed_activity_modal_body", templateData).done(function (html) {
+                        modal.setBody(html);
+                        modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
                     }).fail(Notification.exception);
+                    return true;
+                }).fail(function(ex) {
+                    if (config.developerdebug !== true) {
+                        // Load the activity using PHP instead.
+                        window.location = config.wwwroot + "/mod/" + clickedCmObject.attr("data-modtype") + "/view.php?id=" + cmid;
+                    } else {
+                        Notification.exception(ex);
+                    }
+                });
             });
-        }
-    };
-});
+            return false;
+        };
+
+        return {
+            init: function (courseId) {
+                $(document).ready(function () {
+                    $(Selector.pageContent).on("click", Selector.launchResourceModal, function (e) {
+                        e.preventDefault();
+                        var clickedCmObject = $(e.currentTarget).closest("li.activity");
+
+                        // If we already have this modal on the page, launch it.
+                        var existingModal = modalStore[clickedCmObject.attr("data-cmid")];
+                        if (typeof existingModal === "object") {
+                            existingModal.show();
+                        } else {
+                            // We don't already have it, so make it.
+                            launchCourseResourceModal(clickedCmObject);
+                            // Log the fact we viewed it (only do this once not every time the modal launches).
+                            ajax.call([{
+                                methodname: "format_tiles_log_mod_view", args: {
+                                    courseid: courseId,
+                                    cmid: clickedCmObject.attr("data-cmid")
+                                }
+                                }])[0].fail(Notification.exception);
+                        }
+                    });
+
+                    $(Selector.pageContent).on("click", Selector.launchModuleModal, function (e) {
+                        e.preventDefault();
+                        var clickedCmObject = $(e.currentTarget).closest("li.activity");
+                        // If we already have this modal on the page, launch it.
+                        var existingModal = modalStore[clickedCmObject.attr("data-cmid")];
+                        if (typeof existingModal === "object") {
+                            existingModal.show();
+                        } else {
+                            // We don't already have it, so make it.
+                            launchCourseActivityModal(clickedCmObject, courseId);
+                            ajax.call([{
+                                methodname: "format_tiles_log_mod_view", args: {
+                                    courseid: courseId,
+                                    cmid: clickedCmObject.attr("data-cmid")
+                                }
+                                }])[0].fail(Notification.exception);
+                        }
+                        return false;
+                    });
+                     // Render the loading icon and append it to body so that we can use it later.
+                    Templates.render("format_tiles/loading", {})
+                        .catch(Notification.exception)
+                        .done(function (html) {
+                            loadingIconHtml = html; // TODO get this from elsewhere.
+                        }).fail(Notification.exception);
+                });
+            }
+        };
+    }
+);

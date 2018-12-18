@@ -108,7 +108,7 @@ define(["jquery"], function ($) {
     return {
         init: function (courseId, storageEnabledLocal) {
             $(document).ready(function () {
-                // On page load, if a filter button is already pressed according to user's local storage, press it now
+                // On page load, if a filter button is already pressed according to user's local storage, press it now.
                 var buttonAlreadyPressed = Module.getPressedFilterButton(courseId, storageEnabledLocal);
                 if (buttonAlreadyPressed) {
                     var pressedButton = $("#filterbutton" + buttonAlreadyPressed);
@@ -124,15 +124,13 @@ define(["jquery"], function ($) {
                     Module.setPressedFilterButton(courseId, buttonAlreadyPressed, storageEnabledLocal);
                 }
 
-                /**
-                 * When a filter button is pressed, mark it as selected and hide/unhide the related tiles
-                 * @param buttonId {integer|string} the ID of the button pressed
-                 */
+                 // When a filter button is pressed, mark it as selected and hide/unhide the related tiles.
+                 // See @param buttonId {integer|string} the ID of the button pressed.
                 $("#page-content").on("click", Selector.FILTER_BUTTON, function (e) {
                     var button = $(e.target);
                     var buttonId = button.attr("data-buttonid");
                     if (buttonId === "all" || Module.getPressedFilterButton(courseId, storageEnabledLocal) === buttonId) {
-                        // If "All" button is pressed, or a pressed button is pressed again, un-collapse all tiles
+                        // If "All" button is pressed, or a pressed button is pressed again, un-collapse all tiles.
                         Module.collapseAllTiles();
                         setTimeout(function () {
                             Module.unCollapseAllTiles();
@@ -141,7 +139,7 @@ define(["jquery"], function ($) {
                         Module.setPressedFilterButton(courseId, 0, storageEnabledLocal);
                         $("#filterbutton-all").addClass(ClassNames.SELECTED);
                     } else {
-                        // A numbered button has been pressed, so collapse all tiles then just reveal the ones we want
+                        // A numbered button has been pressed, so collapse all tiles then just reveal the ones we want.
                         $(Selector.FILTER_BUTTON).removeClass(ClassNames.SELECTED);
                         button.addClass(ClassNames.SELECTED);
                         Module.collapseAllTiles();

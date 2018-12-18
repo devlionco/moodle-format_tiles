@@ -37,8 +37,9 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
             $(document).ready(function () {
                 $("select#id_courseusesubtiles").change(function (e) {
                     if (e.currentTarget.value !== "0") {
-                        // We are changing to use sub tiles so, for convenience, uncheck the
-                        //  "Emphasise headings with coloured tab" box - user can change it back if they want
+                        // We are changing to use sub tiles.
+                        // For convenience, uncheck the "Emphasise headings with coloured tab" box.
+                        // Wser can change it back if they want.
                         $("input#id_courseusebarforheadings").prop("checked", false);
                     }
                 });
@@ -46,9 +47,9 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                     if (e.currentTarget.value !== "0") {
                         var enableCompBox = $("select#id_enablecompletion");
                         if (enableCompBox.val() === "0") {
-                            // We are changing to show progress on tiles, so for convenience, if
-                            // completion tracking if off at course level (under "completion tracking > enable)
-                            // switch it on and tell the user.  User can change it back if they want
+                            // We are changing to show progress on tiles
+                            // For convenience, if completion tracking if off at course level, switch it on and tell the user.
+                            // User can change it back if they want.  See under "completion tracking > enable.
                             enableCompBox.val("1");
                             str.get_strings([
                                 {key: "completion", component: "completion"},
@@ -64,13 +65,14 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                 });
                 $("select#id_enablecompletion").change(function (e) {
                     if (e.currentTarget.value === "0") {
-                        // We are changing switch completion tracking off at course level too (under "completion tracking > enable)
-                        // it follows that we must be hiding progress on tiles too
+                        // We are changing switch completion tracking off at course level too.
+                        // See under "completion tracking > enable.
+                        // It follows that we must be hiding progress on tiles too.
                         $("select#id_courseshowtileprogress").val("0");
                     }
                 });
 
-                // Create clickable colour swatch for each colour in the select drop down to help user choose
+                // Create clickable colour swatch for each colour in the select drop down to help user choose.
                 var colourSelectMenu = $("select#id_basecolour");
                 Templates.render("format_tiles/colour_picker", {
                     colours: colourSelectMenu.find("option").map(
@@ -84,9 +86,9 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                         }
                     ).toArray()
                 }).done(function (html) {
-                    // Add the newly created colour picker next to the standard select menu
+                    // Add the newly created colour picker next to the standard select menu.
                     $(html).insertAfter(colourSelectMenu);
-                    // Watch for clicks on each circle and set select menu to correct colour on click
+                    // Watch for clicks on each circle and set select menu to correct colour on click.
 
                     var circles = $(".colourpickercircle");
 
