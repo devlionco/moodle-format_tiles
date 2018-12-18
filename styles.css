@@ -384,6 +384,9 @@ li#section-0.section.main.clearfix {
     -moz-transition: transform 0.2s ease-in-out;
     -o-transition: transform 0.2s ease-in-out;
 }
+.format-tiles ul.tiles .tile:focus {
+    outline: 1px dotted;
+}
 
 .format-tiles ul.tiles .tile-top {
     height: 55px;
@@ -1230,6 +1233,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     display: block;
     background-image: linear-gradient(to bottom, rgba(249, 249, 249, 1) 85%, rgba(249, 249, 249, 0));
     padding-bottom: 10px;
+}
+.format-tiles li.activity:focus {
+    outline: 1px dotted;
 }
 .format-tiles li.activity.subtile .activitytype {
     padding: 0 5px 10px 5px;

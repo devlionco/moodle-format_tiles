@@ -54,6 +54,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         TILE_COLLAPSED: ".tile-collapsed",
         ACTIVITY: ".activity",
         SPACER: ".spacer",
+        SECTION_MOVEABLE: ".moveablesection",
         SECTION_ID: "#section-",
         SECTION_TITLE: ".sectiontitle",
         SECTION_MAIN: ".section.main",
@@ -85,6 +86,11 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         Z_INDEX: "z-index",
         HEIGHT: "height",
         BG_COLOUR: "background-color"
+    };
+    var Keyboard = {
+        ESCAPE: 27,
+        TAB: 9,
+        RETURN: 13
     };
     /**
      * When JS navigation is being used, when a user un-selects a tile, we have to move the tile's z-index back so that it is
@@ -188,12 +194,12 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                  */
                 var activities = contentArea.find(Selector.ACTIVITY).not(Selector.SPACER);
                 activities.on(Event.KEYDOWN, function (e) {
-                    if (e.keyCode === 27) {
-                        // 27 is escape key
+                    if (e.keyCode === Keyboard.ESCAPE) {
+                        // Close open tile, and return focus to closed tile, for screen reader user.
                         browserStorage.setLastVisitedSection(0);
                         cancelTileSelections(0);
-                    } else if (e.keyCode === 13) {
-                        // Return key
+                        $('#tile-' + contentArea.attr('data-section')).focus();
+                    } else if (e.keyCode === Keyboard.RETURN) {
                         var toClick = $(e.currentTarget).find("a");
                         if (toClick.hasClass(ClassNames.LAUNCH_CM_MODAL)) {
                             toClick.click();
@@ -204,12 +210,11 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 });
                 if (!isMobile) {
                     activities.last().on(Event.KEYDOWN, function (e) {
-                        // 9 is tab key
-                        if (e.keyCode === 9 && !e.shiftKey
+                        if (e.keyCode === Keyboard.TAB && !e.shiftKey
                                 && $(e.relatedTarget).closest(Selector.SECTION_MAIN).attr("id") !== contentArea.attr("id")) {
-                            // RelatedTarget is the item we tabbed to
-                            // if we reached here, the item we are on is not a member of the section we were in
-                            // (i.e. we are trying to tab out of the bottom of section) so move tab back to first item instead
+                            // RelatedTarget is the item we tabbed to.
+                            // If we reached here, the item we are on is not a member of the section we were in.
+                            // (I.e. we are trying to tab out of the bottom of section) so move tab back to first item instead.
                             setTimeout(function () {
                                 // Allow very short delay so we dont skip forward on the basis of our last key press
                                 contentArea.find(Selector.SECTION_TITLE).focus();
@@ -217,8 +222,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         }
                     });
                     contentArea.find(Selector.SECTION_TITLE).on(Event.KEYDOWN, function (e) {
-                        // 9 is tab key
-                        if (e.keyCode === 9 && e.shiftKey
+                        if (e.keyCode === Keyboard.TAB && e.shiftKey
                                 && $(e.relatedTarget).closest(Selector.SECTION_MAIN).attr("id") !== contentArea.attr("id")) {
                             // See explanation previous block.
                             // Here we are trying to tab backwards out of the top of our section - so take us to last item instead
@@ -259,7 +263,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 scrollTo += 1;
             }
             contentArea.find(Selector.SECTION_TITLE).focus();
-            // If user tries to scroll during animation, stop animation
+            // If user tries to scroll during animation, stop animation.
             var events = "scroll mousedown wheel DOMMouseScroll mousewheel keyup touchmove";
             body.on(events, function () {
                 body.stop();
@@ -273,6 +277,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 });
             });
             sectionIsOpen = true;
+
+            // For users with screen readers, move focus to the first item within the tile.
+            contentArea.find('li.activity').first().focus();
         };
 
         /**
@@ -863,15 +870,21 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 });
 
                 /**
-                 * If return is pressed while an item is in focus, click the item
-                 * or on escape clear all selections and collapse tiles
+                 * If return is pressed while an item is in focus, click the item.
+                 * This is to make the tiles keyboard navigable for users using screen readers.
+                 * User tabbing between tiles is handled by tabindex in the HTML.
+                 * Once the tile is clicked, the expand tile function will move focus to the first content item.
+                 * On escape key, we clear all selections and collapse tiles (handled above not here).
                  */
                 if (!isMobile) {
                     $(Selector.TILE).on(Event.KEYDOWN, function (e) {
-                        if (e.keyCode === 13) { // Return key pressed
+                        if (e.keyCode === Keyboard.RETURN) { // Return key pressed
                             $(e.currentTarget).click();
                         }
                     });
+
+                    // Move focus to the first tile in the course (not sec zero contents if present).
+                    $("ul.tiles .tile").first().focus();
                 }
             });
         }
