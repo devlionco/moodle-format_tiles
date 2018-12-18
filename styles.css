@@ -632,6 +632,7 @@ li#section-0.section.main.clearfix {
 body.jsenabled.format-tiles .buttonhidesec0 {
     display: inline;
     background-color: white;
+    top: -7px;
 }
 
 .format-tiles #collapsiblesec0 {

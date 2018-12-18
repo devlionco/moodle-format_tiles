@@ -473,14 +473,14 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             // Collapse section zero if user had it collapsed before - relies on local storage so only if enabled
             if (browserStorage.getSecZeroCollapseStatus() === true) {
                 sectionZero.slideUp(0);
-                buttonHideSecZero.addClass(ClassNames.closed).removeClass(ClassNames.open); // Button image
+                buttonHideSecZero.addClass(ClassNames.CLOSED).removeClass(ClassNames.OPEN); // Button image
             } else {
                 sectionZero.slideDown(300);
-                buttonHideSecZero.addClass(ClassNames.open).removeClass(ClassNames.closed); // Button image
+                buttonHideSecZero.addClass(ClassNames.OPEN).removeClass(ClassNames.CLOSED); // Button image
             }
         } else {
             // Storage not available so we dont know if sec zero was previously collapsed - expand it
-            buttonHideSecZero.addClass(ClassNames.open).removeClass(ClassNames.closed);
+            buttonHideSecZero.addClass(ClassNames.OPEN).removeClass(ClassNames.CLOSED);
             sectionZero.slideDown(300);
         }
     };
@@ -797,12 +797,12 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     if (sectionZero.css(CSS.DISPLAY) === "none") {
                         // Sec zero is collapsed so expand it on user click
                         sectionZero.slideDown(250);
-                        $(e.currentTarget).addClass(ClassNames.open).removeClass(ClassNames.closed);
+                        $(e.currentTarget).addClass(ClassNames.OPEN).removeClass(ClassNames.CLOSED);
                         browserStorage.setSecZeroCollapseStatus("collapsed");
                     } else {
                         // Sec zero is expanded so collapse it on user click
                         sectionZero.slideUp(250);
-                        $(e.currentTarget).addClass(ClassNames.closed).removeClass(ClassNames.open);
+                        $(e.currentTarget).addClass(ClassNames.CLOSED).removeClass(ClassNames.OPEN);
                         browserStorage.setSecZeroCollapseStatus("expanded");
                     }
                 });
