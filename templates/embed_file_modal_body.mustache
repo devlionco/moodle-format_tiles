@@ -36,7 +36,7 @@
         * id - id of the course module
         * modtitle - title of the cm e.g. "Lecture 1 slides PDF",
         * intro - intro of the cm (i.e. the description entered on the course module edit page)
-        * filetype - file type for resource e.g. "pdf"
+        * objectType - the object type for the <object> tag's type field e.g. 'text/html'
         * pluginfileUrl - the url to get the resource directly e.g. "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF"
         * completion - array of info for the completion_icon template
 
@@ -45,13 +45,13 @@
         "id": 123,
         "modtitle": "Lecture 1 slides PDF",
         "intro": "This is the description entered on the course module edit page",
-        "filetype": "pdf",
+        "objectType": "application/pdf",
         "pluginfileUrl": "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF",
         "completion": []
     }
 }}
 
-<object id="resourceobject_{{id}}" class="resourceobject" data="{{{pluginfileUrl}}}" type="application/{{filetype}}"
+<object id="resourceobject_{{id}}" class="resourceobject" data="{{{pluginfileUrl}}}" type="{{objectType}}"
         width="{{#width}}{{width}}{{/width}}{{^width}}800{{/width}}"
         height="{{#height}}{{height}}{{/height}}{{^height}}600{{/height}}">
     {{! the size is hardcoded in the object obove intentionally because it is adjusted by JS - see $("#page-content").on("click", ".launch-tiles-cm-modal"}}

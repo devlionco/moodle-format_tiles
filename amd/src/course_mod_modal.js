@@ -16,7 +16,7 @@
 /* eslint space-before-function-paren: 0 */
 
 /**
- * Javascript Module to handle rendering of course modules (e.g. PDF) in modal windows
+ * Javascript Module to handle rendering of course modules (e.g. resource/PDF, resource/html, page) in modal windows
  *
  * When the user clicks a PDF course module subtile or old style resource
  * if we are using modals for it (e.g. PDF) , create, populate, launch and size the modal
@@ -77,6 +77,12 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
          * @returns {boolean} if successful or not
          */
         var launchCourseResourceModal = function (clickedCmObject) {
+            // Make this the default object type e.g. applies if it's a 'resource_html'.
+            var objectType = "text/html";
+            // If it's a PDF, disapply the default above and use 'application/pdf' instead.
+            if (clickedCmObject.attr('data-modtype') === "resource_pdf") {
+                objectType = 'application/pdf';
+            }
             var cmid = clickedCmObject.attr("data-cmid");
             modalFactory.create({
                 type: modalFactory.types.DEFAULT,
@@ -92,7 +98,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 var templateData = {
                     id: cmid,
                     pluginfileUrl: clickedCmObject.attr("data-url"),
-                    filetype: "pdf",
+                    objectType: objectType,
                     width: modalWidth(),
                     height: Math.round(win.height() - 60), // Embedded object height in modal - make as high as poss.
                     cmid: cmid,
