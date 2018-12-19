@@ -989,8 +989,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .launchiconpicker {
     cursor: pointer;
 }
-.format-tiles .modal-header button.close {
-    color: #fff;
+#page-course-editsection .format-tiles .icon_picker_modal button.close {
+    color: #333;
     opacity: 0.9;
 }
 
@@ -1000,9 +1000,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     display: inline-block;
 }
 
-.format-tiles .modal-header h4,
-.format-tiles .modal-header h5 {
-    color: #fff;
+#page-course-editsection .format-tiles .icon_picker_modal .modal-header,
+#page-course-edit .format-tiles .icon_picker_modal .modal-header {
+    color: #333;
 }
 
 .format-tiles .iconpickericons .pickericondiv:hover {
@@ -1012,14 +1012,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .icon_picker_modal .modal-dialog {
     max-width: 90%;
 }
-#page-course-edit.format-tiles .icon_picker_modal .modal-header .modal-title,
-#page-course-edit.format-tiles .icon_picker_modal .modal-header button.close {
-    color: gray;
-}
 .format-tiles .modal-dialog {
     margin: 5px auto;
 }
-
 .format-tiles .pickericon .icon {
     width: 55px;
     height: 55px;
@@ -1027,7 +1022,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     vertical-align: top;
     margin: 3px;
 }
-
 .format-tiles .embed_cm_modal .modal {
     margin: 10px auto;
 }
@@ -1237,6 +1231,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles li.activity:focus {
     outline: 1px dotted;
+}
+.format-tiles li.activity.label:focus {
+    outline: none;
 }
 .format-tiles li.activity.subtile .activitytype {
     padding: 0 5px 10px 5px;
