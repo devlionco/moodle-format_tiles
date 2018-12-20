@@ -269,7 +269,7 @@ class course_output implements \renderable, \templatable
         $data['visible'] = $thissection->visible;
         // If user can view hidden items, include the explanation as to why an item is hidden.
         if ($data['canviewhidden']) {
-            $data['availabilityinfo'] = $output->section_availability_message($thissection, $data['canviewhidden']);
+            $data['availabilitymessage'] = $output->section_availability_message($thissection, $data['canviewhidden']);
         }
         return $data;
     }
@@ -312,7 +312,8 @@ class course_output implements \renderable, \templatable
                     'tileicon' => $section->tileicon,
                     'current' => course_get_format($this->course)->is_section_current($section),
                     'hidden' => !$section->visible,
-                    'restricted' => !($section->available && $section->visible),
+                    'visible' => $section->visible,
+                    'restricted' => !($section->available),
                     'activity_summary' => $output->section_activity_summary($section, $this->course, null),
                     'titleclass' => strlen($title) >= $longtitlelength ? ' longtitle' : '',
                     'progress' => false,
@@ -354,9 +355,8 @@ class course_output implements \renderable, \templatable
 
                 // If user can view hidden items, include the explanation as to why an item is hidden.
                 if ($data['canviewhidden']) {
-                    $newtile['availabilityinfo'] = $output->section_availability_message($section, $data['canviewhidden']);
+                    $newtile['availabilitymessage'] = $output->section_availability_message($section, $data['canviewhidden']);
                 }
-
                 if ($this->course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES
                     || $this->course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
                     $newtile['tileoutcomeid'] = $section->tileoutcomeid;
@@ -647,7 +647,7 @@ class course_output implements \renderable, \templatable
             }
             // If the module isn't available, or we are a teacher (can view hidden activities) get availability info.
             if (!$mod->available || $canviewhidden) {
-                $moduleobject['cmavailabilityinfo'] = $this->courserenderer->course_section_cm_availability($mod, array());
+                $moduleobject['availabilitymessage'] = $this->courserenderer->course_section_cm_availability($mod, array());
             }
             $moduleobject['available'] = $mod->available;
             $moduleobject['cmid'] = $cmid;
@@ -718,7 +718,7 @@ class course_output implements \renderable, \templatable
             $moduleobject['extraclasses'] = $mod->extraclasses;
             if ((!$mod->visible && !$mod->visibleold)
                 || $mod->is_stealth() || !$mod->available
-                || (isset($moduleobject['cmavailabilityinfo']) && strlen($moduleobject['cmavailabilityinfo']) > 1 )
+                || (isset($moduleobject['availabilitymessage']) && strlen($moduleobject['availabilitymessage']) > 1 )
             ) {
                 $moduleobject['extraclasses'] .= ' dimmed';
             }

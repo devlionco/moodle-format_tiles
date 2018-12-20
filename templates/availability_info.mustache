@@ -32,15 +32,15 @@
 
     Context variables required for this template:
         * visible - is the availability info visible or not
-        * cmavailabilityinfo: the information to display
+        * availabilitymessage: the information to display
 
     Example context (json):
     {
         "visible": 0,
-        "cmavailabilityinfo": "Hidden"
+        "availabilitymessage": "Hidden"
     }
 }}
 
 <div class="availabilityinfo isrestricted isfullinfo">
-    <span class="tag tag-info"{{#visible}} title="{{cmavailabilityinfo}}" data-html="true" data-toggle="tooltip"{{/visible}}>{{^visible}}{{#str}}hiddenfromstudents{{/str}}{{/visible}}{{#visible}}{{#str}}restricted{{/str}}{{/visible}}</span>
+    <span class="tag tag-info"{{#visible}} title="{{availabilitymessage}}" data-html="true" data-toggle="tooltip"{{/visible}}>{{^visible}}{{#str}}hiddenfromstudents{{/str}}{{/visible}}{{#visible}}{{#str}}restricted{{/str}}{{/visible}}</span>
 </div>

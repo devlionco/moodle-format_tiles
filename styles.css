@@ -1379,6 +1379,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     position: absolute;
     bottom: 5px;
 }
+.format-tiles li.tile .availabilityinfo {
+    line-height: 30px;
+}
 
 .format-tiles .inplaceeditable input.form-control {
     width: 100%;
