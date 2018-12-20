@@ -34,6 +34,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
         var body = $("body");
         var page = $("#page");
+        var bodyHtml = $("body, html");
         var isMobile;
         var isEditing;
         var loadingIconHtml;
@@ -43,7 +44,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         var reOrgLocked = false;
         var scrollFuncLock = false;
         var sectionIsOpen = false;
-
+        var NAVBAR_HEIGHT = 60;
         var Selector = {
             PAGE: "#page",
             TILE: ".tile",
@@ -193,13 +194,16 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     // And vice versa if going backwards.
 
                     var activities = contentArea.find(Selector.ACTIVITY).not(Selector.SPACER);
-                    activities.on(Event.KEYDOWN, function (e) {
+                    contentArea.on(Event.KEYDOWN, function (e) {
                         if (e.keyCode === Keyboard.ESCAPE) {
                             // Close open tile, and return focus to closed tile, for screen reader user.
                             browserStorage.setLastVisitedSection(0);
                             cancelTileSelections(0);
                             $('#tile-' + contentArea.attr('data-section')).focus();
-                        } else if (e.keyCode === Keyboard.RETURN) {
+                        }
+                    });
+                    activities.on(Event.KEYDOWN, function (e) {
+                        if (e.keyCode === Keyboard.RETURN) {
                             var toClick = $(e.currentTarget).find("a");
                             if (toClick.hasClass(ClassNames.LAUNCH_CM_MODAL)) {
                                 toClick.click();
@@ -218,6 +222,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 setTimeout(function () {
                                     // Allow very short delay so we dont skip forward on the basis of our last key press.
                                     contentArea.find(Selector.SECTION_TITLE).focus();
+                                    bodyHtml.animate({scrollTop: contentArea.offset().top - NAVBAR_HEIGHT}, "slow");
+                                    contentArea.find('#sectionbuttons').css("top", "");
                                 }, 200);
                             }
                         });
@@ -257,7 +263,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             var expandAndScroll = function () {
                 // Scroll to the top of content bearing section
                 // we have to wait until possible reOrg and slide down totally before calling this, else co-ords are wrong.
-                var scrollTo = $("#tileText-" + tileId).offset().top - 60; // 60 is navbar.
+                var scrollTo = $("#tileText-" + tileId).offset().top - NAVBAR_HEIGHT;
                 if (scrollTo === $(window).scrollTop) {
                     // Scroll by at least one pixel otherwise z-index on selected tile is not changed.
                     // Until mouse moves.
@@ -270,7 +276,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     body.stop();
                 });
 
-                var bodyHtml = $("body, html");
                 bodyHtml.animate({scrollTop: scrollTo}, "slow", function () {
                     // Animation complete, remove stop handler.
                     bodyHtml.off(events, function () {
