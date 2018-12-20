@@ -28,8 +28,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage", "core/notification", "core/str"],
-    function ($, Templates, ajax, browserStorage, Notification, str) {
+define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage", "core/notification", "core/str", "core/config"],
+    function ($, Templates, ajax, browserStorage, Notification, str, config) {
         "use strict";
 
         var body = $("body");
@@ -862,6 +862,14 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 $(e.currentTarget).click();
                             }
                         });
+                        if (isEditing) {
+                            $(".tile_bar_text").on(Event.KEYDOWN, function (e) {
+                                if (e.keyCode === Keyboard.RETURN) { // Return key pressed.
+                                    window.location = config.wwwroot + '/course/view.php?id=' + courseId
+                                        + '&section=' + $(e.currentTarget).parent().attr("data-section");
+                                }
+                            });
+                        }
 
                         // Move focus to the first tile in the course (not sec zero contents if present).
                         $("ul.tiles .tile").first().focus();
