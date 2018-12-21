@@ -725,6 +725,9 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     height: 25px;
     opacity: 0.7;
 }
+.format-tiles #embed_module_buttons .completioncheckbox img {
+    opacity: 1;
+}
 .format-tiles .completioncheckbox i {
     font-size: 1.3em;
 }
@@ -1053,7 +1056,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .embed_cm_modal i {
     width: 20px;
     height: 20px;
-    font-size: 1.2em;
+    font-size: 0.9em;
+}
+.format-tiles .embed_cm_modal button {
+    vertical-align: bottom;
 }
 
 .format-tiles .embed_cm_modal .modal-header #modaltitle {
@@ -1276,12 +1282,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     width: 30px;
     padding: 0;
 }
-.format-tiles .embed_cm_modal #embed_file_buttons {
-    position: absolute;
-    width: 40px;
-    height: 200px;
-    top: 5px;
-    right: 5px;
+.format-tiles .embed_cm_modal #embed_module_buttons {
     text-align: center;
 }
 .format-tiles .embed_cm_modal .embed_file_button {
@@ -1298,17 +1299,34 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     text-align: center;
     box-shadow: none;
 }
-
-.format-tiles #embed_file_buttons img.icon {
-    width: 23px;
-    height: 23px;
+.format-tiles #embed_module_buttons {
+    display: inline-block;
+    right: 30px;
+    position: absolute;
+    top: 0;
+}
+.format-tiles #embed_module_buttons img.icon {
+    width: 30px;
+    height: 30px;
     margin: 0;
 }
-
-.format-tiles .embed_cm_modal #embed_file_buttons form {
-    width: 40px;
+.format-tiles #embed_module_buttons .icon {
+    color: #fff;
 }
-.format-tiles .embed_cm_modal #embed_file_buttons .completioncheckbox .icon {
+.format-tiles #embed_module_buttons a:focus,
+.format-tiles #embed_module_buttons form:focus {
+    outline: 1px dotted;
+}
+.format-tiles #embed_module_buttons .icon:hover,
+.format-tiles #embed_module_buttons img.icon:hover {
+    opacity: 0.7;
+}
+.format-tiles .embed_cm_modal #embed_module_buttons form {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
+.format-tiles .embed_cm_modal #embed_module_buttons .completioncheckbox .icon {
     padding: 0;
     margin-top: 0.5em;
 }

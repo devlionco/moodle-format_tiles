@@ -28,6 +28,7 @@
 define(["jquery", "core/templates", "core/config", "format_tiles/completion"], function ($, Templates, config) {
     "use strict";
 
+    var strings = {};
     var dataKeys = {
         cmid: "data-cmid",
         numberComplete: "data-numcomplete",
@@ -100,10 +101,12 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     completionState.attr("value", 0);
                     progressChange = +1;
                     completionImage.attr("src", imageUrl.replace("completion-n", "completion-y"));
+                    form.tooltip('dispose').attr('title', strings.complete).tooltip('show');
                 } else {
                     $("#completion_dynamic_change").attr("value", 1);
                     completionState.attr("value", 1);
                     progressChange = -1;
+                    form.tooltip('dispose').attr('title', strings.notComplete).tooltip('show');
                     completionImage.attr("src", imageUrl.replace("completion-y", "completion-n"));
                 }
                 // Get the tile's new progress value.
@@ -147,11 +150,13 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
             });
     };
     return {
-        init: function () {
+        init: function (strComplete, strNotcomplete) {
             $(document).ready(function () {
                  // Trigger toggle completion event if check box is clicked.
                  // Included like this so that later dynamically added boxes are covered.
 
+                strings.complete = strComplete;
+                strings.notComplete = strNotcomplete;
                 $("body").on("click", ".togglecompletion", function (e) {
                     // Send the toggle to the database and change the displayed icon.
                     e.preventDefault();

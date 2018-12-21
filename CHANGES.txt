@@ -1,20 +1,24 @@
-3.3.0.1 (2018092503) (December 2018)
-====================================
+3.3.0.0 (2018092501)
+====================
+- Fix bug where editing section name using in-place editing would reset section icon to default
+- Fix issue with collapse section zero button icon not changing when close
+- Improve keyboard navigability for screen reader users
+- Change sub-tile title to "Spreadsheet" where .xlsx file is being displayed (previously said 'Other')
+- Fix issue with sub tiles wrapping to separate lines in section zero (where used)
+- Cosmetic changes to comments such as adding full stops to please Moodle code checker
+- Increment version to 2018092501
 
+3.3.0.1 (2018092503)
+====================
 - Fix issue #1 incorrect/inconsistent camel case in lang strings
 - Fix issue #2 invalid function names in locallib.php
 - Fix issue #3 adding $plugin->maturity and $plugin->release to version.php
-- Fix bug where editing section name using in-place editing would reset section icon to default
-- Fix issue with collapse section zero button icon not changing when close
-- Change sub-tile title to "Spreadsheet" where .xlsx file is being displayed (previously said 'Other')
-- Fix issue with sub tiles wrapping to separate lines in section zero (where used)
-- Improve keyboard navigability for users e.g. in response to TAB and ESC keys within a tile - ensure that tab from last content item and ESC respond as expected
+- Improve keyboard navigability for users e.g. in response to TAB and ESC keys within a tile
+    (ensure that tab from last content item and ESC respond as expected)
 - Improve keyboard navigability when editing mode on (add tabindex to tile bars and JS for return click to open)
 - Improve display of message "Hidden" or "Restricted" on tile before opened
 - Ensure that modal resource object tags have correct type shown for html page i.e. text/html (was showing application/pdf)
 - Fix modal header font colour (minor CSS change)
-- Cosmetic changes to comments such as adding full stops to please Moodle code checker
-- Fix issue with collapse sec zero button icon not changing when close
-- Change sub-tile title to "Spreadsheet" where xlsx file used (previously said "Other")
-- Fix issue with sub tiles wrapping to separate lines in section zero (where used)
-- Fix bug where editing section name using in-place editing would reset section icon to default
+- Move download, new window and completion toggle to the modal header (were in body)
+- Fix bug which was excluding section zero activity completion data from the overall calculation
+- Make tooltip for completion icon toggle to say "Complete" or "Not complete" when clicked

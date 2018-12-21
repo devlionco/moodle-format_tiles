@@ -77,12 +77,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
          * @returns {boolean} if successful or not
          */
         var launchCourseResourceModal = function (clickedCmObject) {
-            // Make this the default object type e.g. applies if it's a 'resource_html'.
-            var objectType = "text/html";
-            // If it's a PDF, disapply the default above and use 'application/pdf' instead.
-            if (clickedCmObject.attr('data-modtype') === "resource_pdf") {
-                objectType = 'application/pdf';
-            }
             var cmid = clickedCmObject.attr("data-cmid");
             modalFactory.create({
                 type: modalFactory.types.DEFAULT,
@@ -95,10 +89,12 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 var modalRoot = $(modal.root);
                 modalRoot.attr("id", "embed_mod_modal_" + cmid);
                 modalRoot.addClass("embed_cm_modal");
+
+                // Render the modal body and set it to the page.
                 var templateData = {
                     id: cmid,
                     pluginfileUrl: clickedCmObject.attr("data-url"),
-                    objectType: objectType,
+                    objectType: "text/html",
                     width: modalWidth(),
                     height: Math.round(win.height() - 60), // Embedded object height in modal - make as high as poss.
                     cmid: cmid,
@@ -106,8 +102,25 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     isediting: 0,
                     sesskey: config.sesskey,
                     modtitle: clickedCmObject.attr("data-title"),
-                    config: {wwwroot: config.wwwroot}
+                    config: {wwwroot: config.wwwroot},
+                    showDownload: 0,
+                    showNewWindow: 0,
+                    completionInUseForCm: 0
                 };
+
+                // If it's a PDF in this modal, change from the defaults assigned above.
+                if (clickedCmObject.attr('data-modtype') === "resource_pdf") {
+                    templateData.objectType = 'application/pdf';
+                    templateData.showDownload = 1;
+                    templateData.showNewWindow = 1;
+                }
+
+                Templates.render("format_tiles/embed_file_modal_body", templateData).done(function (html) {
+                    modal.setBody(html);
+                    modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
+                }).fail(Notification.exception);
+
+                // Render the modal header / title and set it to the page.
                 if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
                     var inverseCompletionState = parseInt(
                         $(Selector.completionState + cmid).attr("value")
@@ -117,14 +130,12 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     templateData.completionstateInverse = inverseCompletionState;
                     templateData.completionIsManual = clickedCmObject
                         .find(Selector.toggleCompletion).attr("data-ismanual");
-                } else {
-                    templateData.completionInUseForCm = 0;
                 }
-
-                Templates.render("format_tiles/embed_file_modal_body", templateData).done(function (html) {
-                    modal.setBody(html);
+                Templates.render("format_tiles/embed_module_modal_header", templateData).done(function (html) {
+                    modal.setTitle(html);
                     modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
                 }).fail(Notification.exception);
+
                 return true;
             });
             return false;
@@ -177,10 +188,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     } else {
                         templateData.completionInUseForCm = 0;
                     }
-                    Templates.render("format_tiles/embed_activity_modal_body", templateData).done(function (html) {
-                        modal.setBody(html);
-                        modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
-                    }).fail(Notification.exception);
+                    modal.setBody(templateData.content);
+                    modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
                     return true;
                 }).fail(function(ex) {
                     if (config.developerdebug !== true) {

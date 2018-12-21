@@ -256,7 +256,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                             // If we are not using sub tiles in section zero, don't bother changing it there.
                             addedCourseModule.children().hide();
                             addedCourseModule.append($("<img/>")
-                                .attr("src", url.imageUrl("loading", "format_tiles")).addClass("loading-subtile"));
+                                .attr("src", url.imageUrl("loading", "format_tiles"))
+                                .addClass("loading-subtile").attr('title', stringStore.loading));
                             var previousNonSpacer = addedCourseModule.prevAll(Selector.SUBTILE).not(Selector.SPACER).first();
                             addedCourseModule.prevUntil(previousNonSpacer, Selector.SPACER).hide();
 
@@ -322,7 +323,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                         {key: "converttopage_confirm", component: "format_tiles"},
                         {key: "areyousure"},
                         {key: "complete", component: "format_tiles"},
-                        {key: "fileaddedtobottom", component: "format_tiles"}
+                        {key: "fileaddedtobottom", component: "format_tiles"},
+                        {key: "loading", component: "format_tiles"}
                     ]).done(function (s) {
                         stringStore = {
                             "yes": s[0],
@@ -332,7 +334,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                             "converttopage_confirm": s[4],
                             "areyousure": s[5],
                             "complete": s[6],
-                            "fileaddedtobottom": s[7]
+                            "fileaddedtobottom": s[7],
+                            "loading": s[8]
                         };
                     });
                 });

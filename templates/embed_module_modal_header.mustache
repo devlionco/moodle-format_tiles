@@ -16,15 +16,10 @@
 }}
 
 {{!
-    @template format_tiles/embed_activity_modal_body
+    @template format_tiles/embed_module_modal_header
 
-    Icon picker single icon template.
-
-    The purpose of this template is to render a modal window which can be used
-    to display an embedded file (i.e. a PDF)
-
-    The modal is rendered without the <object> (PDF) in its body, as this will be added
-    by JS when the user clicks to view the item (whn the embed_file_object template is used)
+    The purpose of this template is to render the header for a modal window
+    which can be used to display an embedded file (i.e. a PDF)
 
     Classes required for JS:
     * none
@@ -35,24 +30,36 @@
     Context variables required for this template:
         * id - id of the course module
         * modtitle - title of the cm e.g. "Lecture 1 slides PDF",
-        * intro - intro of the cm (i.e. the description entered on the course module edit page)
-        * filetype - file type for resource e.g. "pdf"
+        * showDownload - whether to show the download button or not
+        * showNewWindow - whether to show the new window button or not
         * pluginfileUrl - the url to get the resource directly e.g. "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF"
         * completion - array of info for the completion_icon template
+        * completionInUseForCm - whether we are using completion
 
     Example context (json):
     {
         "id": 123,
         "modtitle": "Lecture 1 slides PDF",
-        "intro": "This is the description entered on the course module edit page",
-        "filetype": "pdf",
+        "showDownload": "1",
+        "showNewWindow": "1",
         "pluginfileUrl": "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF",
-        "completion": []
+        "completion": [],
+        completionInUseForCm: 1
     }
 }}
 
-<div class="content {{{modname}}}">{{{content}}}</div>
-<span id="embed_file_buttons">
+<span id="modal-title-{{id}}">{{{modtitle}}}</span>
+<span id="embed_module_buttons">
+    {{#showDownload}}
+        <a href="{{pluginfileUrl}}?redirect=1" class="embed_file_button button_expand" id="expandbutton_{{id}}" data-cmid="{{id}}" data-command="expand" target="_blank">
+            {{#pix}}clone, format_tiles, {{#str}}showseparatewin, format_tiles{{/str}}{{/pix}}
+        </a>
+    {{/showDownload}}
+    {{#showNewWindow}}
+        <a href="{{{pluginfileUrl}}}?forcedownload=1" class="embed_file_button button_download" id="downloadbutton_{{id}}" data-cmid="{{id}}" data-command="download">
+            {{#pix}}cloud-download, format_tiles, {{#str}}download, format_tiles{{/str}}{{/pix}}
+        </a>
+    {{/showNewWindow}}
     {{#completionInUseForCm}}
         {{>format_tiles/completion_icon}}
     {{/completionInUseForCm}}

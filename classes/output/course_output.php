@@ -381,6 +381,19 @@ class course_output implements \renderable, \templatable
 
                 // Finally add tile we constructed to the array.
                 $data['tiles'][] = $newtile;
+            } else if ($sectionid == 0) {
+                // Add in section zero completion data to overall completion count.
+                if ($section->visible && $this->course->enablecompletion) {
+                    if (isset($modinfo->sections[$sectionid])) {
+                        $completionthistile = $this->section_progress(
+                            $modinfo->sections[$sectionid],
+                            $modinfo->cms, $completioninfo
+                        );
+                        // Keep track of overall progress so we can show this too - add this tile's completion to the totals.
+                        $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
+                        $data['overall_progress']['num_complete'] += $completionthistile['completed'];
+                    }
+                }
             }
         }
         $data['all_tiles_expanded'] = optional_param('expanded', 0, PARAM_INT);
