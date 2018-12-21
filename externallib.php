@@ -382,7 +382,7 @@ class format_tiles_external extends external_api
         self::validate_context($context);
         require_capability('mod/' . $cm->modname . ':view', $context);
 
-        $allowedmodalmodules  = get_allowed_modal_modules();
+        $allowedmodalmodules  = format_tiles_allowed_modal_modules();
         if (array_search($cm->modname, $allowedmodalmodules['modules']) === false
             && count($allowedmodalmodules['resources']) == 0) {
             throw new invalid_parameter_exception('Not allowed to log views of this mod type - disabled by site admin');

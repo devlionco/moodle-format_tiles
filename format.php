@@ -56,7 +56,7 @@ echo $renderer->render_from_template('format_tiles/inline-css', $data);
 if ($isediting && $cmid = optional_param('labelconvert', 0, PARAM_INT)) {
     require_sesskey();
     require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
-    convert_label_to_page($cmid, $course);
+    format_tiles_convert_label_to_page($cmid, $course);
 }
 
 $usejsnav = get_config('format_tiles', 'usejavascriptnav')
@@ -93,7 +93,7 @@ if (!empty($displaysection)) {
     $jssectionnum = 0;
 }
 
-$allowedmodmodals = get_allowed_modal_modules();
+$allowedmodmodals = format_tiles_allowed_modal_modules();
 
 $jsparams = array(
     $course->id,

@@ -97,7 +97,7 @@ class course_output implements \renderable, \templatable
         $this->sectionid = $sectionid;
         $this->courserenderer = $courserenderer;
         $this->devicetype = \core_useragent::get_device_type();
-        $this->usemodalsforcoursemodules = get_allowed_modal_modules();
+        $this->usemodalsforcoursemodules = format_tiles_allowed_modal_modules();
     }
 
     /**

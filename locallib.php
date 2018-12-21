@@ -46,7 +46,7 @@ function format_tiles_delete_course($event) {
  * @throws required_capability_exception
  * @throws coding_exception
  */
-function convert_label_to_page($cmid, $course) {
+function format_tiles_convert_label_to_page($cmid, $course) {
     global $DB;
     $cm = $DB->get_record('course_modules', array('id' => $cmid), '*', MUST_EXIST);
     $labelmoduleid = $DB->get_record('modules', array('name' => 'label'), 'id', MUST_EXIST)->id;
@@ -67,11 +67,11 @@ function convert_label_to_page($cmid, $course) {
     $newpage = $label;
 
     // New page display name - label names may be multi line but we only want first line.
-    $newpage->name = get_first_line($label->name);
+    $newpage->name = format_tiles_get_first_line($label->name);
 
     // Now the content - if the first line contains a repetition of the 'name', remove the repetition.
     $newpage->content = $label->intro;
-    $firstline = get_first_line($newpage->content);
+    $firstline = format_tiles_get_first_line($newpage->content);
     if (strpos($firstline, $newpage->name) !== false && strpos($firstline, 'PLUGINFILE') === false) {
         // The first line seems to include what we are using for the name.
         // Also it does not seem to contain a file link so is not adding anything - remove it.
@@ -149,7 +149,7 @@ function convert_label_to_page($cmid, $course) {
  * @param string $text the text to search
  * @return string the resulting text
  */
-function get_first_line($text) {
+function format_tiles_get_first_line($text) {
     $text = explode(chr(13), $text)[0];  // Newline char \n.
     if (strpos($text, chr(10))) { // Return char \r in case it is used instead.
         $text = explode(chr(10), $text)[0];
@@ -161,7 +161,7 @@ function get_first_line($text) {
  * Which course modules is the site administrator allowing to be displayed in a modal?
  * @return array the permitted modules including resource types e.g. page, pdf, HTML
  */
-function get_allowed_modal_modules() {
+function format_tiles_allowed_modal_modules() {
     $devicetype = \core_useragent::get_device_type();
     if ($devicetype != \core_useragent::DEVICETYPE_TABLET && $devicetype != \core_useragent::DEVICETYPE_MOBILE) {
         return array(
