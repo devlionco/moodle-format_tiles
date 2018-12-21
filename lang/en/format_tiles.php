@@ -114,6 +114,7 @@ $string['jsstoredcontentexpirysecs_desc'] = 'When a user clicks a tile, if the t
 $string['jsstoredcontentdeletemins'] = 'Session stored content delete after (minutes)';
 $string['jsstoredcontentdeletemins_desc'] = 'After each tile click, in order to keep space free for current HTML, the user\'s browser will run a clean up and <em>delete</em> from Session storage all stored content older than this (on the basis that it is no longer reliable, and that a new copy will be needed from the server anyway)';
 $string['labelconverted'] = 'Converted label';
+$string['loading'] = 'Loading';
 $string['newsectionname'] = 'New name for topic {$a}';
 $string['notrecommended'] = 'Not recommended';
 $string['modalmodules'] = 'Modal modules';
