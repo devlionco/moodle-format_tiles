@@ -2,7 +2,6 @@
 
 ###Author: David Watson
 ###Released: Summer 2018
-####Version: 2
 
 This is the "Tiles" course format plugin for Moodle.
 
@@ -38,12 +37,3 @@ Moodle is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 You should have received a copy of the GNU General Public License along with Moodle.  If not, see http://www.gnu.org/licenses
 
 Icons: some icons are custom to this plugin, but the majority are from Font Awesome version 4.7 under License SIL OFL 1.1.  See https://fontawesome.com/license and specifically https://fontawesome.com/v4.7.0/license
-
-##Change Log
-###Minor changes 18 December 2018
-- Fix bug where editing section name using in-place editing would reset section icon to default
-- Fix issue with collapse section zero button icon not changing when close
-- Improve keyboard navigability for screen reader users
-- Change sub-tile title to "Spreadsheet" where .xlsx file is being displayed (previously said 'Other')
-- Fix issue with sub tiles wrapping to separate lines in section zero (where used)
-- Increment version to 2018092501

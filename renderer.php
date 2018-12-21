@@ -194,6 +194,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * @return string HTML to output.
      */
     public function section_edit_control_menu($controls, $course, $section) {
+        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_edit_control_menu($controls, $course, $section);
     }
 
