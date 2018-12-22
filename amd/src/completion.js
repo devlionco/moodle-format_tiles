@@ -79,21 +79,21 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     var toggleCompletionTiles = function (form) {
         // Get the existing completion state for this completion form.
         // For PDFs there will be two forms - one in the section and one within the modal - grab both with class.
-        var completionState = $("#completionstate_" + form.attr(dataKeys.cmid));
+        var cmid = form.attr(dataKeys.cmid);
+        var completionState = $("#completionstate_" + cmid);
         var data = {
-            id: form.attr(dataKeys.cmid),
+            id: cmid,
             completionstate: parseInt(completionState.attr("value")),
             fromajax: 1,
             sesskey: config.sesskey
         };
-        // Now submit.
-
+        form.tooltip('hide');
         var url = config.wwwroot + "/course/togglecompletion.php";
         $.post(url, data, function (returnData, status) {
             if (status === "success" && returnData === "OK") {
                 var imageUrl = form.find("img").attr("src");
                 var progressChange;
-                var completionImage = $(".completion_img_" + form.attr(dataKeys.cmid)).find(".icon");
+                var completionImage = $(".completion_img_" + cmid).find(".icon");
                 if (completionState.attr("value") === "1") {
                     // Change check box(es) to ticked,
                     // And set the value(s) to zero so that if re-clicked, goes back to unchecked.
@@ -101,12 +101,12 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     completionState.attr("value", 0);
                     progressChange = +1;
                     completionImage.attr("src", imageUrl.replace("completion-n", "completion-y"));
-                    form.tooltip('dispose').attr('title', strings.complete).tooltip('show');
+                    $(".complete-y-" + cmid).fadeIn(200).fadeOut(1000);
                 } else {
                     $("#completion_dynamic_change").attr("value", 1);
                     completionState.attr("value", 1);
                     progressChange = -1;
-                    form.tooltip('dispose').attr('title', strings.notComplete).tooltip('show');
+                    $(".complete-n-" + cmid).fadeIn(200).fadeOut(1000);
                     completionImage.attr("src", imageUrl.replace("completion-y", "completion-n"));
                 }
                 // Get the tile's new progress value.

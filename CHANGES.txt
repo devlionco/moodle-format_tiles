@@ -22,3 +22,7 @@
 - Move download, new window and completion toggle to the modal header (were in body)
 - Fix bug which was excluding section zero activity completion data from the overall calculation
 - Make tooltip for completion icon toggle to say "Complete" or "Not complete" when clicked
+
+3.3.0.2 (2018092504)
+====================
+- Adjust JS/CSS so that buttons in new modal header location (above) also works with clean/essential/adaptable
