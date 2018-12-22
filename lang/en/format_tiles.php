@@ -41,9 +41,9 @@ $string['collapse'] = 'Collapse section';
 $string['collapsesections'] = 'Collapse all sections';
 $string['coloursettings'] = 'Colour settings';
 $string['complete'] = 'complete';
-$string['completion_help'] = "A tick to the right of an activity may be used to indicate when the activity is complete (an empty circle will be shown if not).<br><br>
+$string['completion_help'] = 'A tick to the right of an activity may be used to indicate when the activity is complete (an empty circle will be shown if not).<br><br>
 Depending on the setting, a tick may appear automatically when you have completed the activity according to conditions set by the teacher.<br><br>
-In other cases, you can click the empty circle when you think you have completed the activity and it will turn into a solid green tick. (Clicking it again removes the tick if you change your mind.)";
+In other cases, you can click the empty circle when you think you have completed the activity and it will turn into a solid green tick. (Clicking it again removes the tick if you change your mind.)';
 $string['completionswitchhelp'] = '<p>You have selected to show completion tracking on each tile.  We have therefore set "Completion Tracking > Enable" further down this page to "Yes".</p>
 <p>In addition, you need to switch on completion tracking for <b>each item</b> that you are tracking.  e.g. for a PDF, click "Edit settings", look under Activity Completion, and pick the setting you need.</p>
 <p>You can also do this in <b>bulk</b> as explained in the <a href="https://docs.moodle.org/35/en/Activity_completion_settings" target="_blank">detailed explanation of completion tracking on moodle.org</a></p>';
@@ -55,7 +55,7 @@ $string['completionwarning_changeinbulk'] = 'Change in bulk';
 $string['contents'] = 'Contents';
 $string['converttopage'] = 'Convert to page';
 $string['converttopage_confirm'] = 'Are you sure?.  This cannot be un-done (you would have to create the label again manually if needed).';
-$string['courseshowtileprogress_error'] = "You have 'Completion tracking > Enable completion tracking' set to 'No' (see further down this page) whcih conflicts with this setting.  If you wish to display progress on the tiles, please set 'Completion tracking > Enable completion tracking' to 'Yes'.  Otherwise, please set this setting to 'No'.";
+$string['courseshowtileprogress_error'] = "You have 'Completion tracking > Enable completion tracking' set to 'No' (see further down this page) which conflicts with this setting.  If you wish to display progress on the tiles, please set 'Completion tracking > Enable completion tracking' to 'Yes'.  Otherwise, please set this setting to 'No'.";
 $string['courseshowtileprogress_help'] = '<p>When selected, the user\'s progress with activities will be shown in each tile, either as a <em>fraction</em> (e.g. \'Progress 2/10\' meaning 2 out of 10 activities complete), or as a <em>percentage</em> in a circle.</p><p>This can only be used if \'Completion > Enable completion tracking\' has been switched on.</p><p>If there are no trackable activities within a given tile, indicator will not be shown for that tile.</p>';
 $string['courseshowtileprogress_link'] = 'Activity_completion_settings#Activity_settings';
 $string['courseshowtileprogress'] = 'Progress on each tile';
@@ -71,7 +71,7 @@ $string['defaulttileicon_help'] = 'The icon selected here will appear on <em>all
 $string['defaulttileicon'] = 'Tile icon';
 $string['deletesection'] = 'Delete tile';
 $string['displayfilterbar_error'] = 'Unless you have set up outcomes for this course, you can only display a filter bar based on tile numbers, and not based on outcomes.  Create some outcomes first then come back here. See';
-$string['displayfilterbar_help'] = '<p>When selected, will automatically display an array of buttons before the tile screen in a course which users can click to filter down tiles to certain ranges</p><p>When \'based on tile numbers\' is selected, a series of buttons will be displayed e.g. a button for tiles  1-4, a button for tiles 5-8 etc.</p><p>When \'based on course outcomes\' is selected, there will be one button per course outcome.  Each each tile can be assigned to a given outcome (and therefore to a given button) from that tile\'s settings page.</p> ';
+$string['displayfilterbar_help'] = '<p>When selected, will automatically display an array of buttons before the tile screen in a course, which users can click to filter down tiles to certain ranges</p><p>When \'based on tile numbers\' is selected, a series of buttons will be displayed e.g. a button for tiles  1-4, a button for tiles 5-8 etc.</p><p>When \'based on course outcomes\' is selected, there will be one button per course outcome.  Each each tile can be assigned to a given outcome (and therefore to a given button) from that tile\'s settings page.</p> ';
 $string['displayfilterbar_link'] = 'Outcomes';
 $string['displayfilterbar'] = 'Filter bar {$a}';
 $string['displaytitle_mod_pdf'] = 'PDF';
@@ -131,6 +131,7 @@ $string['othersettings'] = 'Other settings';
 $string['outcomes'] = 'outcomes';
 $string['outcomesunavailable'] = 'Outcomes unavailable';
 $string['overallprogress'] = 'Activity completion - progress overall';
+$string['overallprogressshort'] = 'Overall progress';
 $string['overall'] = 'Overall';
 $string['pickicon'] = 'Pick a new icon';
 $string['pluginname'] = 'Tiles format';
