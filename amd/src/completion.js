@@ -80,6 +80,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      * When a progress change happens, e.g. an item is marked as complete or not, this fires.
      * It changes the current tile's progress up or down by 1 according to the progressChange arg.
      * It then does the same for the course's overall progress indicator.
+     * @param {int} sectionNum the number of this tile/section.
      * @param {object} tileProgressIndicator the indicator for this tile
      * @param {int} progressChange the amount we are changing e.g. +1 or -1
      */
