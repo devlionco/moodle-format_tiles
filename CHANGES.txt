@@ -32,4 +32,3 @@
 - CSS change to ensure icons in modal window header are white (for contrast)
 - Combine 'overall' and 'progress' language strings into one 'Overall progress' to aid with language packs
 - Fix bug where items set with automatic completion tracking were not having their completion logged
-

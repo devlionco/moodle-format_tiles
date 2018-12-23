@@ -96,7 +96,6 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
             overallProgressIndicator.attr(dataKeys.numberOutOf)
         );
 
-
         // Render and replace the progress indicator for *this tile*.
         Templates.render("format_tiles/progress", progressTemplateData(
             sectionNum,
@@ -159,7 +158,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     $(".complete-n-" + cmid).fadeIn(200).fadeOut(1000);
                     completionImage.attr("src", imageUrl.replace("completion-y", "completion-n"));
                 }
-               changeProgressIndicators(
+                changeProgressIndicators(
                    form.attr(dataKeys.section),
                     $("#tileprogress-" + form.attr(dataKeys.section)),
                     progressChange
