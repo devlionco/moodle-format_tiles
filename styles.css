@@ -1055,13 +1055,24 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .embed_cm_modal.page .modal-body {
     padding: 2em;
 }
-.format-tiles .embed_cm_modal .modal-header {
+.format-tiles .modal-container.embed_cm_modal .modal-header {
     padding: 5px 10px 5px 10px;
     opacity: 0.8;
     border-bottom: 0;
+    text-shadow: none;
+    background-image: none;
+    color: #fff;
+    min-height: 23px;
 }
 .format-tiles .modal-container .modal .modal-header.embed_cm_modal h3 {
-    line-height: 24px;
+    color: #fff;
+}
+/*Different themes have these classes slightly differently so repeat some of these*/
+.format-tiles .embed_cm_modal .modal-header {
+    padding: 5px 10px 5px 10px;
+}
+.format-tiles .modal-container.embed_cm_modal .modal .modal-header h3 {
+    color: #fff;
 }
 .format-tiles .embed_cm_modal .modal-footer {
     display: none;
@@ -1077,11 +1088,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .embed_cm_modal button {
     vertical-align: bottom;
 }
-
 .format-tiles .embed_cm_modal .modal-header #modaltitle {
     font-size: 1.2em;
 }
-
 .format-tiles li.activity.subtile {
     display: flex;
     flex-basis: 225px;
@@ -1340,6 +1349,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles #embed_module_buttons .btn {
     box-shadow: none;
+}
+.format-tiles #embed_module_buttons a .icon {
+    color: #fff;
 }
 .format-tiles .embed_cm_modal #embed_module_buttons form {
     width: 28px;

@@ -26,3 +26,9 @@
 3.3.0.2 (2018092504)
 ====================
 - Adjust JS/CSS so that buttons in new modal header location (above) also works with clean/essential/adaptable
+
+3.3.0.3 (2018092505)
+====================
+- CSS change to ensure icons in modal window header are white (for contrast)
+- Combine 'overall' and 'progress' language strings into one 'Overall progress' to aid with language packs
+
