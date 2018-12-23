@@ -62,7 +62,7 @@
         <form method="post" action="{{{ config.wwwroot }}}/course/togglecompletion.php"
               class="togglecompletion" data-cmid="{{cmid}}" data-section="{{tileid}}" data-toggle="tooltip" data-ismanual="1" data-placement="bottom"
               title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}">
-            <div class="completioncheckbox">
+            <div class="completioncheckbox" id="completion-check-{{cmid}}">
                 <input type="hidden" name="id" value="{{cmid}}">
                 <input type="hidden" name="sesskey" value="{{sesskey}}">
                 <input type="hidden" name="modulename" value="{{modtitle}}">
@@ -78,9 +78,9 @@
         </form>
     {{/completionIsManual}}
     {{^completionIsManual}}
-        <span class="completioncheckbox"
+        <span class="completioncheckbox completion-auto" id="completion-check-{{cmid}}"
               title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}"
-              data-ismanual="0" data-toggle="tooltip">
+              data-ismanual="0" data-completionstate="{{completionstate}}" data-toggle="tooltip">
             {{#completionstate}}{{#pix}}completion-y, format_tiles{{/pix}}{{/completionstate}}
             {{^completionstate}}{{#pix}}completion-n, format_tiles{{/pix}}{{/completionstate}}
         </span>
@@ -88,7 +88,7 @@
 {{/isediting}}
 
 {{#isediting}}
-    <div class="completioncheckbox"
+    <div class="completioncheckbox" id="completion-check-{{cmid}}"
     title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}" data-ismanual="0">
         {{#completionstate}}{{#pix}}completion-y, format_tiles{{/pix}}{{/completionstate}}
         {{^completionstate}}{{#pix}}completion-n, format_tiles{{/pix}}{{/completionstate}}

@@ -787,9 +787,9 @@ class course_output implements \renderable, \templatable
                 // Add completion icon to the course module if appropriate.
                 $moduleobject['completionInUseForCm'] = true;
                 $completiondata = $completioninfo->get_data($mod, true);
+                $moduleobject['completionstate'] = $completiondata->completionstate;
+                $moduleobject['completionstateInverse'] = $completiondata->completionstate == 1 ? 0 : 1;
                 if ($mod->completion == COMPLETION_TRACKING_MANUAL) {
-                    $moduleobject['completionstate'] = $completiondata->completionstate;
-                    $moduleobject['completionstateInverse'] = $completiondata->completionstate == 1 ? 0 : 1;
                     $moduleobject['completionIsManual'] = 1;
                     switch ($completiondata->completionstate) {
                         case COMPLETION_INCOMPLETE:

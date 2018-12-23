@@ -35,6 +35,11 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         numberOutOf: "data-numoutof",
         section: "data-section"
     };
+    var Selector = {
+        launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
+        launchModuleModal: '[data-action="launch-tiles-module-modal"]',
+        pageContent: "#page-content",
+    };
 
     /**
      * When toggleCompletionTiles() makes an AJAX call it needs to send some data
@@ -70,6 +75,51 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         }
         return data;
     };
+
+    /**
+     * When a progress change happens, e.g. an item is marked as complete or not, this fires.
+     * It changes the current tile's progress up or down by 1 according to the progressChange arg.
+     * It then does the same for the course's overall progress indicator.
+     * @param {object} tileProgressIndicator the indicator for this tile
+     * @param {int} progressChange the amount we are changing e.g. +1 or -1
+     */
+    var changeProgressIndicators = function(sectionNum, tileProgressIndicator, progressChange) {
+        // Get the tile's new progress value.
+        var newTileProgressValue = Math.min(
+            parseInt(tileProgressIndicator.attr(dataKeys.numberComplete)) + progressChange,
+            tileProgressIndicator.attr(dataKeys.numberOutOf)
+        );
+        // Get the new overall progress value.
+        var overallProgressIndicator = $("#tileprogress-0");
+        var newOverallProgressValue = Math.min(
+            parseInt(overallProgressIndicator.attr(dataKeys.numberComplete)) + progressChange,
+            overallProgressIndicator.attr(dataKeys.numberOutOf)
+        );
+
+
+        // Render and replace the progress indicator for *this tile*.
+        Templates.render("format_tiles/progress", progressTemplateData(
+            sectionNum,
+            newTileProgressValue,
+            tileProgressIndicator.attr(dataKeys.numberOutOf),
+            tileProgressIndicator.hasClass("percent")
+        )).done(function (html) {
+            // Need to repeat jquery selector as it is being replaced (replacwith).
+            tileProgressIndicator.replaceWith(html);
+            $("#tileprogress-" + sectionNum).tooltip();
+        });
+
+        // Render and replace the *overall* progress indicator for the *whole course*.
+        Templates.render("format_tiles/progress", progressTemplateData(
+            0,
+            newOverallProgressValue,
+            overallProgressIndicator.attr(dataKeys.numberOutOf),
+            true
+        )).done(function (html) {
+            $("#tileprogress-0").replaceWith(html).fadeOut(0).animate({opacity: 1}, 500);
+        });
+    };
+
     /**
      * When a user clicks a completion tracking checkbox in this format, pass the click through to core
      * This is partly based on the core functionality in completion.js but is included here as otherwise clicks on
@@ -109,58 +159,56 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     $(".complete-n-" + cmid).fadeIn(200).fadeOut(1000);
                     completionImage.attr("src", imageUrl.replace("completion-y", "completion-n"));
                 }
-                // Get the tile's new progress value.
-                var tileProgressIndicator = $("#tileprogress-" + form.attr(dataKeys.section));
-                var newTileProgressValue = parseInt(tileProgressIndicator.attr(dataKeys.numberComplete)) + progressChange;
-                if (newTileProgressValue > tileProgressIndicator.attr(dataKeys.numberOutOf)) {
-                    newTileProgressValue = tileProgressIndicator.attr(dataKeys.numberOutOf);
-                }
-                // Get the new overall progress value.
-                var overallProgressIndicator = $("#tileprogress-0");
-                var newOverallProgressValue = parseInt(overallProgressIndicator.attr(dataKeys.numberComplete)) + progressChange;
-                if (newOverallProgressValue > overallProgressIndicator.attr(dataKeys.numberOutOf)) {
-                    newOverallProgressValue = overallProgressIndicator.attr(dataKeys.numberOutOf);
-                }
-
-                // Render and replace the progress indicator for *this tile*.
-                Templates.render("format_tiles/progress", progressTemplateData(
-                    form.attr(dataKeys.section),
-                    newTileProgressValue,
-                    tileProgressIndicator.attr(dataKeys.numberOutOf),
-                    tileProgressIndicator.hasClass("percent")
-                )).done(function (html) {
-                    // Need to repeat jquery selector as it is being replaced (replacwith).
-                    tileProgressIndicator.replaceWith(html);
-                    $("#tileprogress-" + form.attr(dataKeys.section)).tooltip();
-                });
-
-                // Render and replace the *overall* progress indicator for the *whole course*.
-                Templates.render("format_tiles/progress", progressTemplateData(
-                    0,
-                    newOverallProgressValue,
-                    overallProgressIndicator.attr(dataKeys.numberOutOf),
-                    true
-                )).done(function (html) {
-                    $("#tileprogress-0").replaceWith(html).fadeOut(0).animate({opacity: 1}, 500);
-                });
+               changeProgressIndicators(
+                   form.attr(dataKeys.section),
+                    $("#tileprogress-" + form.attr(dataKeys.section)),
+                    progressChange
+                );
             }
         })
             .fail(function () {
                 throw new Error("Failed to register completion change with server");
             });
     };
+
+    /**
+     * When automatic completion tracking is being used, on modal launch we need to:
+     * - change the completion icon to complete.
+     * - recalculate the % complete for this tile and overall.
+     * We do not need to notify the server that the item is complete.
+     * This is because that is already covered when course_mod_modal calls log_mod_view().
+     * @param {object} e the event when the launch modal click happened.
+     */
+    var markAsAutoComplete = function(e) {
+        var completionIcon = $(e.currentTarget).closest("li.activity").find('.completioncheckbox');
+        if (completionIcon.attr('data-ismanual') === "0" && completionIcon.attr('data-completionstate') === "0") {
+            var icon = completionIcon.find('.icon');
+            icon.attr('src', icon.attr('src').replace('completion-n', 'completion-y'));
+            completionIcon.attr('data-completionstate', 1);
+            completionIcon.attr('data-original-title', strings.completeauto);
+            completionIcon.tooltip();
+        }
+    };
+
     return {
-        init: function (strComplete, strNotcomplete) {
+        init: function (strCompleteAuto) {
             $(document).ready(function () {
                  // Trigger toggle completion event if check box is clicked.
                  // Included like this so that later dynamically added boxes are covered.
 
-                strings.complete = strComplete;
-                strings.notComplete = strNotcomplete;
+                strings.completeauto = strCompleteAuto;
                 $("body").on("click", ".togglecompletion", function (e) {
                     // Send the toggle to the database and change the displayed icon.
                     e.preventDefault();
                     toggleCompletionTiles($(e.currentTarget));
+                });
+
+                $(Selector.pageContent).on("click", Selector.launchResourceModal, function (e) {
+                    markAsAutoComplete(e);
+                });
+
+                $(Selector.pageContent).on("click", Selector.launchModuleModal, function (e) {
+                    markAsAutoComplete(e);
                 });
             });
         }

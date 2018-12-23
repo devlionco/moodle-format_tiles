@@ -133,8 +133,7 @@ if ($isediting) {
 if ($course->enablecompletion) {
     $PAGE->requires->js_call_amd('format_tiles/completion', 'init',
         array(
-            ucwords(get_string('complete', 'format_tiles')),
-            get_string('notcomplete', 'format_tiles')
+            get_string('complete-y-auto', 'format_tiles')
         )
     );
 }

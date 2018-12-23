@@ -367,7 +367,7 @@ class format_tiles_external extends external_api
      * @throws moodle_exception
      */
     public static function log_mod_view($courseid, $cmid) {
-        global $DB;
+        global $DB, $USER;
         $params = self::validate_parameters(
             self::log_mod_view_parameters(),
             array(
@@ -401,6 +401,13 @@ class format_tiles_external extends external_api
                 throw new invalid_parameter_exception('No logging method provided for type ' . $cm->modname);
             // TODO add more to these if more modules added.
         }
+
+        // If this item is using automatic completion, mark the item as complete.
+        $completion = new completion_info($course);
+        if ($completion->is_enabled() && $cm->completion == COMPLETION_TRACKING_AUTOMATIC) {
+            $completion->update_state($cm, COMPLETION_COMPLETE, $USER->id);
+        }
+
         $result = array();
         $result['status'] = true;
         return $result;
