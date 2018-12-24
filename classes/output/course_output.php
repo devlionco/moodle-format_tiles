@@ -646,7 +646,7 @@ class course_output implements \renderable, \templatable
             if ($canviewhidden) {
                 $moduleobject['uservisible'] = true;
                 $moduleobject['clickable'] = true;
-            } else if ((!$mod->uservisible && $mod->visibleoncoursepage && $mod->availableinfo)) {
+            } else if ((!$mod->uservisible && $mod->visibleoncoursepage && $mod->availableinfo && $mod->visible)) {
                 // Activity is not available, not hidden from course page and has availability info.
                 // So it is actually visible on the course page (with availability info and without a link).
                 $moduleobject['uservisible'] = true;
