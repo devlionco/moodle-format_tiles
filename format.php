@@ -118,7 +118,11 @@ if (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['module
 }
 if ($isediting && get_config('format_tiles', 'allowsubtilesview') && $course->courseusesubtiles) {
     $PAGE->requires->js_call_amd(
-        'format_tiles/course_mod_edit', 'init', array(optional_param('labelconvert', 0, PARAM_INT))
+        'format_tiles/course_mod_edit', 'init', array(
+            $course->id,
+            $displaysection,
+            optional_param('labelconvert', 0, PARAM_INT)
+        )
     );
 }
 // This is also called from lib.php, if the user is on course/edit.php (edit course settings).

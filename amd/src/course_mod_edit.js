@@ -27,8 +27,8 @@
  * @since       Moodle 3.3
  */
 
-define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str", "core/url"],
-    function ($, ajax, Templates, Notification, str, url) {
+define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str", "core/url", "core/config"],
+    function ($, ajax, Templates, Notification, str, url, config) {
         "use strict";
 
         /**
@@ -53,7 +53,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
             LABEL_CONVERT: ".editing_labelconvert",
             CM_EDIT_ACTION: ".cm-edit-action",
             ACTIVITY_ICON: ".activityicon",
-            EDITING_DELETE: ".editing_delete"
+            EDITING_DELETE: ".editing_delete",
+            SECTION_MAIN: ".section.main"
         };
 
         var ClassNames = {
@@ -64,7 +65,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
             DIMMED: "dimmed",
             EDITING: "editing_",
             ACTIVITY: "activity",
-            LABEL: "label"
+            LABEL: "label",
+            SECTION_DRAGGABLE: "sectiondraggable"
         };
 
         var Event = {
@@ -196,7 +198,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
         };
 
         return {
-            init: function (convertedLabel) {
+            init: function (courseId, displaySection, convertedLabel) {
                 $(document).ready(function () {
                     // This is to cover something which can happen when dragging and dropping a course module.
                     // In course/amd/src/action.js is a method called M.course.coursebase.register_module.
@@ -249,7 +251,23 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                     // Otherwise the core JS will add them to the page in standard "list" format.
                     $(document).on(Event.MODULE_ADDED, function (event, msg) {
                         var addedCourseModule = $("#" + $(msg).attr("id"));
-                        if (
+                        var sectionAddedTo = addedCourseModule.closest(Selector.SECTION_MAIN);
+                        if (sectionAddedTo.hasClass(ClassNames.SECTION_DRAGGABLE)
+                            && window.location.href.indexOf('expand=') === -1){
+                            // An item has been dragged into a section when we are on the multi tile screen.
+                            // However the section is not yet expanded.
+                            // Therefore expand the section it has been dragged into so teacher can see it.
+                            window.location = config.wwwroot + '/course/view.php?id=' + courseId
+                                + "&expand=" + sectionAddedTo.attr("data-section")
+                                + "#section-" + sectionAddedTo.attr("data-section");
+                        } else if (addedCourseModule.hasClass(ClassNames.LABEL)
+                            && addedCourseModule.closest('ul').hasClass('subtiles')){
+                            // The mod type is probably an image (being dragged in to the course.
+                            // When this happens, core adds a label and puts it in.
+                            // So allow this to happened, then reload the page.
+                            // This ensures the image displays correctly (only bother if we are using subtiles).
+                            window.location.reload();
+                        } else if (
                             addedCourseModule.hasClass(ClassNames.ACTIVITY) && addedCourseModule.closest('ul').hasClass('subtiles')
                         ) {
                             // Only course modules and not (for example) user tours modal.
@@ -264,6 +282,10 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                             // Get cmid, modtitle, modnameDisplay, cmeditmenu of ite just added to course by AJAX.
                             // Re-render it in the correct style for this format (as sub tile).
                             var modResourceType = fileTypeFromIconURL(addedCourseModule.find(Selector.ACTIVITY_ICON).attr("src"));
+                            if (modResourceType === undefined) {
+                                // we have probably dragged an image into the course and chosen to add it as a file resource.
+                                window.location.reload();
+                            }
                             var stringKey = "displaytitle_mod_" + modResourceType;
                             if (stringStore[stringKey] === undefined) {
                                 str.get_string(stringKey, "format_tiles")
