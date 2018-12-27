@@ -69,6 +69,7 @@ $string['dataprefquestion'] = '<p>To make this site easier to use, we store func
 $string['datapreferror'] = 'The data preference feature is ony available if you have javascript available in your browser. Otherwise, data storage cannot be enabled.';
 $string['defaulttileicon_help'] = 'The icon selected here will appear on <em>all</em> tiles in this course.  Individual tiles can have a different icon selected, using the different setting at the tile level.';
 $string['defaulttileicon'] = 'Tile icon';
+$string['defaultthiscourse'] = 'Default for this course';
 $string['deletesection'] = 'Delete tile';
 $string['displayfilterbar_error'] = 'Unless you have set up outcomes for this course, you can only display a filter bar based on tile numbers, and not based on outcomes.  Create some outcomes first then come back here. See';
 $string['displayfilterbar_help'] = '<p>When selected, will automatically display an array of buttons before the tile screen in a course, which users can click to filter down tiles to certain ranges</p><p>When \'based on tile numbers\' is selected, a series of buttons will be displayed e.g. a button for tiles  1-4, a button for tiles 5-8 etc.</p><p>When \'based on course outcomes\' is selected, there will be one button per course outcome.  Each each tile can be assigned to a given outcome (and therefore to a given button) from that tile\'s settings page.</p> ';

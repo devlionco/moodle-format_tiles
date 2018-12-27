@@ -604,7 +604,9 @@ class format_tiles extends format_base {
         }
         if ($foreditform) {
             $defaultcoursetile = $course->defaulttileicon;
-            $defaulticonarray = array('' => 'Default for this course (' . $defaultcoursetile . ')');
+            $defaulticonarray = array(
+                '' => get_string('defaultthiscourse', 'format_tiles') . ' (' . $defaultcoursetile . ')'
+            );
             $tileicons = $this->format_tiles_available_icons();
             $tileicons = array_merge($defaulticonarray, $tileicons);
             $sectionformatoptionsedit = array();
