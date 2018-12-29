@@ -97,12 +97,19 @@ class restore_format_tiles_plugin extends restore_format_plugin {
      */
     public function after_restore_course() {
         global $DB;
-
+        // This function will be executed on every restore, whether or not the restored course uses this format.
+        // So before doing anything else, check if the restored course is using format_tiles or not.
+        $backupinfo = $this->step->get_task()->get_info();
+        if ($backupinfo->original_course_format !== 'tiles') {
+            // Backup is from another course format, so we bail out (the other format will take care of everything).
+            // Moving this here fixes issue #4.
+            return;
+        }
         $currentfilterbarsetting = $DB->get_record(
             'course_format_options',
             array('name' => 'displayfilterbar', 'format' => 'tiles', 'courseid' => $this->step->get_task()->get_courseid())
         );
-        if ($currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY
+        if ($currentfilterbarsetting && $currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY
             || $currentfilterbarsetting->value == FILTER_OUTCOMES_AND_NUMBERS) {
             // If the new course has the filter bar set to use outcomes then switch it.
             // Tile outcomes will not work correctly in the new course as they include ids from the old course.
@@ -127,7 +134,7 @@ class restore_format_tiles_plugin extends restore_format_plugin {
         }
 
         // The name of course format option "defaulttileicon" for a course used to be "defaulttiletopleftdisplay".
-        // Before this was changed for clarity in summer 2018 release, so change it if present in the backup.
+        // Before this was changed for clarity in summer 2018 release, so change it if present in the backup if present.
         // Same for the topic level option "tiletopleftthistile" which becomes "tileicon".
         $courseid = $this->step->get_task()->get_courseid();
         $DB->set_field('course_format_options', 'name', 'defaulttileicon',
@@ -136,22 +143,16 @@ class restore_format_tiles_plugin extends restore_format_plugin {
             array('format' => 'tiles', 'name' => 'tiletopleftthistile', 'courseid' => $courseid));
 
         // Old versions of this plugin used to refer to "course default" for each icon if the user had not selected one.
-        // This no longer applies so delete them.
+        // This no longer applies so delete them if present.
         $DB->delete_records_select(
             'course_format_options',
             "format  = 'tiles' AND name = 'tileicon' AND value = 'course default' AND courseid = :courseid",
             array("courseid" => $courseid)
         );
 
-        if (!$this->need_restore_numsections()) {
-            // Backup file was made in Moodle 3.3 or later, we don't need to process 'numsecitons'.
-            return;
-        }
-
         $data = $this->connectionpoint->get_data();
-        $backupinfo = $this->step->get_task()->get_info();
-        if ($backupinfo->original_course_format !== 'tiles' || !isset($data['tags']['numsections'])) {
-            // Backup from another course format or backup file does not even have 'numsections'.
+        if (!isset($data['tags']['numsections']) || !$this->need_restore_numsections()) {
+            // Backup file does not even have 'numsections' or was made in Moodle 3.3 or later, we don't need to process 'numsections'.
             return;
         }
 
