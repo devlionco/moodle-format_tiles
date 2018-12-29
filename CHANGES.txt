@@ -36,3 +36,12 @@
 3.3.0.4 (2018092506)
 ====================
 - Fix bug with incorrect display of links to hidden items to students
+
+3.3.0.8 (2018123000)
+====================
+- Fix issue with non-display of images in section summary (pluginfile rewrite)
+- Fix intended response to course deleted event
+- Fixes issue #4 by ensuring that function bails out if the restored course does not use tiles format
+- Avoid missing image on pick icon button
+- Add AMOS lang string defaultthiscourse
+- Improve handling of drag and drop images into courses

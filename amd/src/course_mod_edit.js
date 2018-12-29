@@ -283,7 +283,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                             // Re-render it in the correct style for this format (as sub tile).
                             var modResourceType = fileTypeFromIconURL(addedCourseModule.find(Selector.ACTIVITY_ICON).attr("src"));
                             if (modResourceType === undefined) {
-                                // we have probably dragged an image into the course and chosen to add it as a file resource.
+                                // We have probably dragged an image into the course and chosen to add it as a file resource.
                                 window.location.reload();
                             }
                             var stringKey = "displaytitle_mod_" + modResourceType;
