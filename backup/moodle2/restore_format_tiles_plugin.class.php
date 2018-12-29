@@ -152,7 +152,7 @@ class restore_format_tiles_plugin extends restore_format_plugin {
 
         $data = $this->connectionpoint->get_data();
         if (!isset($data['tags']['numsections']) || !$this->need_restore_numsections()) {
-            // Backup file does not even have 'numsections' or was made in Moodle 3.3 or later, we don't need to process 'numsections'.
+            // Backup file does not even have 'numsections' or was made in Moodle 3.3+, we don't need to process 'numsections'.
             return;
         }
 
