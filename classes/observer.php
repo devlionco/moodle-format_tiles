@@ -15,19 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Format tiles plugin event handler definition.
- *
- * @package   format_tiles
- * @category  event
- * @copyright 2018 David Watson
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Event observers supported by this format.
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = array (
-    array(
-    'eventname'     => '\core\event\course_deleted',
-    'callback'    => 'format_tiles_observer::course_deleted',
-    ),
-);
+/**
+ * Event observers supported by this format.
+ */
+class format_tiles_observer {
+
+    /**
+     * Observer for the event course_content_deleted.
+     * Deletes the user preference entries for the given course upon course deletion.
+     * @param \core\event\course_deleted $event
+     * @throws dml_exception
+     */
+    public static function course_deleted(\core\event\course_deleted $event) {
+        global $DB;
+        $courseid = $event->objectid;
+        $DB->delete_records("user_preferences", array("name" => 'format_tiles_stopjsnav_' . $courseid));
+    }
+}

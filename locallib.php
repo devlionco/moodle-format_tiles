@@ -24,20 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
-/**
- * Deletes the user preference entries for the given course upon course deletion.
- * Now called from format/tiles/db/events.php
- * (used to be contained in lib.php and called from remove_course_contents in moodlelib.php)
- * @param stdClass $event
- * @throws dml_exception
- */
-function format_tiles_delete_course($event) {
-    global $DB;
-    $courseid = $event->objectid;
-    $DB->delete_records("user_preferences", array("name" => 'format_tiles_stopjsnav_' . $courseid));
-}
-
 /**
  * Experimental feature allowing a teacher to click and convert any label into a page
  * @param int $cmid the course module id of the label (which is recycled)
