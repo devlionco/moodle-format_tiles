@@ -253,7 +253,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                         var addedCourseModule = $("#" + $(msg).attr("id"));
                         var sectionAddedTo = addedCourseModule.closest(Selector.SECTION_MAIN);
                         if (sectionAddedTo.hasClass(ClassNames.SECTION_DRAGGABLE)
-                            && window.location.href.indexOf('expand=') === -1){
+                            && window.location.href.indexOf('expand=') === -1) {
                             // An item has been dragged into a section when we are on the multi tile screen.
                             // However the section is not yet expanded.
                             // Therefore expand the section it has been dragged into so teacher can see it.
@@ -261,7 +261,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                                 + "&expand=" + sectionAddedTo.attr("data-section")
                                 + "#section-" + sectionAddedTo.attr("data-section");
                         } else if (addedCourseModule.hasClass(ClassNames.LABEL)
-                            && addedCourseModule.closest('ul').hasClass('subtiles')){
+                            && addedCourseModule.closest('ul').hasClass('subtiles')) {
                             // The mod type is probably an image (being dragged in to the course.
                             // When this happens, core adds a label and puts it in.
                             // So allow this to happened, then reload the page.
