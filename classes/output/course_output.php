@@ -231,7 +231,7 @@ class course_output implements \renderable, \templatable
         // Data for the requested section page.
         $data['title'] = $thissection->name ?
             $thissection->name : get_string('sectionname', 'format_tiles') . ' ' . $this->sectionid;
-        $data['summary'] = $thissection->summary;
+        $data['summary'] = $output->format_summary_text($thissection);
         $data['tileid'] = $thissection->section;
         $data['secid'] = $thissection->id;
         $data['tileicon'] = $thissection->tileicon;
