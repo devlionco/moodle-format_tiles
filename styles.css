@@ -1432,6 +1432,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     margin: 0;
     position: absolute;
     bottom: 5px;
+    left: 0;
 }
 .format-tiles li.tile .availabilityinfo {
     line-height: 30px;
