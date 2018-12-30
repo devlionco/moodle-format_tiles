@@ -100,14 +100,14 @@
         <li class="subtile spacer" aria-hidden="true"></li>
     {{/isediting}}
 {{/hasSpacersBefore}}
-<li class="activity{{#useSubtiles}}{{^is_label}} subtile{{/is_label}}{{/useSubtiles}} {{modname}} modtype_{{modname}} {{modResourceType}}{{^clickable}} unclickable {{/clickable}}{{extraclasses}}" id="module-{{cmid}}" data-modtype="{{modname}}{{#modResourceType}}_{{{modResourceType}}}{{/modResourceType}}"
+<li class="activity{{#useSubtiles}}{{^is_label}} subtile{{/is_label}}{{/useSubtiles}} {{#is_label}}fullwidth{{/is_label}} {{modname}} modtype_{{modname}} {{modResourceType}}{{^clickable}} unclickable {{/clickable}}{{extraclasses}}" id="module-{{cmid}}" data-modtype="{{modname}}{{#modResourceType}}_{{{modResourceType}}}{{/modResourceType}}"
     tabindex="3"
     data-cmid="{{cmid}}"
     data-modinstance="{{modinstance}}"{{#pluginfileUrl}}
     data-url="{{{pluginfileUrl}}}"{{/pluginfileUrl}}
     data-title="{{{modtitle}}}">
-    <div class="subtile_inner">
-        <div class="{{#useSubtiles}}{{^is_label}}subtile-{{/is_label}}{{/useSubtiles}}activityinstance">
+    <div{{#useSubtiles}}{{^is_label}} class="subtile_inner"{{/is_label}}{{/useSubtiles}}>
+        <div class="{{#useSubtiles}}{{^is_label}}activityinstance{{/is_label}}{{/useSubtiles}}">
             {{#is_label}}
                 {{#clickable}}
                     {{! clickable really means user is allowed to see content - }}
@@ -137,17 +137,17 @@
                                     <h4 class="activitytitle">{{{modtitle}}}</h4>
                                 {{/clickable}}
                         </div>
+                        {{#clickable}}<a class="clickable-region" href="{{url}}" data-action="launch-tiles-{{launchtype}}"></a>{{/clickable}}
                     {{/isediting}}
 
                     {{#isediting}}
-                        <div class="activityinstance">
+                        <div>
                             {{#modtitle_inplaceeditable}}
                                 {{>core/inplace_editable}}
                             {{/modtitle_inplaceeditable}}
                             {{^modtitle_inplaceeditable}}
                                 {{{modtitle}}}
                             {{/modtitle_inplaceeditable}}
-                            <a class="clickable-region" href="{{url}}"></a>
                         </div>
                     {{/isediting}}
                 {{/useSubtiles}}

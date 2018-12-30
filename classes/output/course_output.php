@@ -462,7 +462,7 @@ class course_output implements \renderable, \templatable
         $outof = 0;
         foreach ($sectioncmids as $cmid) {
             $thismod = $coursecms[$cmid];
-            if ($thismod->uservisible && $thismod->modname != 'label') {
+            if ($thismod->uservisible && !$this->treat_as_label($thismod)) {
                 if ($completioninfo->is_enabled($thismod) != COMPLETION_TRACKING_NONE) {
                     $outof++;
                     $completiondata = $completioninfo->get_data($thismod, true);
@@ -667,15 +667,21 @@ class course_output implements \renderable, \templatable
             $moduleobject['modtitle'] = $mod->get_formatted_name();
             $moduleobject['modname'] = $mod->modname;
             $moduleobject['iconurl'] = $mod->get_icon_url()->out(true);
-            $moduleobject['content'] = $mod->get_formatted_content();
             $moduleobject['url'] = $mod->url;
             $moduleobject['visible'] = $mod->visible;
             $moduleobject['launchtype'] = 'standard';
+            if($mod->modname !== 'unilabel') {
+                $moduleobject['content'] = $mod->get_formatted_content();
+            } else {
+                // TODO this needs more testing as to whether it's just unilabel plugin that should use $mod->content.
+                // TODO maybe all mods can do the same.  Not changed yet out of caution.  Watch pluginfile rewrite.
+                $moduleobject['content'] = $mod->content;
+            }
 
             // We set this here, with the value from the last loop, before updating it in the next block.
             // So that we can use it again on the next loop.
             $moduleobject['previouswaslabel'] = $previouswaslabel;
-            if ($mod->modname == 'label') {
+            if ($this->treat_as_label($mod)) {
                 $moduleobject['is_label'] = true;
                 $moduleobject['long_label'] = strlen($mod->content) > 300 ? 1 : 0;
                 if ($index != 0 && !$previouswaslabel && $this->courseusesubtiles) {
@@ -725,7 +731,8 @@ class course_output implements \renderable, \templatable
                 }
             }
             $moduleobject['showdescription'] = isset($mod->showdescription) ? $mod->showdescription : 0;
-            if ($mod->modname != 'label') {
+
+            if ($this->treat_as_label($mod)) {
                 $moduleobject['description'] = $mod->get_formatted_content();
             }
             $moduleobject['extraclasses'] = $mod->extraclasses;
@@ -746,7 +753,7 @@ class course_output implements \renderable, \templatable
 
                 $moduleobject['cmeditmenu'] = $this->courserenderer->course_section_cm_edit_actions($editactions, $mod);
                 $moduleobject['cmeditmenu'] .= $mod->afterediticons;
-                if ($mod->modname != 'label') {
+                if (!$this->treat_as_label($mod)) {
                     $moduleobject['modtitle_inplaceeditable'] = array(
                         "displayvalue" => \html_writer::link($mod->url, $mod->get_formatted_name()),
                         "value" => $mod->name,
@@ -1015,7 +1022,7 @@ class course_output implements \renderable, \templatable
         // Otherwise proceed to adapt the standard items to this format.
         foreach ($actions as $actionname => $action) {
             $actionstomodify = ['hide', 'show', 'duplicate', 'groupsseparate', 'groupsvisible', 'groupsnone'];
-            if ($mod->modname !== "label" && array_search($actionname, $actionstomodify) > -1) {
+            if (!$this->treat_as_label($mod) && array_search($actionname, $actionstomodify) > -1) {
                 // For non labels, we don't want core JS to be used to hide/show etc when these menu items are used.
                 // Core converts the cm HTML to the standard activity display format (not subtile).
                 // Instead we want to use our own JS to render the new cm adding 'tiles-' to the start of data-action.
@@ -1047,5 +1054,13 @@ class course_output implements \renderable, \templatable
             }
         }
         return $actions;
+    }
+
+    // We want to treat label and plugins that behave like labels as labels.
+    // E.g. we don'r render them as subtiles but show their content directly on page.
+    // This includes plugins like mod_customlabel and mod_unilabel.
+    private function treat_as_label($mod) {
+        $modnames = ['label', 'customlabel', 'unilabel'];
+        return array_search($mod->modname, $modnames) !== false;
     }
 }

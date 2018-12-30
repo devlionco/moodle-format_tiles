@@ -777,7 +777,12 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                         // If user clicks a sub tile body below the link, treat it as a click on the link itself.
                         pageContent.on(Event.CLICK, Selector.LAUNCH_STANDARD, function(e) {
-                            window.location = $(e.currentTarget).find('a').attr("href");
+                            var clickedLk = $(e.currentTarget);
+                            if (clickedLk.attr("href") !== undefined) {
+                                window.location = clickedLk.attr("href");
+                            } else if (clickedLk.find('a').attr("href") !== undefined) {
+                                window.location = clickedLk.find('a').attr("href");
+                            }
                         });
                     }
 

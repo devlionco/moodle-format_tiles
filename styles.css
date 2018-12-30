@@ -1112,11 +1112,12 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     position: relative;
 }
 
-.format-tiles .subtile_inner {
+.format-tiles .subtile_inner, .format-tiles .fullwidth {
     width: 100%;
 }
 .format-tiles .clickable-region {
     height: 110px;
+    width: 230px;
 }
 .format-tiles li.activity.subtile.dimmed {
     opacity: 0.5;
@@ -1279,6 +1280,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     max-width: 90px;
     text-align: left;
     font-size: 0.6em;
+    top: 0;
 }
 .format-tiles li.activity.subtile a,
 .format-tiles #page-content li.activity.subtile a {
@@ -1371,7 +1373,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     position: relative;
 }
 .format-tiles .section.subtiles .activity .actions.editactions {
-    position: relative;
+    position: absolute;
     top: 0;
     left: 35px;
 }
@@ -1394,8 +1396,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles.editing .section .activity.subtile .activityinstance {
     padding: 0;
     display: block;
-    font-size: 1.3em;
     color: #565656;
+    font-size: 19px;
     overflow: hidden;
     height: calc(100% - 20px);
     margin-top: 25px;
