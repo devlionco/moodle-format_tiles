@@ -670,7 +670,7 @@ class course_output implements \renderable, \templatable
             $moduleobject['url'] = $mod->url;
             $moduleobject['visible'] = $mod->visible;
             $moduleobject['launchtype'] = 'standard';
-            if($mod->modname !== 'unilabel') {
+            if ($mod->modname !== 'unilabel') {
                 $moduleobject['content'] = $mod->get_formatted_content();
             } else {
                 // TODO this needs more testing as to whether it's just unilabel plugin that should use $mod->content.
