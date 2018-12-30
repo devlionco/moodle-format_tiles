@@ -107,7 +107,7 @@
     data-url="{{{pluginfileUrl}}}"{{/pluginfileUrl}}
     data-title="{{{modtitle}}}">
     <div{{#useSubtiles}}{{^is_label}} class="subtile_inner"{{/is_label}}{{/useSubtiles}}>
-        <div class="{{#useSubtiles}}{{^is_label}}activityinstance{{/is_label}}{{/useSubtiles}}">
+        <div class="{{#useSubtiles}}{{^is_label}}activityinstance{{/is_label}}{{/useSubtiles}}{{^useSubtiles}}mod-indent-outer{{/useSubtiles}}">
             {{#is_label}}
                 {{#clickable}}
                     {{! clickable really means user is allowed to see content - }}
@@ -123,7 +123,9 @@
                                 {{#clickable}}
                                     {{#isEmbeddedResource}}
                                         <h4 class="activitytitle">
-                                            <a href="{{{config.wwwroot}}}/mod/resource/view.php?id={{{cmid}}}" data-title="{{{modtitle}}}">{{{modtitle}}}</a>
+                                            <a href="{{{config.wwwroot}}}/mod/resource/view.php?id={{{cmid}}}" data-title="{{{modtitle}}}">
+                                                {{{modtitle}}}
+                                            </a>
                                         </h4>
                                     {{/isEmbeddedResource}}
 
@@ -143,7 +145,7 @@
                     {{#isediting}}
                         <div>
                             {{#modtitle_inplaceeditable}}
-                                {{>core/inplace_editable}}
+                                {{>format_tiles/inplace_editable}}
                             {{/modtitle_inplaceeditable}}
                             {{^modtitle_inplaceeditable}}
                                 {{{modtitle}}}
@@ -153,21 +155,34 @@
                 {{/useSubtiles}}
 
                 {{^useSubtiles}}
-                    {{#clickable}}
-                        <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}} data-action="launch-tiles-activity-modal"{{/isEmbeddedModule}}{{/clickable}}{{/clickable}} data-title="{{{modtitle}}}">
-                            <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
-                                 role="presentation">
-                            <span class="instancename">{{{modtitle}}}</span>
-                        </a>
-                    {{/clickable}}
+                    {{#isediting}}
+                        <div>
+                            {{#modtitle_inplaceeditable}}
+                                {{>format_tiles/inplace_editable}}
+                            {{/modtitle_inplaceeditable}}
+                            {{^modtitle_inplaceeditable}}
+                                {{{modtitle}}}
+                            {{/modtitle_inplaceeditable}}
+                        </div>
+                    {{/isediting}}
 
-                    {{^clickable}}
-                        <span class="editingactivity">
-                            <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
-                                 role="presentation">
-                            <span class="instancename">{{{modtitle}}}</span>
-                        </span>
-                    {{/clickable}}
+                    {{^isediting}}
+                        {{#clickable}}
+                            <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}} data-action="launch-tiles-activity-modal"{{/isEmbeddedModule}}{{/clickable}}{{/clickable}} data-title="{{{modtitle}}}" {{#availabilitymessage}}class="dimmed"{{/availabilitymessage}}>
+                                <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
+                                     role="presentation">
+                                <span class="instancename">{{{modtitle}}}</span>
+                            </a>
+                        {{/clickable}}
+
+                        {{^clickable}}
+                            <span class="editingactivity">
+                                <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
+                                     role="presentation">
+                                <span class="instancename">{{{modtitle}}}</span>
+                            </span>
+                        {{/clickable}}
+                    {{/isediting}}
                 {{/useSubtiles}}
 
                 {{^useSubtiles}}
