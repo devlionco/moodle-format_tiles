@@ -130,7 +130,8 @@ if ($isediting) {
     $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init',
         array(
             'courseId' => $course->id,
-            'pagetype' => $PAGE->pagetype
+            'pagetype' => $PAGE->pagetype,
+            'sectionId' => $displaysection
         )
     );
 }

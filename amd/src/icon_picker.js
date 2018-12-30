@@ -32,7 +32,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
     function ($, Templates, ajax, str, Notification) {
         "use strict";
         return {
-            init: function (courseId, pageType) {
+            init: function (courseId, pageType, sectionId) {
                 var selectBox;
                 var setIcon = function (sectionId, sectionNum, icon, selectBox) {
                     var ajaxIconPickArgs = {
@@ -136,7 +136,8 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
 
                     if (pageType === "course-edit" || pageType === "course-editsection") {
                         Templates.render("format_tiles/icon_picker_launch_btn", {
-                            initialicon: selectBox.val()
+                            initialicon: selectBox.val(),
+                            sectionId: sectionId
                         }).done(function (html) {
                             $(html).insertAfter(selectBox);
                             watchLaunchButtons();

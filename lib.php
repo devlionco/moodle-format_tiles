@@ -910,9 +910,12 @@ class format_tiles extends format_base {
                     $PAGE->requires->js_call_amd('format_tiles/edit_form_helper', 'init', array());
                 }
                 if ($editingcoursesettings || $editingcoursesection) {
-                    $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init',
-                        array('courseId' => $courseid, 'pagetype' => $PAGE->pagetype)
-                    );
+                    $jsparams = array('courseId' => $courseid, 'pagetype' => $PAGE->pagetype, 'sectionId' => 0);
+                    if ($editingcoursesection) {
+                        $sectionid = optional_param('id', 0, PARAM_INT);
+                        $jsparams['sectionId'] = $sectionid;
+                    }
+                    $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init', $jsparams);
                     return new format_tiles_icon_picker_icons();
                 }
             }
