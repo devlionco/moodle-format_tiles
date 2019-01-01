@@ -32,6 +32,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
     "use strict";
 
     var courseId;
+    var userId;
     var storageEnabled = {
         local: false,
         session: false
@@ -49,7 +50,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         content: "-content",
         lastUpdated: "-lastUpdated",
         userPrefStorage: "mdl-tiles-userPrefStorage",
-        collapseSecZero: "-collapsesec0"
+        collapseSecZero: "-collapsesec0",
+        user: "-user-"
     };
 
     var MAX_SECTIONS_TO_STORE;
@@ -82,6 +84,11 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
     var encodeContentLastUpdatedKeyName = function(sectionId) {
         return localStorageKeyElements.course + courseId.toString()
             + "-sec-" + sectionId.toString() + localStorageKeyElements.lastUpdated;
+    };
+
+    var collapseSecZeroKey = function() {
+        return localStorageKeyElements.course + courseId + localStorageKeyElements.user + userId
+        + localStorageKeyElements.collapseSecZero;
     };
 
     /**
@@ -302,8 +309,10 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
     var Module = {
 
-        init: function (course, maxContentSectionsToStore, isEditing, sectionNum, storedContentDeleteMins, assumeDataStoreConsent) {
+        init: function (course, maxContentSectionsToStore, isEditing, sectionNum,
+                        storedContentDeleteMins, assumeDataStoreConsent, user) {
             courseId = course.toString();
+            userId = user.toString();
             MAX_SECTIONS_TO_STORE = maxContentSectionsToStore;
 
              // Work out if we should be using local storage or not - does user want it and is it available.
@@ -436,9 +445,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         setSecZeroCollapseStatus: function (status) {
             if (storageEnabled.local && storageUserConsent.userChoice === storageUserConsent.GIVEN) {
                 if (status === "collapsed") {
-                    localStorage.removeItem(localStorageKeyElements.course + courseId + localStorageKeyElements.collapseSecZero);
+                    localStorage.removeItem(collapseSecZeroKey());
                 } else {
-                    localStorage.setItem(localStorageKeyElements.course + courseId + localStorageKeyElements.collapseSecZero, "1");
+                    localStorage.setItem(collapseSecZeroKey(), "1");
                 }
             }
         },
@@ -447,7 +456,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
          * @returns {boolean} whether collapsed or not
          */
         getSecZeroCollapseStatus: function () {
-            return !!localStorage.getItem(localStorageKeyElements.course + courseId + localStorageKeyElements.collapseSecZero);
+            return !!localStorage.getItem(collapseSecZeroKey());
         },
 
         storeCourseContent: function (courseId, sectionId, html) {

@@ -553,7 +553,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 storedContentDeleteMins, // Set by site admin see settings.php.
                 useFilterButtons,
                 assumeDataStoreConsent, // Set by site admin see settings.php.
-                reopenLastSectionInit // Set by site admin see settings.php.
+                reopenLastSectionInit, // Set by site admin see settings.php.
+                userId
             ) {
                 reopenLastVisitedSection = reopenLastSectionInit;
                 isMobile = isMobileInit;
@@ -566,7 +567,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     isEditing,
                     sectionNum,
                     storedContentDeleteMins,
-                    assumeDataStoreConsent
+                    assumeDataStoreConsent,
+                    userId
                 );
 
                 $(document).ready(function () {

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-global $PAGE;
+global $PAGE, $USER;
 
 // Horrible backwards compatible parameter aliasing..
 if ($topic = optional_param('topic', 0, PARAM_INT)) {
@@ -106,7 +106,8 @@ $jsparams = array(
     get_config('format_tiles', 'jsstoredcontentdeletemins'),
     $course->displayfilterbar,
     get_config('format_tiles', 'assumedatastoreconsent'),
-    get_config('format_tiles', 'reopenlastsection')
+    get_config('format_tiles', 'reopenlastsection'),
+    $USER->id
 );
 
 $PAGE->requires->js_call_amd(
