@@ -105,7 +105,8 @@ $jsparams = array(
     get_config('format_tiles', 'jsstoredcontentexpirysecs'),
     get_config('format_tiles', 'jsstoredcontentdeletemins'),
     $course->displayfilterbar,
-    get_config('format_tiles', 'assumedatastoreconsent')
+    get_config('format_tiles', 'assumedatastoreconsent'),
+    get_config('format_tiles', 'reopenlastsection')
 );
 
 $PAGE->requires->js_call_amd(

@@ -45,6 +45,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         var scrollFuncLock = false;
         var sectionIsOpen = false;
         var NAVBAR_HEIGHT = 60;
+        var reopenLastVisitedSection = "0";
         var Selector = {
             PAGE: "#page",
             TILE: ".tile",
@@ -516,7 +517,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 tileToClick = sectionToLaunch;
                             } else {
                                 // Don't use the URL param - check local storage instead.
-                                if (browserStorage.storageEnabledLocal && browserStorage.storageUserPreference) {
+                                if (reopenLastVisitedSection == "1" && browserStorage.storageEnabledLocal
+                                    && browserStorage.storageUserPreference) {
                                     tileToClick = browserStorage.getLastVisitedSection();
                                     // If user is not on mobile, retrieve last visited section id from browser storage (if present).
                                     // And click it.
@@ -550,8 +552,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 storedContentExpirySecs, // Set by site admin see settings.php.
                 storedContentDeleteMins, // Set by site admin see settings.php.
                 useFilterButtons,
-                assumeDataStoreConsent // Set by site admin see settings.php.
+                assumeDataStoreConsent, // Set by site admin see settings.php.
+                reopenLastSectionInit // Set by site admin see settings.php.
             ) {
+                reopenLastVisitedSection = reopenLastSectionInit;
                 isMobile = isMobileInit;
                 isEditing = isEditingInit;
                  // We want to initialise the browser storage JS module for storing user settings.

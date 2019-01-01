@@ -41,6 +41,12 @@ if ($ADMIN->fulltree) {
     $default = 1;
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
+    $name = 'format_tiles/reopenlastsection';
+    $title = get_string('reopenlastsection', 'format_tiles');
+    $description = get_string('reopenlastsection_desc', 'format_tiles');
+    $default = 1;
+    $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
+
     $name = 'format_tiles/usejsnavforsinglesection';
     $title = get_string('usejsnavforsinglesection', 'format_tiles');
     $description = get_string('usejsnavforsinglesection_desc', 'format_tiles');
