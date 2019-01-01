@@ -51,7 +51,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         lastUpdated: "-lastUpdated",
         userPrefStorage: "mdl-tiles-userPrefStorage",
         collapseSecZero: "-collapsesec0",
-        user: "-user-"
+        user: "-user-",
+        section: "-sec-"
     };
 
     var MAX_SECTIONS_TO_STORE;
@@ -61,7 +62,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      * @returns {string} the key to use for this course
      */
     var encodeLastVistedSectionKeyName = function() {
-        return localStorageKeyElements.course + courseId + localStorageKeyElements.lastSection;
+        return localStorageKeyElements.course + courseId
+            + localStorageKeyElements.user + userId
+            + localStorageKeyElements.lastSection;
     };
 
     /**
@@ -71,7 +74,10 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      * @returns {string} the key to use for this course section's content
      */
     var encodeContentKeyName = function(sectionId) {
-        return localStorageKeyElements.course + courseId + "-sec-" + sectionId.toString() + localStorageKeyElements.content;
+        return localStorageKeyElements.course + courseId
+            + localStorageKeyElements.section + sectionId.toString()
+            + localStorageKeyElements.user + userId
+            + localStorageKeyElements.content;
     };
 
     /**
@@ -82,13 +88,25 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      * @returns {string} the key to use for this course section's content update time
      */
     var encodeContentLastUpdatedKeyName = function(sectionId) {
-        return localStorageKeyElements.course + courseId.toString()
-            + "-sec-" + sectionId.toString() + localStorageKeyElements.lastUpdated;
+        return localStorageKeyElements.course + courseId
+            + localStorageKeyElements.section + sectionId.toString()
+            + localStorageKeyElements.user + userId
+            + localStorageKeyElements.lastUpdated;
     };
 
+    /**
+     * Whether or not section zero is collapsed for this course/user
+     * will be stored with a key in this format
+     * @returns {string} the key to use
+     */
     var collapseSecZeroKey = function() {
-        return localStorageKeyElements.course + courseId + localStorageKeyElements.user + userId
-        + localStorageKeyElements.collapseSecZero;
+        return localStorageKeyElements.course + courseId
+            + localStorageKeyElements.user + userId
+            + localStorageKeyElements.collapseSecZero;
+    };
+
+    var encodeUserPrefStorageKey = function() {
+        return localStorageKeyElements.userPrefStorage + localStorageKeyElements.user + userId;
     };
 
     /**
@@ -100,7 +118,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      * @returns {boolean} whether it matches or not
      */
     var isContentLastUpdatedKeyName = function(key) {
-        return key.substring(0, 4) === localStorageKeyElements.prefix && key.substr(-12) === localStorageKeyElements.lastUpdated;
+        return key.substring(0, 4) === localStorageKeyElements.prefix
+            && key.substr(-12) === localStorageKeyElements.lastUpdated;
     };
 
     /**
@@ -172,8 +191,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
     /**
      * Decode a storage key in the format
-     * mdl-course-12-sec-11-lastUpdated
-     * i.e. course 12, section 11
+     * mdl-course-2-sec-3-user-2-lastUpdated
+     * i.e. course 2, section 3, user 2
      * @param {string} key the text value of key e.g. mdl-course-12-sec-7-lastUpdated
      * @return {object} json with key values
      */
@@ -183,7 +202,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             return {
                 courseId: parseInt(splitKey[2]),
                 sectionId: parseInt(splitKey[4]),
-                title: splitKey[5]
+                userId: parseInt(splitKey[6]),
+                title: splitKey[7]
             };
         } else {
             throw new Error("Invalid lastUpdated key");
@@ -206,7 +226,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         // Otherwise leave it (used for last visited section IDs etc).
         if (clearBrowserStorage) {
             Object.keys(localStorage).filter(function (key) {
-                return key.substring(0, 4) === localStorageKeyElements.prefix && key !== localStorageKeyElements.userPrefStorage;
+                return key.substring(0, 4) === localStorageKeyElements.prefix && key !== encodeUserPrefStorageKey();
             }).forEach(function (item) {
                 // Item does relate to this plugin.
                 // It is not the user's preference about whether to use storage or not (keep that).
@@ -278,13 +298,13 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 s[3],
                 function () {
                     storageUserConsent.userChoice = storageUserConsent.GIVEN;
-                    localStorage.setItem(localStorageKeyElements.userPrefStorage, storageUserConsent.GIVEN);
+                    localStorage.setItem(encodeUserPrefStorageKey(), storageUserConsent.GIVEN);
                     storageEnabled.local = storageInitialCheck("local", MAX_SECTIONS_TO_STORE);
                     storageEnabled.session = storageInitialCheck("session", MAX_SECTIONS_TO_STORE);
                 },
                 function () {
                     storageUserConsent.userChoice = storageUserConsent.DENIED;
-                    localStorage.setItem(localStorageKeyElements.userPrefStorage, storageUserConsent.DENIED);
+                    localStorage.setItem(encodeUserPrefStorageKey(), storageUserConsent.DENIED);
                     cleanUp(0, 1, 0);
                     storageEnabled.local = 0;
                 }
@@ -320,7 +340,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
              // Session is used for course content.
             storageUserConsent.userChoice = assumeDataStoreConsent === 1
                 ? storageUserConsent.GIVEN
-                : localStorage.getItem(localStorageKeyElements.userPrefStorage);
+                : localStorage.getItem(encodeUserPrefStorageKey());
             if (storageUserConsent.userChoice === storageUserConsent.DENIED) {
                 storageEnabled.local = false;
                 storageEnabled.session = 0;
