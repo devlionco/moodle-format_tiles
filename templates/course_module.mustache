@@ -168,7 +168,7 @@
 
                     {{^isediting}}
                         {{#clickable}}
-                            <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}} data-action="launch-tiles-activity-modal"{{/isEmbeddedModule}}{{/clickable}}{{/clickable}} data-title="{{{modtitle}}}" {{#availabilitymessage}}class="dimmed"{{/availabilitymessage}}>
+                            <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}} data-action="launch-tiles-module-modal"{{/isEmbeddedModule}}{{/clickable}}{{/clickable}} data-title="{{{modtitle}}}" {{#availabilitymessage}}class="dimmed"{{/availabilitymessage}}>
                                 <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
                                      role="presentation">
                                 <span class="instancename">{{{modtitle}}}</span>

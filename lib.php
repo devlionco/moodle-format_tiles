@@ -761,7 +761,7 @@ class format_tiles extends format_base {
 
         // Unset the new values if null, before we send to update.
         // This is so that we don't get a false positive as to whether it has changed or not.
-        if ($data['tileicon'] == '') {
+        if (isset($data['tileicon']) && $data['tileicon'] == '') {
             unset($data['tileicon']);
         }
         if (isset($data['tileoutcomeid']) && $data['tileoutcomeid'] == '0') {
