@@ -104,13 +104,13 @@
                     <div id="sectionbuttons">
                         <span class="sectionbutton closesectionbtn pull-right" id="closesectionbtn-{{tileid}}"
                               title="{{#str}}close, format_tiles{{/str}}" tabindex="3" data-section="{{tileid}}">
-                            {{#pix}}close, format_tiles{{/pix}}
+                            {{#pix}}close, format_tiles, {{#str}}close, format_tiles{{/str}}{{/pix}}
                         </span>
                         {{#canedit}}
                             {{^isediting}}
                                 <a class="sectionbutton pull-right" id="editsectiontbtn-{{tileid}}"
                                    href="{{{ config.wwwroot }}}/course/view.php?id={{courseid}}&section={{tileid}}&sesskey={{sesskey}}&edit=on">
-                                    {{#pix}}pencil, format_tiles{{/pix}}
+                                    {{#pix}}pencil, format_tiles, {{#str}}edit{{/str}}{{/pix}}
                                 </a>
                             {{/isediting}}
                         {{/canedit}}
