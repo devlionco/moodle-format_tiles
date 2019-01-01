@@ -554,7 +554,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             ) {
                 isMobile = isMobileInit;
                 isEditing = isEditingInit;
-
                  // We want to initialise the browser storage JS module for storing user settings.
                  // And (depending on maxContentSectionsToStore) possibly also content in browser.
                 browserStorage.init(

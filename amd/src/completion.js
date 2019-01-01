@@ -147,7 +147,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                 if (completionState.attr("value") === "1") {
                     // Change check box(es) to ticked,
                     // And set the value(s) to zero so that if re-clicked, goes back to unchecked.
-                    $("#completion_dynamic_change").attr("value", 1);
+                    $("#completion_dynamic_change").attr("value", 0);
                     completionState.attr("value", 0);
                     progressChange = +1;
                     completionImage.attr("src", imageUrl.replace("completion-n", "completion-y"));
