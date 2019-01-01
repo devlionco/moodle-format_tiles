@@ -874,7 +874,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         });
                         if (isEditing) {
                             $(".tile_bar_text").on(Event.KEYDOWN, function (e) {
-                                if (e.keyCode === Keyboard.RETURN) { // Return key pressed.
+                                if (e.keyCode === Keyboard.RETURN && !$(e.target).hasClass('form-control')) {
+                                    // Return key has been pressed and *not* while the user was inplace editing the title.
                                     window.location = config.wwwroot + '/course/view.php?id=' + courseId
                                         + '&section=' + $(e.currentTarget).parent().attr("data-section");
                                 }
