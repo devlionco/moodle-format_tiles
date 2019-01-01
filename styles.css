@@ -1374,7 +1374,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles .section.subtiles .activity .actions.editactions {
     position: absolute;
-    top: 0;
+    top: 1px;
     left: 35px;
 }
 .format-tiles .section.subtiles .activity.label .actions.editactions {
