@@ -322,6 +322,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             }
 
             $(document).ready(function () {
+                if (assumeDataStoreConsent === '1') {
+                    storageUserConsent.userChoice = storageUserConsent.GIVEN;
+                }
                  // We do not know if if user is content for us to use local storage, so find out.
                 if ((storageEnabled.local || storageEnabled.session) && storageUserConsent.userChoice === null) {
                     setTimeout(function () {
