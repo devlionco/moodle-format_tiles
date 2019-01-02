@@ -132,7 +132,7 @@
                 </div>
                 {{{availabilitymessage}}}
             </div>
-            <div class="summary">{{{summary}}}</div>
+            <div class="summary{{^visible}} dimmed{{/visible}}">{{{summary}}}</div>
             {{#isediting}}
                 <a title="{{#str}}editsummary, core{{/str}}"
                    href="{{{config.wwwroot}}}/course/editsection.php?id={{secid}}&sr={{tileid}}">{{#pix}}
