@@ -113,6 +113,9 @@
                     {{! clickable really means user is allowed to see content - }}
                     <span class="label_content" id="label_content_{{cmid}}">{{{content}}}</span>
                 {{/clickable}}
+                {{#availabilitymessage}}
+                    {{>format_tiles/availability_info}}
+                {{/availabilitymessage}}
             {{/is_label}}
 
             {{^is_label}}
