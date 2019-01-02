@@ -143,12 +143,12 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
     $brandcolourdefaults = array(
-        '#772583' => 'Purple',
+        '#1670CC' => 'Mid blue',
         '#00A9CE' => 'Light blue',
         '#7A9A01' => 'Green',
         '#009681' => 'Dark Green',
         '#D13C3C' => 'Red',
-        '#1670CC' => 'Mid blue'
+        '#772583' => 'Purple'
     );
     // Originally had the above default colour names as language strings, but no point).
     // (As they are only default names and only every seen by site admin).
