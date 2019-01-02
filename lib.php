@@ -508,7 +508,7 @@ class format_tiles extends format_base {
                 $attributes[FORMAT_TILES_FILTERBAR_BOTH] = new lang_string('filterboth', 'format_tiles');
             }
             $courseformatoptionsedit['displayfilterbar'] = array(
-                'label' => new lang_string('displayfilterbar', 'format_tiles', $outcomeslink),
+                'label' => new lang_string('displayfilterbar', 'format_tiles') . ' ' . $outcomeslink,
                 'element_type' => 'select',
                 'element_attributes' => array($attributes),
                 'help' => 'displayfilterbar',
