@@ -517,7 +517,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 tileToClick = sectionToLaunch;
                             } else {
                                 // Don't use the URL param - check local storage instead.
-                                if (reopenLastVisitedSection == "1" && browserStorage.storageEnabledLocal
+                                if (reopenLastVisitedSection === "1" && browserStorage.storageEnabledLocal
                                     && browserStorage.storageUserPreference) {
                                     tileToClick = browserStorage.getLastVisitedSection();
                                     // If user is not on mobile, retrieve last visited section id from browser storage (if present).
