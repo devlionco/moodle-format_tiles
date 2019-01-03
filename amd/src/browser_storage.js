@@ -269,6 +269,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 }).sort();
                 // Set a cut off time so that we only have maxNumberToKeep newer than the cut off.
                 var cutOffTime = lastUpdateTimes[lastUpdateTimes.length - maxNumberToKeep];
+                if (maxNumberToKeep === 0) {
+                    cutOffTime = Date.now();
+                }
                 var params;
                 // Remove course content for all items older than the cut off time.
                 lastUpdateKeys.filter(function (key) {
@@ -334,7 +337,6 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             courseId = course.toString();
             userId = user.toString();
             MAX_SECTIONS_TO_STORE = parseInt(maxContentSectionsToStore);
-
              // Work out if we should be using local storage or not - does user want it and is it available.
              // Local is used for storing small items last sec visited ID etc.
              // Session is used for course content.
@@ -357,7 +359,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                  // We do not know if if user is content for us to use local storage, so find out.
                 if ((storageEnabled.local || storageEnabled.session) && storageUserConsent.userChoice === null) {
                     setTimeout(function () {
-                        launchUserPreferenceWindow(maxContentSectionsToStore);
+                        launchUserPreferenceWindow();
                     }, 500);
                 }
 
@@ -366,7 +368,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
                 $('a[href*="datapref"]').click(function (e) {
                     e.preventDefault();
-                    launchUserPreferenceWindow(maxContentSectionsToStore);
+                    launchUserPreferenceWindow();
                 });
 
                  // See format_tiles/completion.js for most of the actions related to togglecomoletion.
@@ -398,13 +400,11 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                     }
                 }
                 $("#page-content").on("click", ".tile", function () {
-                    if (storageEnabled.session) {
-                        // Evict unused HTML content from session storage to reduce footprint (after a delay).
-                        if (countStoredContentItems() > maxContentSectionsToStore) {
-                            setTimeout(function () {
-                                cleanUp(storedContentDeleteMins, 0, maxContentSectionsToStore);
-                            }, 2000);
-                        }
+                    // Evict unused HTML content from session storage to reduce footprint (after a delay).
+                    if (countStoredContentItems() > MAX_SECTIONS_TO_STORE) {
+                        setTimeout(function () {
+                            cleanUp(storedContentDeleteMins, 0, MAX_SECTIONS_TO_STORE);
+                        }, 2000);
                     }
                 });
             });
