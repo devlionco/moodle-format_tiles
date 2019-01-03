@@ -45,3 +45,24 @@
 - Avoid missing image on pick icon button
 - Add AMOS lang string defaultthiscourse
 - Improve handling of drag and drop images into courses
+
+3.3.0.12 (2019010300)
+====================
+- Dim restricted/hidden labels for teachers
+- Show availability message to teachers on hidden labels
+- Browser stored course content to be stored by user (better for testing)
+- Whether or not section zero is collapsed stored in local storage with user id not just courseid
+- Add admin plugin setting to allow or disallow re-opening of last open section for user
+- Minor JS corrections
+- Improve position of subtile edit menu (chome)
+- Ensure admin setting to assume browser storage consent is respected
+- Do not respond to return key press by entering tile if user was inplace editing the title.
+- Add HTML titles to close and edit buttons
+- Improve title on completion icon
+- Avoid trying to unset tileicon if not set
+- ensure that page modal launch works if not using subtiles
+- Change order of brand colours in admin settings to better match boost theme
+- Remove stray {$a} from filter bar help string
+- Ensure that if admin sets zero browser stored items, this is respected
+- Fix function which enables old browser stored items to be removed, remove redundant arg
+- Make instancename class consistent for subtile and standard activities
