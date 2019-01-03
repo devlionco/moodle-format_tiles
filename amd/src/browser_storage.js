@@ -340,7 +340,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
              // Work out if we should be using local storage or not - does user want it and is it available.
              // Local is used for storing small items last sec visited ID etc.
              // Session is used for course content.
-            storageUserConsent.userChoice = assumeDataStoreConsent === 1
+            storageUserConsent.userChoice = parseInt(assumeDataStoreConsent) === 1
                 ? storageUserConsent.GIVEN
                 : localStorage.getItem(encodeUserPrefStorageKey());
             if (storageUserConsent.userChoice === storageUserConsent.DENIED) {
@@ -353,7 +353,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             }
 
             $(document).ready(function () {
-                if (assumeDataStoreConsent === '1') {
+                if (assumeDataStoreConsent === 1) {
                     storageUserConsent.userChoice = storageUserConsent.GIVEN;
                 }
                  // We do not know if if user is content for us to use local storage, so find out.
@@ -403,7 +403,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                     // Evict unused HTML content from session storage to reduce footprint (after a delay).
                     if (countStoredContentItems() > MAX_SECTIONS_TO_STORE) {
                         setTimeout(function () {
-                            cleanUp(storedContentDeleteMins, 0, MAX_SECTIONS_TO_STORE);
+                            cleanUp(parseInt(storedContentDeleteMins), 0, MAX_SECTIONS_TO_STORE);
                         }, 2000);
                     }
                 });
