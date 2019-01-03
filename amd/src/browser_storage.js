@@ -333,7 +333,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                         storedContentDeleteMins, assumeDataStoreConsent, user) {
             courseId = course.toString();
             userId = user.toString();
-            MAX_SECTIONS_TO_STORE = maxContentSectionsToStore;
+            MAX_SECTIONS_TO_STORE = parseInt(maxContentSectionsToStore);
 
              // Work out if we should be using local storage or not - does user want it and is it available.
              // Local is used for storing small items last sec visited ID etc.
