@@ -154,20 +154,6 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
     };
 
     /**
-     * Count how many course content items (sections) we have in session storage
-     * i.e. filter all session storage keys down to only those which start with
-     * mdl- and end with -lastUpdated and count how many
-     * @returns {number} the number stored
-     */
-    var countStoredContentItems = function () {
-        return (
-            Object.keys(sessionStorage).filter(function (key) {
-                return isContentLastUpdatedKeyName(key);
-            })
-        ).length;
-    };
-
-    /**
      * Store HTML from a section (or the landing page if sectionId is zero) into session storage
      * Considered using core/storagewrapper, core/sessionstorage and core/localstorage but they
      * don't contain much so implemented directly
@@ -241,23 +227,29 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 // Item does relate to this plugin.
                 if (isContentLastUpdatedKeyName(itemKey)) {
                     var params = decodeLastUpdatedKey(itemKey);
-                    if (clearBrowserStorage) {
-                        // Remove *all* items for this plugin regardless of age.
+                    // Remove *all* items for this plugin regardless of age.
+                    storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion.
+                }
+            });
+        } else {
+            // Remove *stale* items for this plugin.
+            var staleTime = Math.round(Date.now() / 1000) - contentDeleteMins * 60;
+            Object.keys(sessionStorage).filter(function (key) {
+                // Filter to only keys relating to this plugin.
+                return key.split("-")[0] === "mdl";
+            }).forEach(function (itemKey) {
+                if (isContentLastUpdatedKeyName(itemKey)) {
+                    var params = decodeLastUpdatedKey(itemKey);
+                    if (sessionStorage.getItem(itemKey) < staleTime
+                        || contentDeleteMins === 0) {
+                        // Item is stale - older than contentDeleteMins settings.
+                        // this key represents an item with a last update date older than the delete threshold.
                         storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion.
-                    } else {
-                        // Remove *stale* items for this plugin.
-                        if (sessionStorage.getItem(itemKey) < Math.round(Date.now() / 1000) - contentDeleteMins * 60
-                                || contentDeleteMins === 0) {
-                            // Item is stale - older than contentDeleteMins settings.
-                            // this key represents an item with a last update date older than the delete threshold.
-                            storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion.
-                        }
                     }
                 }
             });
-        }
-        // Now check if we still have too many items and if we do, remove the oldest.
-        if (!clearBrowserStorage) {
+
+            // Now check if we still have too many items and if we do, remove the oldest.
             var lastUpdateKeys = Object.keys(sessionStorage).filter(function (item) {
                 return isContentLastUpdatedKeyName(item);
             });
@@ -401,11 +393,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 }
                 $("#page-content").on("click", ".tile", function () {
                     // Evict unused HTML content from session storage to reduce footprint (after a delay).
-                    if (countStoredContentItems() > MAX_SECTIONS_TO_STORE) {
-                        setTimeout(function () {
-                            cleanUp(parseInt(storedContentDeleteMins), 0, MAX_SECTIONS_TO_STORE);
-                        }, 2000);
-                    }
+                    setTimeout(function () {
+                        cleanUp(parseInt(storedContentDeleteMins), 0, MAX_SECTIONS_TO_STORE);
+                    }, 2000);
                 });
             });
         },
