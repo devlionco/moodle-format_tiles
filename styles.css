@@ -1120,16 +1120,21 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 110px;
     width: 230px;
 }
-.format-tiles li.activity.dimmed,
-.format-tiles li.section .summary.dimmed {
+.format-tiles #page-content li.activity.subtile.dimmed a.dropdown-toggle {
+    color: #888888;
+}
+
+.format-tiles li.activity.dimmed .inplaceeditable,
+.format-tiles li.section .summary.dimmed,
+.format-tiles li.activity.subtile.dimmed .activityinstance {
     opacity: 0.5;
 }
-.format-tiles.editing li.activity.subtile.dimmed {
-    opacity: 0.8;
+/*For subtiles, use normal opacity to avoid deep edit menus going under the tile below*/
+.format-tiles li.activity.subtile.dimmed {
+    opacity: 1;
+    border-top-color: lightgray !important;
 }
-.format-tiles li.activity.dimmed .activityinstance {
-    opacity: 0.5;
-}
+
 .format-tiles li.activity.subtile:hover {
     background-size: 60px auto;
     transition: background-size 0.5s ease-in-out;
