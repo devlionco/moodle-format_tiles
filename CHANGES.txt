@@ -72,3 +72,8 @@
 - Automated tests - basic tests added for Behat and PHPUnit (need more work)
 - Improve selectors for both colour and tile icon on course admin page and section edit pages including language strings
 - Ensure that label (and label like e.g. unilabel) completion changes do not result in temporary changes to tile progress counters
+- Tile progress indicator to update correctly when resources with automatic progress tracking are launched
+- Improve mobile CSS
+- Overall progress indicator to show even when filter bar is hidden
+- Cooperate better with Snap theme
+

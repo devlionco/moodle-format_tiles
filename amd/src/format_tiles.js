@@ -74,7 +74,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             HEADER_OVERLAY: "header-overlay",
             OPEN: "open",
             CLOSED: "closed",
-            LAUNCH_CM_MODAL: "launch-tiles-cm-modal"
+            LAUNCH_CM_MODAL: "launch-tiles-cm-modal",
+            STATE_VISIBLE: 'state-visible' // This is a Snap theme class and was added to make this format cooperate better with it.
         };
 
         var Event = {
@@ -104,7 +105,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             $(".section " + ClassNames.SELECTED).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "");
             windowOverlay.fadeOut(300);
             headerOverlay.fadeOut(0);
-            $(Selector.MOVEABLE_SECTION).slideUp(); // Excludes section 0.
+            $(Selector.MOVEABLE_SECTION).slideUp().removeClass(ClassNames.STATE_VISIBLE); // Excludes section 0.
             if (sectionToFocus !== undefined && sectionToFocus !== 0) {
                 $("#tile-" + sectionToFocus).focus();
             }
@@ -336,7 +337,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     windowOverlay.fadeOut(300);
                 }
             };
-
+            contentArea.addClass(ClassNames.STATE_VISIBLE);
             contentArea.slideDown(350, function () {
                 // Wait until we have finished sliding down before we work out where the top is for scroll.
                 if (Math.abs(contentArea.position().top - $("#tile-" + tileId).position().top) > 300) {

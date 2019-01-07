@@ -308,6 +308,8 @@ li#section-0.section.main.clearfix {
 }
 .format-tiles .course-content ul li.section.main.moveablesection {
     padding: 30px 10px 10px 10px;
+    /* For snap theme*/
+    visibility: visible;
 }
 .format-tiles .course-content ul.tiles .tile {
     display: flex;
@@ -348,6 +350,7 @@ li#section-0.section.main.clearfix {
 
 .format-tiles ul.tiles li:empty {
     height: 0;
+    min-height: 0;
     border: none;
     box-shadow: none;
     visibility: hidden;
@@ -597,7 +600,14 @@ li#section-0.section.main.clearfix {
 #section-0 .content .summary .no-overflow {
     margin-bottom: 5px;
 }
+.format-tiles ul.tiles li.section .content {
+    /*For snap theme*/
+    display: block;
+}
 
+.format-tiles.theme-snap .course-content {
+    max-width: inherit;
+}
 .format-tiles .label_content {
     overflow: hidden;
 }
@@ -699,7 +709,6 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     display: inline-block;
     margin-bottom: 3px;
     min-height: 45px;
-    width: 100%;
 }
 
 .format-tiles .overall-prog-radial {
@@ -822,6 +831,11 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
     font-weight: normal;
     color: #666;
 }
+.format-tiles.theme-snap ul.tiles .tile h3,
+.format-tiles.theme-snap ul.tiles .subtile h4,
+.format-tiles.theme-snap ul.tiles .tile .tile-textinner.longtitle h3 {
+    font-size: 1em;
+}
 .format-tiles .sectiontitlecontainer {
     margin: 0 0 1.5em 1.5em;
     display: inline-block;
@@ -927,10 +941,11 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         margin-left: 0 !important;
         background-color: #fff;
     }
-
-    .format-tiles .pagesechead,
     .format-tiles ul.tiles li.section .content {
         margin: 0 !important;
+    }
+    .format-tiles .pagesechead {
+        margin: 0 0 0 5px;
     }
 
     .format-tiles .sectiontitlecontainer {
@@ -975,15 +990,12 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     .format-tiles ul.tiles .tile .tile-text {
         height: 130px;
     }
-
     .format-tiles .collapsiblesec0.expanded .buttonhidesec0 {
         background-color: rgba(255, 255, 255, 1) !important;
     }
-
     .format-tiles .progress-indic.percent {
         font-size: 0.7em;
     }
-
     .format-tiles .overall-prog-radial {
         display: none;
     }

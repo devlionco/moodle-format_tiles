@@ -135,9 +135,18 @@ if ($isediting) {
             'pagetype' => $PAGE->pagetype,
             'sectionId' => $displaysection,
             '', // This field is for the course default icon, but is not required when called from here so we leave blank.
-            '' // This field is for the section number, but is not required when called from here so we leave blank
+            '' // This field is for the section number, but is not required when called from here so we leave blank.
         )
     );
+    if (strpos($PAGE->pagetype, 'course-view-') === 0 && $PAGE->theme->name == 'snap') {
+        \core\notification::ERROR(
+            get_string('snapwarning', 'format_tiles') . ' ' .
+            html_writer::link(
+                get_docs_url(get_string('snapwarning_help', 'format_tiles')),
+                get_string('morehelp')
+            )
+        );
+    }
 }
 if ($course->enablecompletion) {
     $PAGE->requires->js_call_amd('format_tiles/completion', 'init',
