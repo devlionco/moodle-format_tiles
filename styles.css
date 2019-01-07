@@ -744,6 +744,17 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     border: 2px solid #666;
     font-size: 0.9em;
 }
+.format-tiles #colourselectnotify {
+    color: #212529;
+    background-color: #e9ecef;
+    border-radius: 0.2rem;
+    padding: 2px 8px;
+    height: 26px;
+    font-size: 0.9em;
+    display: none;
+    top: 0;
+    position: absolute;
+}
 .format-tiles .allcomplete .icon {
     font-size: 2em;
     width: 30px;
@@ -1295,8 +1306,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 
 .format-tiles .subtiles .instancename {
-    height: 100%;
-    width: 100%;
+    height: 98%;
+    width: 98%;
     /*this is clickable so take up whole tile*/
 }
 
@@ -1474,9 +1485,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     margin-top: 0.5em;
 }
 .format-tiles #selectedicon .icon {
-    font-size: 1.4em;
-    width: 18px;
-    height: 18px;
+    font-size: 1.9em;
+    width: 25px;
+    height: 25px;
+    color: gray;
 }
 
 .format-tiles .modal-header:focus,
@@ -1533,13 +1545,15 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     border-radius: 50%;
     display: inline-block;
     margin: 0 5px 0 5px;
+    border: 3px solid;
 }
 
 .format-tiles .colourpickercircle:hover {
-    border: 3px solid orange;
+    border-color: orange;
 }
 .format-tiles .colourpickercircle.selected {
-    border: 2px solid orange;
+    background-image: url([[pix:format_tiles|check-white]]);
+    background-size: contain;
 }
 
 .format-tiles li.dndupload-preview {

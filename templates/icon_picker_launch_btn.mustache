@@ -41,9 +41,9 @@
     }
 }}
 
+{{#initialicon}}
+    <span id="selectedicon" title="{{initialname}}">{{#pix}}tileicon/{{initialicon}}, format_tiles, {{initialname}}{{/pix}}</span>
+{{/initialicon}}
 <div id="launchiconpicker" class="btn btn-secondary launchiconpicker" data-sectionid="{{sectionId}}">
-    {{#initialicon}}
-        <span id="selectedicon">{{#pix}}tileicon/{{initialicon}}, format_tiles{{/pix}}</span>
-    {{/initialicon}}
     <span>{{#str}}changecourseicon, format_tiles{{/str}}</span>
 </div>

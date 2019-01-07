@@ -66,3 +66,9 @@
 - Ensure that if admin sets zero browser stored items, this is respected
 - Fix function which enables old browser stored items to be removed, remove redundant arg
 - Make instancename class consistent for subtile and standard activities
+
+3.3.0.13 (2019010301)
+=====================
+- Automated tests - basic tests added for Behat and PHPUnit (need more work)
+- Improve selectors for both colour and tile icon on course admin page and section edit pages including language strings
+- Ensure that label (and label like e.g. unilabel) completion changes do not result in temporary changes to tile progress counters

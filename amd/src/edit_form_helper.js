@@ -77,9 +77,11 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                 Templates.render("format_tiles/colour_picker", {
                     colours: colourSelectMenu.find("option").map(
                         function (index, option) {
-                            var colour = $(option).attr("value");
+                            var optselector = $(option);
+                            var colour = optselector.attr("value");
                             return {
                                 colour: colour,
+                                colourname: optselector.text(),
                                 selected: colour === colourSelectMenu.val(),
                                 id: colour.replace("#", "")
                             };
@@ -88,6 +90,8 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                 }).done(function (html) {
                     // Add the newly created colour picker next to the standard select menu.
                     $(html).insertAfter(colourSelectMenu);
+                    // Now that users are using the colour circles we can hide the text menu.
+                    colourSelectMenu.hide();
                     // Watch for clicks on each circle and set select menu to correct colour on click.
 
                     var circles = $(".colourpickercircle");
@@ -97,6 +101,7 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                         circles.removeClass("selected");
                         clicked.addClass("selected");
                         colourSelectMenu.val(clicked.attr("data-colour"));
+                        $("#colourselectnotify").fadeIn(200).fadeOut(1200);
                     });
 
                     colourSelectMenu.change(function () {

@@ -143,15 +143,13 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
     $brandcolourdefaults = array(
-        '#1670CC' => 'Mid blue',
-        '#00A9CE' => 'Light blue',
-        '#7A9A01' => 'Green',
-        '#009681' => 'Dark Green',
-        '#D13C3C' => 'Red',
-        '#772583' => 'Purple'
+        '#1670CC' => get_string('colourblue', 'format_tiles'),
+        '#00A9CE' => get_string('colourlightblue', 'format_tiles'),
+        '#7A9A01' => get_string('colourgreen', 'format_tiles'),
+        '#009681' => get_string('colourdarkgreen', 'format_tiles'),
+        '#D13C3C' => get_string('colourred', 'format_tiles'),
+        '#772583' => get_string('colourpurple', 'format_tiles'),
     );
-    // Originally had the above default colour names as language strings, but no point).
-    // (As they are only default names and only every seen by site admin).
     $colournumber = 1;
     foreach ($brandcolourdefaults as $hex => $displayname) {
         $settings->add(
@@ -194,8 +192,8 @@ if ($ADMIN->fulltree) {
     // Hover colour display name.
     $name = 'format_tiles/hovercolourname';
     $title = get_string('hovercolourname', 'format_tiles');
-    $description = get_string('colourname_descr', 'format_tiles');
-    $default = 'Orange';
+    $description = '';
+    $default = get_string('colourorange', 'format_tiles');
     $setting = new admin_setting_configtext($name, $title, $description, $default, PARAM_RAW, 30);
     $settings->add($setting);
 
