@@ -51,6 +51,16 @@ class format_tiles_icon_picker_icons implements renderable {
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_tiles extends format_base {
+
+    /**
+     *  We want to treat label and plugins that behave like labels as labels.
+     * E.g. we don't render them as subtiles but show their content directly on page.
+     * And we don't count them for completiontracking.
+     * This includes plugins like mod_customlabel and mod_unilabel, as defined here.
+     * @var []
+     */
+    public $labellikecoursemods = ['label', 'customlabel', 'unilabel'];
+
     /**
      * Creates a new instance of class
      *
@@ -346,10 +356,15 @@ class format_tiles extends format_base {
      * In order to populate the option menus under course setting which allow the user to select
      * a tile icon from all those available, iterates through all font awesome icons and images in
      * the relevant directory and generates a suitable menu option for each icon.
+     * As to the display name, for an icon in the pix directory (e.g. book.svg) then lang string 'icontitle-book" is sought.
+     * Likewise for a font awesome icon called 'fa-tasks', a lang string 'icontitle-tasks' is sought.
+     * If the language string is not found (e.g. it is a custom icon added to pix with no lang string), filename is used.
      * @return array of tile icons
+     * @throws coding_exception
      */
     public function format_tiles_available_icons() {
         global $CFG;
+        $stringmanager = get_string_manager();
         $availableicons = [];
         // First identify which of the font awesome icons used by this plugin are intended for use as tile icons.
         // I.e. they have the path tileicon/...
@@ -357,7 +372,11 @@ class format_tiles extends format_base {
         foreach ($fontawesomeicons as $faicon) {
             if (strpos($faicon, 'tileicon/') !== false) {
                 $iconname = explode('/', $faicon)[1];
-                $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $iconname))));
+                if ($stringmanager->string_exists('icontitle-' . $iconname, 'format_tiles')) {
+                    $displayname = get_string('icontitle-' . $iconname, 'format_tiles');
+                } else {
+                    $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $iconname))));
+                }
                 $availableicons[$iconname] = $displayname;
             }
         }
@@ -367,10 +386,17 @@ class format_tiles extends format_base {
             . '/course/format/tiles/pix/tileicon', '', false, false, true);
         foreach ($iconsindirectory as $icon) {
             $filename = explode('.', $icon)[0];
-            $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $filename))));
-            $availableicons[$filename] = $displayname;
+            // If we don't already have it from font awesome (e.g. book, flipchart, assessment_timer), then add it here.
+            if (!isset($availableicons[$filename])) {
+                if ($stringmanager->string_exists('icontitle-' . $filename, 'format_tiles')) {
+                    $displayname = get_string('icontitle-' . $filename, 'format_tiles');
+                } else {
+                    $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $filename))));
+                }
+                $availableicons[$filename] = $displayname;
+            }
         }
-        ksort($availableicons);
+        asort($availableicons);
         return $availableicons;
     }
 
@@ -897,7 +923,7 @@ class format_tiles extends format_base {
      * @throws moodle_exception
      */
     public function course_content_footer() {
-        global $PAGE;
+        global $PAGE, $DB;
         if ($PAGE->has_set_url()) {
             if ($PAGE->user_allowed_editing()) {
                 $courseid = $PAGE->course->id;
@@ -914,6 +940,8 @@ class format_tiles extends format_base {
                     if ($editingcoursesection) {
                         $sectionid = optional_param('id', 0, PARAM_INT);
                         $jsparams['sectionId'] = $sectionid;
+                        $jsparams['defaultCourseIcon'] = $this->get_format_options()['defaulttileicon'];
+                        $jsparams['section'] = $DB->get_field('course_sections', 'section', array('id' => $sectionid));
                     }
                     $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init', $jsparams);
                     return new format_tiles_icon_picker_icons();
@@ -1032,6 +1060,7 @@ function format_tiles_get_fontawesome_icon_map() {
         'format_tiles:tileicon/asterisk' => 'fa-asterisk',
         'format_tiles:tileicon/address-book' => 'fa-address-book-o',
         'format_tiles:tileicon/balance-scale' => 'fa-balance-scale',
+        'format_tiles:tileicon/bar-chart' => 'fa-bar-chart',
         'format_tiles:tileicon/bell-o' => 'fa-bell-o',
         'format_tiles:tileicon/binoculars' => 'fa-binoculars',
         'format_tiles:tileicon/bitcoin' => 'fa-bitcoin',

@@ -133,14 +133,17 @@ if ($isediting) {
         array(
             'courseId' => $course->id,
             'pagetype' => $PAGE->pagetype,
-            'sectionId' => $displaysection
+            'sectionId' => $displaysection,
+            '', // This field is for the course default icon, but is not required when called from here so we leave blank.
+            '' // This field is for the section number, but is not required when called from here so we leave blank
         )
     );
 }
 if ($course->enablecompletion) {
     $PAGE->requires->js_call_amd('format_tiles/completion', 'init',
         array(
-            get_string('complete-y-auto', 'format_tiles')
+            get_string('complete-y-auto', 'format_tiles'),
+            json_encode($courseformat->labellikecoursemods)
         )
     );
 }

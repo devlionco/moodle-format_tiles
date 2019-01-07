@@ -42,6 +42,13 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     };
 
     /**
+     * This will be populated on init with the items which we treat as labels.
+     * i.e. which we ignore for completion tracking.
+     * @type {Array}
+     */
+    var noCompletionTrackingMods = [];
+
+    /**
      * When toggleCompletionTiles() makes an AJAX call it needs to send some data
      * and this helps assemble the data
      * @param {number} tileId which tile is this for
@@ -85,6 +92,13 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      * @param {int} progressChange the amount we are changing e.g. +1 or -1
      */
     var changeProgressIndicators = function(sectionNum, tileProgressIndicator, progressChange) {
+        // TODO create a web service to get current value from server so we know it's correct.
+        // This can also handle updating the competion status instead of core below.
+        if( tileProgressIndicator.attr(dataKeys.numberComplete) ==0 && progressChange < 0) {
+            // If we are already at zero, do not reduce.  May happen rarely if user presses repeatedly,
+            // Will not cause a long term issue as will be resolved when user refreshes page.
+            return;
+        }
         // Get the tile's new progress value.
         var newTileProgressValue = Math.min(
             parseInt(tileProgressIndicator.attr(dataKeys.numberComplete)) + progressChange,
@@ -159,11 +173,19 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     $(".complete-n-" + cmid).fadeIn(200).fadeOut(1000);
                     completionImage.attr("src", imageUrl.replace("completion-y", "completion-n"));
                 }
-                changeProgressIndicators(
-                   form.attr(dataKeys.section),
-                    $("#tileprogress-" + form.attr(dataKeys.section)),
-                    progressChange
-                );
+                if (!completionState.closest("li.activity").is(
+                    // If the activity is not one of the mods we ignore for completion tracking e.g. label.
+                    noCompletionTrackingMods.map(function(cls) {
+                        return "." + cls;
+                    }).join(','))
+                ) {
+                    // We do not do this for labels, as they are not included in completion tracking.
+                    changeProgressIndicators(
+                        form.attr(dataKeys.section),
+                        $("#tileprogress-" + form.attr(dataKeys.section)),
+                        progressChange
+                    );
+                }
             }
         })
             .fail(function () {
@@ -191,12 +213,12 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     };
 
     return {
-        init: function (strCompleteAuto) {
+        init: function (strCompleteAuto, labelLikeCourseMods) {
             $(document).ready(function () {
-                 // Trigger toggle completion event if check box is clicked.
-                 // Included like this so that later dynamically added boxes are covered.
-
+                noCompletionTrackingMods = JSON.parse(labelLikeCourseMods);
                 strings.completeauto = strCompleteAuto;
+                // Trigger toggle completion event if check box is clicked.
+                // Included like this so that later dynamically added boxes are covered.
                 $("body").on("click", ".togglecompletion", function (e) {
                     // Send the toggle to the database and change the displayed icon.
                     e.preventDefault();
