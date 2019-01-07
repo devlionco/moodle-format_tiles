@@ -36,9 +36,9 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         section: "data-section"
     };
     var Selector = {
-        launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
         launchModuleModal: '[data-action="launch-tiles-module-modal"]',
         pageContent: "#page-content",
+        resourceModule: '.activity.resource'
     };
 
     // This will be populated on init with the items which we treat as labels.
@@ -206,6 +206,9 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
             completionIcon.attr('data-completionstate', 1);
             completionIcon.attr('data-original-title', strings.completeauto);
             completionIcon.tooltip();
+
+            var sectionNum = completionIcon.closest('li.section.main').attr('data-section');
+            changeProgressIndicators(sectionNum, $("#tileprogress-" + sectionNum), 1);
         }
     };
 
@@ -222,7 +225,8 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     toggleCompletionTiles($(e.currentTarget));
                 });
 
-                $(Selector.pageContent).on("click", Selector.launchResourceModal, function (e) {
+                $(Selector.pageContent).on("click", Selector.resourceModule, function (e) {
+                    // We do this for all resources e.g. Word docs, PDFs as soon as the user clicks them.
                     markAsAutoComplete(e);
                 });
 
