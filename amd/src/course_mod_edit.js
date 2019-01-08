@@ -191,7 +191,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                 useSubtiles: 1,
                 isEmbeddedResource: 0,
                 clickable: 1,
-                isediting: 1
+                isediting: 1,
+                visible: 1
             };
             returnData.isPdf = returnData.modResourceType === "pdf";
             return returnData;
