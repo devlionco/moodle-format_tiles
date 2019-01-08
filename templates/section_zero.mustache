@@ -109,10 +109,10 @@
                             <div id="filterbutton-all" class="filterbutton" data-buttonid="all" data-sections="[all]">
                                 {{#str}}all, format_tiles{{/str}}
                             </div>
-                            {{#overall_progress_indicator}}
-                                {{> format_tiles/progress}}
-                            {{/overall_progress_indicator}}
                         </div>
+                        {{#overall_progress_indicator}}
+                            {{> format_tiles/progress}}
+                        {{/overall_progress_indicator}}
                     {{/has_filter_buttons}}
                 {{/is_multi_section}}
             {{/isediting}}
