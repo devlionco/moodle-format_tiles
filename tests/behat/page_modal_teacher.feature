@@ -1,4 +1,4 @@
-@format @format_tiles @page_modal_teacher_nosubtiles @javascript
+@format @format_tiles @page_modal @page_modal_teacher @javascript
 Feature: Teacher can add a page to a course and open it with subtiles off
 
   Background:
@@ -12,7 +12,7 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And the following "activities" exist:
       | activity | name        | intro                 | course | idnumber | section | visible |
       | quiz     | Test quiz   | Test quiz description | C1     | quiz1    | 1       | 1       |
-      | page     | Test page 1 | Test page description | C1     | page1    | 1       | 1       |
+      | page     | Test page 1 | Test page 1 description | C1     | page1    | 1       | 1       |
     And the following "course enrolments" exist:
       | user     | course | role           |
       | student1 | C1     | student        |
@@ -57,8 +57,18 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And I click on "Close" "button"
     And I wait until the page is ready
 
+#    Chck that we can see the original page too (as well as the one we added)
+    And I wait until activity "Test page 1" exists in "non-subtile" format
+    And I click format tiles activity "Test page 1"
+    And I wait "1" seconds
+    And "Test page 1" "dialogue" should be visible
+    And "Test page 1 description" "text" should be visible
+    And "Close" "button" should exist in the "Test page 1" "dialogue"
+    And I click on "Close" "button"
+    And I wait until the page is ready
+
     And I click on close button for tile "1"
-    And "Test page content" "text" should not be visible
+    And "Test page 1" "text" should not be visible
+    And "Test page name 2" "text" should not be visible
     And I wait "1" seconds
     And I log out
-

@@ -1,4 +1,4 @@
-@format @format_tiles @page_modal_student_subtiles @javascript
+@format @format_tiles @page_modal  @page_modal_student @javascript
 Feature: Student can open a page
 
   Background:
@@ -29,6 +29,26 @@ Feature: Student can open a page
   @javascript
   Scenario: Open page using modal as student with subtiles on
     When format_tiles subtiles are on for course "Course 2"
+    And I log in as "student1"
+    And I am on "Course 2" course homepage
+    And I click on tile "3"
+    And I wait until the page is ready
+    And I click format tiles activity "Test page name"
+    And I wait until the page is ready
+    And "Test page name" "dialogue" should be visible
+    And "Test page content" "text" should be visible
+    And "Close" "button" should exist in the "Test page name" "dialogue"
+    And I click on "Close" "button"
+    And I wait until the page is ready
+
+    And I click on close button for tile "3"
+    And I wait "1" seconds
+    And "Test page content" "text" should not be visible
+    And I log out
+
+  @javascript
+  Scenario: Open page using modal as student - with subtiles off
+    When format_tiles subtiles are off for course "Course 2"
     And I log in as "student1"
     And I am on "Course 2" course homepage
     And I click on tile "3"

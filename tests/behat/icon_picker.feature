@@ -39,7 +39,7 @@ Feature: Teacher can allocate icons to tiles
     And I click on "#tileicon_1" "css_element"
     And I wait until the page is ready
     And "Pick a new icon" "dialogue" should be visible
-    And I click on ".tile-icon[title=\"Map O\"]" "css_element" in the "#icon_picker_modal_1" "css_element"
+    And I click on ".tile-icon[title=\"Map\"]" "css_element" in the "#icon_picker_modal_1" "css_element"
     And I wait until the page is ready
     And I click on "#tileicon_2" "css_element"
     And I wait until the page is ready
@@ -47,7 +47,7 @@ Feature: Teacher can allocate icons to tiles
     And I wait until the page is ready
     And I click on "#tileicon_3" "css_element"
     And I wait until the page is ready
-    And I click on ".tile-icon[title=\"Star\"]" "css_element" in the "#icon_picker_modal_3" "css_element"
+    And I click on ".tile-icon[title=\"Star (shaded)\"]" "css_element" in the "#icon_picker_modal_3" "css_element"
     And I wait until the page is ready
     And I click on "#tileicon_4" "css_element"
     And I wait until the page is ready
@@ -55,7 +55,7 @@ Feature: Teacher can allocate icons to tiles
     And I wait until the page is ready
     And I click on "#tileicon_5" "css_element"
     And I wait until the page is ready
-    And I click on ".tile-icon[title=\"Gbp\"]" "css_element" in the "#icon_picker_modal_5" "css_element"
+    And I click on ".tile-icon[title=\"British pound\"]" "css_element" in the "#icon_picker_modal_5" "css_element"
     And I wait until the page is ready
 
 #    // one title edit just to check we can after the above (this is also done elsewhere)
