@@ -1,4 +1,4 @@
-@format @format_tiles @mod_modal @page_modal_teacher @javascript
+@format @format_tiles @format_tiles_mod_modal @format_tiles_page_modal_teacher @javascript
 Feature: Teacher can add a page to a course and open it with subtiles off
 
   Background:

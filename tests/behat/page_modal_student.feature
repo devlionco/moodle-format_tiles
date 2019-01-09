@@ -1,4 +1,4 @@
-@format @format_tiles @mod_modal  @page_modal_student @javascript
+@format @format_tiles @format_tiles_mod_modal  @format_tiles_page_modal_student @javascript
 Feature: Student can open a page
 
   Background:

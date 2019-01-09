@@ -1,4 +1,4 @@
-@format @format_tiles @mod_modal @pdf_modal_student  @javascript
+@format @format_tiles @format_tiles_mod_modal @format_tiles_pdf_modal_student  @javascript
 Feature: PDFs can be set to open in modal windows
   In order to improve UX
   As a student
