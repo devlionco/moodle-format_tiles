@@ -152,23 +152,24 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         var url = config.wwwroot + "/course/togglecompletion.php";
         $.post(url, data, function (returnData, status) {
             if (status === "success" && returnData === "OK") {
-                var imageUrl = form.find("img").attr("src");
                 var progressChange;
-                var completionImage = $(".completion_img_" + cmid).find(".icon");
+                var completionImage = $(".completion_img_" + cmid);
                 if (completionState.attr("value") === "1") {
+                    // We have checked a progress box.
                     // Change check box(es) to ticked,
                     // And set the value(s) to zero so that if re-clicked, goes back to unchecked.
                     $("#completion_dynamic_change").attr("value", 0);
                     completionState.attr("value", 0);
                     progressChange = +1;
-                    completionImage.attr("src", imageUrl.replace("completion-n", "completion-y"));
+                    completionImage.addClass("completion-state-1").removeClass("completion-state-0");
                     $(".complete-y-" + cmid).fadeIn(200).fadeOut(1000);
                 } else {
+                    // We have un-checked a progress box.
                     $("#completion_dynamic_change").attr("value", 1);
                     completionState.attr("value", 1);
                     progressChange = -1;
                     $(".complete-n-" + cmid).fadeIn(200).fadeOut(1000);
-                    completionImage.attr("src", imageUrl.replace("completion-y", "completion-n"));
+                    completionImage.addClass("completion-state-0").removeClass("completion-state-1");
                 }
                 if (!completionState.closest("li.activity").is(
                     // If the activity is not one of the mods we ignore for completion tracking e.g. label.
@@ -199,10 +200,9 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      * @param {object} e the event when the launch modal click happened.
      */
     var markAsAutoComplete = function(e) {
-        var completionIcon = $(e.currentTarget).closest("li.activity").find('.completioncheckbox');
+        var completionIcon = $(e.currentTarget).closest("li.activity").find('.completion-icon');
         if (completionIcon.attr('data-ismanual') === "0" && completionIcon.attr('data-completionstate') === "0") {
-            var icon = completionIcon.find('.icon');
-            icon.attr('src', icon.attr('src').replace('completion-n', 'completion-y'));
+            completionIcon.addClass("completion-state-1").removeClass("completion-state-0");
             completionIcon.attr('data-completionstate', 1);
             completionIcon.attr('data-original-title', strings.completeauto);
             completionIcon.tooltip();
