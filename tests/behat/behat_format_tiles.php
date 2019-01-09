@@ -61,6 +61,71 @@ class behat_format_tiles extends behat_base {
         $courseformat->update_course_format_options(array('id' => $courseid, 'courseusesubtiles' => $onoff));
     }
 
+
+    /**
+     * @Given format_tiles progress indicator is showing as :progresstype for course :coursefullname
+     * @param $progresstype
+     * @throws \Behat\Mink\Exception\ExpectationException
+     * @throws dml_exception
+     */
+    public function progress_indicator_showing_as($progresstype, $coursefullname) {
+        global $DB;
+        if(strtolower($progresstype) == 'percent'){
+            $numerictype = 2;
+        } else if(strtolower($progresstype) == 'numeric'){
+            $numerictype = 1;
+        } else {
+            throw new \Behat\Mink\Exception\ExpectationException("Indicator type must be percent or numeric", $this->getSession());
+        }
+        $courseid = $DB->get_field('course', 'id', array('fullname' => $coursefullname), MUST_EXIST);
+        $courseformat = course_get_format($courseid);
+        $courseformat->update_course_format_options(array('id' => $courseid, 'courseshowtileprogress' => $numerictype));
+    }
+
+    /**
+     * @Given format_tiles progress indicator for :activitytitle in :coursefullname has been set to :value in the database
+     * @param $activitytitle
+     * @param $coursefullname
+     * @param $value
+     * @throws \Behat\Mink\Exception\ExpectationException
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public function progress_indicator_for_page_in_is_set_to($activitytitle, $coursefullname, $value) {
+        global $DB;
+        $user = $this->get_session_user();
+        $courseid = $DB->get_field('course', 'id', array('fullname' => $coursefullname), MUST_EXIST);
+        $modinfo = get_fast_modinfo($courseid);
+        $cminfos = $modinfo->get_instances_of('page');
+        $pagecms = [];
+        foreach($cminfos as $cminfo){
+            $pagecms[$cminfo->name] = $cminfo->id;
+        }
+        $this->wait_for_pending_js(); // Wait for AJAX request to complete;
+        $this->getSession()->wait(1000);
+        $completionstate = $DB->get_field(
+            'course_modules_completion',
+            'completionstate',
+            array(
+                'coursemoduleid' => $pagecms[$activitytitle],
+                'userid' => $user->id
+            )
+        );
+        if($completionstate == $value || !$completionstate && !$value) {
+            return;
+        } else if ($completionstate == false){
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Completion state should be " . $value . " but no record found for " . $activitytitle,
+                $this->getSession()
+            );
+        } else {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Completion state should be " . $value . " but found '" . $completionstate . "' for " . $activitytitle . ' cmid ' . $pagecms[$activitytitle],
+                $this->getSession()
+            );
+        }
+    }
+
     /**
      * @Given activity in format tiles is dimmed :activityname
      * @param $activityname
@@ -97,6 +162,7 @@ class behat_format_tiles extends behat_base {
 
         // Click the tile.
         $this->execute("behat_general::i_click_on", array("//li[@id=" . $tileid . "]", "xpath_element"));
+        $this->getSession()->wait(1000); // Important to wait here as page is scrolling and might click wrong thing after.
     }
 
     /**
@@ -126,7 +192,10 @@ class behat_format_tiles extends behat_base {
         } else if ($format == 'non-subtile') {
             $liclass = 'activity';
         } else {
-            throw new invalid_parameter_exception('Invalid activity format - must be subtile or non-subtile');
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'Invalid activity format - must be subtile or non-subtile',
+                $this->getSession()
+            );
         }
         // We wait until the AJAX request finishes and the activity is visible.
         // xpath is to find the li (the ancestor) which contains an element where the text is activity name.
@@ -153,5 +222,22 @@ class behat_format_tiles extends behat_base {
             $this->getSession()->wait(self::REDUCED_TIMEOUT * 1000);
         }
         $this->execute("behat_general::i_click_on", array($this->escape($xpath), "xpath_element"));
+    }
+
+    /**
+     * I click a tile's progress indicator
+     *
+     * @Given I click format tiles progress indicator for :activitytitle
+     * @param $tilenumber
+     * @throws Exception
+     */
+    public function i_click_progress_indicator_for($activitytitle) {
+        $activitytitle = behat_context_helper::escape($activitytitle);
+
+        // Click the button.
+        $xpath = "//li[contains(@class, 'activity') and @data-title=" . $activitytitle . "]/descendant::button[@title=\"Click to toggle completion status\"][1]";
+        $this->execute("behat_general::i_click_on", array($xpath, "xpath_element"));
+        $this->execute('behat_general::wait_until_the_page_is_ready');
+        $this->wait_for_pending_js();  // Important to wait for pending JS here so as await AJAX response.
     }
 }
