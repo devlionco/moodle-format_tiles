@@ -263,7 +263,14 @@ class format_tiles extends format_base {
                 $settingnode = $node->add(
                     get_string('jsdeactivate', 'format_tiles'),
                     $url->out(),
-                    navigation_node::TYPE_SETTING
+                    navigation_node::TYPE_SETTING,
+                    null,
+                    null,
+                    new pix_icon(
+                        'toggle-on',
+                        get_string('jsdeactivate', 'format_tiles'),
+                        'format_tiles'
+                    )
                 );
                 $settingnode->nodetype = navigation_node::NODETYPE_LEAF;
                 // Can't add classes or ids here if using boost (works in clean).
@@ -276,7 +283,13 @@ class format_tiles extends format_base {
                     $settingnode = $node->add(
                         get_string('datapref', 'format_tiles'),
                         $url->out(),
-                        navigation_node::TYPE_SETTING
+                        navigation_node::TYPE_SETTING,
+                        null,
+                        null,
+                        new pix_icon(
+                            'i/db',
+                            get_string('datapref', 'format_tiles')
+                        )
                     );
                     $settingnode->nodetype = navigation_node::NODETYPE_LEAF;
 
@@ -289,7 +302,14 @@ class format_tiles extends format_base {
                 $settingnode = $node->add(
                     get_string('jsactivate', 'format_tiles'),
                     new moodle_url('/course/view.php', array('id' => $course->id, 'stopjsnav' => 1)),
-                    navigation_node::TYPE_SETTING
+                    navigation_node::TYPE_SETTING,
+                    null,
+                    null,
+                    new pix_icon(
+                        'toggle-off',
+                        get_string('jsactivate', 'format_tiles'),
+                        'format_tiles'
+                    )
                 );
                 $settingnode->nodetype = navigation_node::NODETYPE_LEAF;
 
@@ -1033,6 +1053,8 @@ function format_tiles_get_fontawesome_icon_map() {
         'format_tiles:star' => 'fa-star',
         'format_tiles:stop' => 'fa-stop',
         'format_tiles:table' => 'fa-table',
+        'format_tiles:toggle-off' => 'fa-toggle-off',
+        'format_tiles:toggle-on' => 'fa-toggle-on',
         'format_tiles:trash-o' => 'fa-trash-o',
         'format_tiles:volume-up' => 'fa-volume-up',
 
