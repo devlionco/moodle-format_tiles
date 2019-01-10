@@ -1,5 +1,5 @@
-@format @format_tiles @format_tiles_mod_modal @format_tiles_pdf_modal_teacher @javascript
-Feature: PDFs can be set to open in modal windows with subtiles off
+@format @format_tiles @format_tiles_mod_modal @format_tiles_html_modal_teacher @javascript
+Feature: HTML file can be set to open in modal windows with subtiles off
   In order to improve UX
   As a user
   I need to be able to use these modals
@@ -39,52 +39,54 @@ Feature: PDFs can be set to open in modal windows with subtiles off
     And I add a "File" to section "1"
     And I wait until the page is ready
     And I set the following fields to these values:
-      | Name        | Test PDF         |
-      | Description | File description |
+      | Name        | Test HTML file         |
+      | Description | File description       |
     And I set the field "Completion tracking" to "Students can manually mark the activity as completed"
-    And I upload "course/format/tiles/tests/fixtures/test.pdf" file to "Select files" filemanager
+    And I upload "course/format/tiles/tests/fixtures/test.html" file to "Select files" filemanager
     And I expand all fieldsets
     And I set the field "Show type" to "1"
     And I press "Save and return to course"
-    Then I should see "Test PDF"
+    Then I should see "Test HTML file"
     And I log out
 
-  #  First check can see the PDF with subtiles off
+  #  First check can see the HTML with subtiles off
   @javascript
-  Scenario: Open section 1 view PDF as teacher with subtiles off
+  Scenario: Open section 1 view HTML file as teacher with subtiles off
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And format_tiles subtiles are off for course "Course 1"
     And I click on tile "1"
     And I wait until the page is ready
-    And I click format tiles activity "Test PDF"
+    And I click format tiles activity "Test HTML file"
     And I wait until the page is ready
-    Then "Test PDF" "dialogue" should be visible
-    And I click on "Click to toggle completion status" "button" in the "Test PDF" "dialogue"
-    And I click on "Click to toggle completion status" "button" in the "Test PDF" "dialogue"
-    And "Close" "button" should exist in the "Test PDF" "dialogue"
+    Then "Test HTML file" "dialogue" should be visible
+#    TODO test that we can see "Test HTML file content" too (is in embedded HTML document virtual element)?
+    And I click on "Click to toggle completion status" "button" in the "Test HTML file" "dialogue"
+    And I click on "Click to toggle completion status" "button" in the "Test HTML file" "dialogue"
+    And "Close" "button" should exist in the "Test HTML file" "dialogue"
     And I click on "Close" "button"
     And I wait until the page is ready
-    And "Test PDF" "dialogue" should not be visible
+    And "Test HTML file" "dialogue" should not be visible
     And I click on close button for tile "1"
 
 #  Now with subtiles on
   @javascript
-  Scenario: Open section 1 add PDF as teacher with subtiles on
+  Scenario: Open section 1 add HTML file as teacher with subtiles on
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And format_tiles subtiles are on for course "Course 1"
     And I click on tile "1"
     And I wait until the page is ready
-    And I click format tiles activity "Test PDF"
+    And I click format tiles activity "Test HTML file"
     And I wait until the page is ready
-    Then "Test PDF" "dialogue" should be visible
-    And I click on "Click to toggle completion status" "button" in the "Test PDF" "dialogue"
-    And I click on "Click to toggle completion status" "button" in the "Test PDF" "dialogue"
-    And "Close" "button" should exist in the "Test PDF" "dialogue"
+    Then "Test HTML file" "dialogue" should be visible
+    #    TODO test that we can see "Test HTML file content" too (is in embedded HTML document virtual element)?
+    And I click on "Click to toggle completion status" "button" in the "Test HTML file" "dialogue"
+    And I click on "Click to toggle completion status" "button" in the "Test HTML file" "dialogue"
+    And "Close" "button" should exist in the "Test HTML file" "dialogue"
     And I click on "Close" "button"
     And I wait until the page is ready
-    And "Test PDF" "dialogue" should not be visible
+    And "Test HTML file" "dialogue" should not be visible
     And I click on close button for tile "1"
     And I wait until the page is ready
     And I log out

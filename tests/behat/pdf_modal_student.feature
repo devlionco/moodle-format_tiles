@@ -41,7 +41,7 @@ Feature: PDFs can be set to open in modal windows
       | Name        | Test PDF         |
       | Description | File description |
     And I set the field "Completion tracking" to "Students can manually mark the activity as completed"
-    And I upload "mod/assign/feedback/editpdf/tests/fixtures/submission.pdf" file to "Select files" filemanager
+    And I upload "course/format/tiles/tests/fixtures/test.pdf" file to "Select files" filemanager
     And I expand all fieldsets
     And I set the field "Show type" to "1"
     And I press "Save and return to course"
