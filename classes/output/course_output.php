@@ -126,7 +126,7 @@ class course_output implements \renderable, \templatable
         $coursecontext = \context_course::instance($this->course->id);
         $data['canviewhidden'] = has_capability('moodle/course:viewhiddensections', $coursecontext);
         $data['canedit'] = has_capability('moodle/course:update', $coursecontext);
-        $data['isediting'] = $PAGE->user_is_editing() && $data['canedit'];
+        $data['isediting'] = $PAGE->user_is_editing();
         $data['courseid'] = $this->course->id;
         $data['completionenabled'] = $this->course->enablecompletion;
         $data['usingjsnav'] = get_config('format_tiles', 'usejavascriptnav')
@@ -307,7 +307,6 @@ class course_output implements \renderable, \templatable
             $data['overall_progress']['num_complete'] = 0;
             $data['overall_progress']['num_out_of'] = 0;
         }
-        $data['isediting'] = $PAGE->user_is_editing();
         $data['hasNoSections'] = true;
 
         foreach ($modinfo->get_section_info_all() as $sectionid => $section) {
