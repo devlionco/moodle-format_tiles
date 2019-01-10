@@ -38,6 +38,7 @@ Feature: PDFs can be set to open in modal windows with subtiles off
     And I click on "#expand1" "css_element"
     And I add a "File" to section "1"
     And I wait until the page is ready
+    And I wait "1" seconds
     And I set the following fields to these values:
       | Name        | Test PDF         |
       | Description | File description |
