@@ -731,8 +731,8 @@ class course_output implements \renderable, \templatable
                 $moduleobject['launchtype'] = 'module-modal';
             }
             $moduleobject['showdescription'] = isset($mod->showdescription) ? $mod->showdescription : 0;
-            if ($moduleobject['showdescription'] && isset($mod->content)) {
-                $moduleobject['intro'] = $mod->content;
+            if ($moduleobject['showdescription']) {
+                $moduleobject['intro'] = $mod->get_formatted_content();
             }
 
             if ($this->treat_as_label($mod)) {
