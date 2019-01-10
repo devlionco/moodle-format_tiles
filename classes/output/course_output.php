@@ -680,12 +680,14 @@ class course_output implements \renderable, \templatable
             $moduleobject['url'] = $mod->url;
             $moduleobject['visible'] = $mod->visible;
             $moduleobject['launchtype'] = 'standard';
-            if ($mod->modname !== 'unilabel') {
-                $moduleobject['content'] = $mod->get_formatted_content();
-            } else {
-                // TODO this needs more testing as to whether it's just unilabel plugin that should use $mod->content.
-                // TODO maybe all mods can do the same.  Not changed yet out of caution.  Watch pluginfile rewrite.
+
+            if ($mod->modname == 'unilabel') {
+                // For unilabel we use $mod->content, as calling get_formatted_content causes an error for unilabel collapsible sections.
                 $moduleobject['content'] = $mod->content;
+            } else {
+                // For all other modules, we call get_formatted_content, as otherwise we get errors with MP3 media player etc.
+                // Get_formatted_content calls format_text which initalises filters etc.
+                $moduleobject['content'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
             }
 
             // We set this here, with the value from the last loop, before updating it in the next block.
