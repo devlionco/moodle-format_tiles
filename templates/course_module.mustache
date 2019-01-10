@@ -233,4 +233,13 @@
             {{/useSubtiles}}
         {{/completionInUseForCm}}
     </span>
+    {{^useSubtiles}}
+        {{#showdescription}}
+            <div class="contentafterlink">
+                <div class="no-overflow">
+                    {{{intro}}}
+                </div>
+            </div>
+        {{/showdescription}}
+    {{/useSubtiles}}
 </li>

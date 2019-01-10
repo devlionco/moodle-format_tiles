@@ -715,10 +715,6 @@ class course_output implements \renderable, \templatable
                     $moduleobject['isEmbeddedResource'] = 1;
                     $moduleobject['launchtype'] = 'resource-modal';
                     $moduleobject['pluginfileUrl'] = $this->plugin_file_url($mod);
-                    if ($mod->showdescription) {
-                        $resource = $DB->get_record('resource', array('id' => $mod->instance), '*', MUST_EXIST);
-                        $moduleobject['intro'] = $resource->intro;
-                    }
                 } else {
                     // We don't want to embed the file in a modal.
                     // If this is a mobile device or tablet, override the standard URL (already allocated above).
@@ -734,14 +730,11 @@ class course_output implements \renderable, \templatable
             if (array_search($mod->modname, $this->usemodalsforcoursemodules['modules']) > -1) {
                 $moduleobject['isEmbeddedModule'] = 1;
                 $moduleobject['launchtype'] = 'module-modal';
-                if ($mod->name == 'page') {
-                    $modrecord = $DB->get_record($mod->name, array('id' => $mod->instance), '*', MUST_EXIST);
-                    if ($mod->showdescription) {
-                        $moduleobject['intro'] = $modrecord->intro;
-                    }
-                }
             }
             $moduleobject['showdescription'] = isset($mod->showdescription) ? $mod->showdescription : 0;
+            if ($moduleobject['showdescription'] && isset($mod->content)) {
+                $moduleobject['intro'] = $mod->content;
+            }
 
             if ($this->treat_as_label($mod)) {
                 $moduleobject['description'] = $mod->get_formatted_content();
