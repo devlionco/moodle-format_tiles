@@ -28,8 +28,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage", "core/notification", "core/str", "core/config"],
-    function ($, Templates, ajax, browserStorage, Notification, str, config) {
+define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
+        "core/notification", "core/str", "core/config", "media_videojs/loader"],
+    function ($, Templates, ajax, browserStorage, Notification, str, config, media) {
         "use strict";
 
         var body = $("body");
@@ -251,6 +252,11 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         contentArea.find(".tag-info").tooltip(); // E.g. "Restricted until 1 January..."
                     }, 500);
                 }
+                // As we have just loaded new content, ensure that we initialise media player if required.
+                if (contentArea.find(".mediaplugin").length !== 0) {
+                    media.setUp();
+                }
+
                 return true;
             }
             return false;
