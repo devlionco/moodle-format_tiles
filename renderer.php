@@ -452,8 +452,13 @@ class format_tiles_renderer extends format_section_renderer_base
      */
     public function format_cm_content_text($mod, $record) {
         $context = context_module::instance($mod->id);
+        if(isset($record->intro)){
+            $content = $record->intro . $record->content;
+        } else {
+            $content = $record->content;
+        }
         $text = file_rewrite_pluginfile_urls(
-            $record->content,
+            $content,
             'pluginfile.php',
             $context->id,
             'mod_' . $mod->modname,

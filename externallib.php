@@ -255,7 +255,7 @@ class format_tiles_external extends external_api
             }
             if ($mod->modname == 'page') {
                 // Record from the page table.
-                $record = $DB->get_record($mod->modname, array('id' => $mod->instance), 'content, revision, contentformat');
+                $record = $DB->get_record($mod->modname, array('id' => $mod->instance), 'intro, content, revision, contentformat');
                 $renderer = $PAGE->get_renderer('format_tiles');
                 $content = $renderer->format_cm_content_text($mod, $record);
                 $result['status'] = true;
