@@ -1161,7 +1161,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     opacity: 1;
     border-top-color: lightgray !important;
 }
-
+.format-tiles .dimmed .label_content {
+    color: gray;
+}
 .format-tiles li.activity.subtile:hover {
     background-size: 60px auto;
     transition: background-size 0.5s ease-in-out;
