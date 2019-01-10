@@ -70,9 +70,9 @@ class behat_format_tiles extends behat_base {
      */
     public function progress_indicator_showing_as($progresstype, $coursefullname) {
         global $DB;
-        if(strtolower($progresstype) == 'percent'){
+        if (strtolower($progresstype) == 'percent') {
             $numerictype = 2;
-        } else if(strtolower($progresstype) == 'numeric'){
+        } else if (strtolower($progresstype) == 'numeric') {
             $numerictype = 1;
         } else {
             throw new \Behat\Mink\Exception\ExpectationException("Indicator type must be percent or numeric", $this->getSession());
@@ -98,10 +98,10 @@ class behat_format_tiles extends behat_base {
         $modinfo = get_fast_modinfo($courseid);
         $cminfos = $modinfo->get_instances_of('page');
         $pagecms = [];
-        foreach($cminfos as $cminfo){
+        foreach ($cminfos as $cminfo) {
             $pagecms[$cminfo->name] = $cminfo->id;
         }
-        $this->wait_for_pending_js(); // Wait for AJAX request to complete;
+        $this->wait_for_pending_js(); // Wait for AJAX request to complete.
         $this->getSession()->wait(1000);
         $completionstate = $DB->get_field(
             'course_modules_completion',
@@ -111,9 +111,9 @@ class behat_format_tiles extends behat_base {
                 'userid' => $user->id
             )
         );
-        if($completionstate == $value || !$completionstate && !$value) {
+        if ($completionstate == $value || !$completionstate && !$value) {
             return;
-        } else if ($completionstate == false){
+        } else if ($completionstate == false) {
             throw new \Behat\Mink\Exception\ExpectationException(
                 "Completion state should be " . $value . " but no record found for " . $activitytitle,
                 $this->getSession()

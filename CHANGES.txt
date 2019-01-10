@@ -67,7 +67,7 @@
 - Fix function which enables old browser stored items to be removed, remove redundant arg
 - Make instancename class consistent for subtile and standard activities
 
-3.3.0.13 (2019010301)
+3.3.0.14 (2019010302)
 =====================
 - Automated tests - basic tests added for Behat and PHPUnit (need more work)
 - Improve selectors for both colour and tile icon on course admin page and section edit pages including language strings
@@ -76,4 +76,14 @@
 - Improve mobile CSS
 - Overall progress indicator to show even when filter bar is hidden
 - Cooperate better with Snap theme
-
+- Re-initialise media player when loading content via AJAX
+- Improve on commit f1d0770
+- Add icons to JS and data pref menu options
+- Use formatted text for cm description
+- Dim hidden label in non subtiles mode
+- CM edit controls to be shown to non-editing teacher who has been awarded limited editing rights
+- When page modal launched, include description html as well as page content
+- Description can be shown under activity link on course page if using non subtiles and box is checked
+- When completion icon changes, change class not img url
+- Overall progress indic to be visible even if filter bar is not
+- Dragged and dropped items need to show not dimmed
