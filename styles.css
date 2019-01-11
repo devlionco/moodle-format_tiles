@@ -468,6 +468,8 @@ li#section-0.section.main.clearfix {
 .format-tiles .tileiconcontainer .icon {
     width: 55px;
     height: 55px;
+}
+.format-tiles .tileiconcontainer .icon.fa {
     font-size: 55px;
 }
 .format-tiles .course-content .icon,
