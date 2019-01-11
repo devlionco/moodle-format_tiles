@@ -736,11 +736,11 @@ class course_output implements \renderable, \templatable
             }
             $moduleobject['showdescription'] = isset($mod->showdescription) ? $mod->showdescription : 0;
             if ($moduleobject['showdescription']) {
-                $moduleobject['intro'] = $mod->get_formatted_content();
+                $moduleobject['intro'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
             }
 
             if ($this->treat_as_label($mod)) {
-                $moduleobject['description'] = $mod->get_formatted_content();
+                $moduleobject['description'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
             }
             $moduleobject['extraclasses'] = $mod->extraclasses;
             if ((!$mod->visible && !$mod->visibleold)
