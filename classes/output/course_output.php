@@ -724,7 +724,7 @@ class course_output implements \renderable, \templatable
                     // Then user can access file natively in their device (better than embedded).
                     // Otherwise the standard URL will remain i.e. mod/resource/view.php?id=...
                     if ($this->devicetype == \core_useragent::DEVICETYPE_TABLET
-                        || $this->devicetype != \core_useragent::DEVICETYPE_MOBILE) {
+                        || $this->devicetype == \core_useragent::DEVICETYPE_MOBILE) {
                         $moduleobject['url'] = $this->plugin_file_url($mod);
                     }
                 }
@@ -736,6 +736,7 @@ class course_output implements \renderable, \templatable
             }
             $moduleobject['showdescription'] = isset($mod->showdescription) ? $mod->showdescription : 0;
             if ($moduleobject['showdescription']) {
+                // The reason we need 'noclean' arg here is that otherwise youtube etc iframes will be stripped out.
                 $moduleobject['intro'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
             }
 
