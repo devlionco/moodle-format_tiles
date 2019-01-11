@@ -29,8 +29,8 @@
  */
 
 define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
-        "core/notification", "core/str", "core/config", "media_videojs/loader"],
-    function ($, Templates, ajax, browserStorage, Notification, str, config, media) {
+        "core/notification", "core/str", "core/config", ],
+    function ($, Templates, ajax, browserStorage, Notification, str, config) {
         "use strict";
 
         var body = $("body");
@@ -252,9 +252,11 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         contentArea.find(".tag-info").tooltip(); // E.g. "Restricted until 1 January..."
                     }, 500);
                 }
-                // As we have just loaded new content, ensure that we initialise media player if required.
-                if (contentArea.find(".mediaplugin").length !== 0) {
-                    media.setUp();
+                // As we have just loaded new content, ensure that we initialise videoJS media player if required.
+                if (contentArea.find(".mediaplugin.mediaplugin_videojs").length !== 0) {
+                    require(["media_videojs/loader"], function(videoJS) {
+                        videoJS.setUp();
+                    });
                 }
 
                 return true;
