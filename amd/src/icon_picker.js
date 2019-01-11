@@ -119,6 +119,19 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                                             );
                                             modal.hide();
                                         });
+
+                                        // Icon search box handling.
+                                        modalRoot.on("input", "input.icon-search", function(e) {
+                                            var searchText = e.currentTarget.value.toLowerCase();
+                                            modalRoot.find(".pickericon").show();
+                                            if (searchText.length >= 3) {
+                                                modalRoot.find(".pickericon").filter(function (index, icon) {
+                                                    // Show all icons then hide icons which do not match the search term.
+                                                    return $(icon).attr('title').toLowerCase().indexOf(searchText) < 0;
+                                                }).hide();
+                                            }
+                                        });
+
                                     });
                                 });
                         });

@@ -45,6 +45,11 @@
 
 <div class="hide fade" id="iconpickermodalbody">
     <div class="iconpickericons" id="iconpickericons_{{tileId}}">
+        <div class="icon-search-form">
+            {{#str}}search{{/str}}
+            {{#pix}}a/search, core, {{#str}}search{{/str}}{{/pix}}
+            <input type="text" class="icon-search">
+        </div>
         {{#icon_picker_icons}}
             {{> format_tiles/icon_picker_icon}}
         {{/icon_picker_icons}}
