@@ -38,7 +38,7 @@ require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 class behat_format_tiles extends behat_base {
 
     /**
-     * @Given format_tiles subtiles are on for course :coursefullname
+     * @Given /^format_tiles subtiles are on for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
      * @param $coursefullname
      */
     public function format_tiles_sub_tiles_are_on_for_course($coursefullname) {
@@ -46,7 +46,7 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
-     * @Given format_tiles subtiles are off for course :coursefullname
+     * @Given /^format_tiles subtiles are off for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
      * @param $coursefullname
      */
     public function format_tiles_sub_tiles_are_off_for_course($coursefullname) {
@@ -63,7 +63,7 @@ class behat_format_tiles extends behat_base {
 
 
     /**
-     * @Given format_tiles progress indicator is showing as :progresstype for course :coursefullname
+     * @Given /^format_tiles progress indicator is showing as "(?P<progresstype_string>(?:[^"]|\\")*)" for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
      * @param $progresstype
      * @throws \Behat\Mink\Exception\ExpectationException
      * @throws dml_exception
@@ -83,7 +83,8 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
-     * @Given format_tiles progress indicator for :activitytitle in :coursefullname has been set to :value in the database
+
+     * @Then /^format_tiles progress indicator for "(?P<activitytitle_string>(?:[^"]|\\")*)" in "(?P<coursefullname_string>(?:[^"]|\\")*)" is "(?P<value>\d+)" in the database$/
      * @param $activitytitle
      * @param $coursefullname
      * @param $value
@@ -127,7 +128,7 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
-     * @Given activity in format tiles is dimmed :activityname
+     * @Then /^activity in format tiles is dimmed "(?P<activityname_string>(?:[^"]|\\")*)"$/
      * @param $activityname
      * @return bool
      * @throws \Behat\Mink\Exception\ExpectationException
@@ -141,7 +142,7 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
-     * @Given activity in format tiles is not dimmed :activityname
+     * @Then /^activity in format tiles is not dimmed "(?P<activityname_string>(?:[^"]|\\")*)"$/
      * @param $activityname
      * @return bool
      * @throws \Behat\Mink\Exception\ExpectationException
@@ -153,7 +154,7 @@ class behat_format_tiles extends behat_base {
     /**
      * I click a tile (to open it)
      *
-     * @Given I click on tile :tilenumber
+     * @Given /^I click on tile "(?P<tilenumber>\d+)"$/
      * @param $tileumber
      * @throws Exception
      */
@@ -168,7 +169,7 @@ class behat_format_tiles extends behat_base {
     /**
      * I click a tile (to open it)
      *
-     * @Given I click on close button for tile :tilenumber
+     * @Given /^I click on close button for tile "(?P<tilenumber>\d+)"$/
      * @param $tilenumber
      * @throws Exception
      */
@@ -181,7 +182,7 @@ class behat_format_tiles extends behat_base {
     }
     /**
      * I wait until a certain activity is visible following AJAX load
-     * @Given I wait until activity :activitytitle exists in :format format
+     * @Given /^I wait until activity "(?P<activitytitle_string>(?:[^"]|\\")*)" exists in "(?P<format_string>(?:[^"]|\\")*)" format$/
      * @param $activitytitle
      * @param $format
      * @throws Exception
@@ -209,7 +210,7 @@ class behat_format_tiles extends behat_base {
     /**
      * I click a certain activity
      *
-     * @Given I click format tiles activity :activitytitle
+     * @Given /^I click format tiles activity "(?P<activitytitle_string>(?:[^"]|\\")*)"$/
      * @param $activitytitle
      * @throws Exception
      */
@@ -227,7 +228,7 @@ class behat_format_tiles extends behat_base {
     /**
      * I click a tile's progress indicator
      *
-     * @Given I click format tiles progress indicator for :activitytitle
+     * @Given /^I click format tiles progress indicator for "(?P<activitytitle_string>(?:[^"]|\\")*)"$/
      * @param $tilenumber
      * @throws Exception
      */

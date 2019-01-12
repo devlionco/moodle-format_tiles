@@ -69,16 +69,16 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And I wait until the page is ready
 
     And I click format tiles progress indicator for "Test page 1"
-    Then format_tiles progress indicator for "Test page 1" in "Course 1" has been set to "1" in the database
+    Then format_tiles progress indicator for "Test page 1" in "Course 1" is "1" in the database
 
     And I click format tiles progress indicator for "Test page 2"
-    Then format_tiles progress indicator for "Test page 2" in "Course 1" has been set to "1" in the database
+    Then format_tiles progress indicator for "Test page 2" in "Course 1" is "1" in the database
 
     And I click format tiles progress indicator for "Test page 1"
-    Then format_tiles progress indicator for "Test page 1" in "Course 1" has been set to "0" in the database
+    Then format_tiles progress indicator for "Test page 1" in "Course 1" is "0" in the database
 
     And I click format tiles progress indicator for "Test page 2"
-    Then format_tiles progress indicator for "Test page 2" in "Course 1" has been set to "0" in the database
+    Then format_tiles progress indicator for "Test page 2" in "Course 1" is "0" in the database
 
   @javascript
   Scenario: Log in as student and check/uncheck activities - results correctly shown in UI
@@ -90,15 +90,15 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And I wait until the page is ready
 
     And I click format tiles progress indicator for "Test page 1"
-    Then format_tiles progress indicator for "Test page 1" in "Course 1" has been set to "1" in the database
+    Then format_tiles progress indicator for "Test page 1" in "Course 1" is "1" in the database
 
     And I click format tiles progress indicator for "Test page 2"
-    Then format_tiles progress indicator for "Test page 2" in "Course 1" has been set to "1" in the database
+    Then format_tiles progress indicator for "Test page 2" in "Course 1" is "1" in the database
 
     And I click format tiles progress indicator for "Test page 1"
-    Then format_tiles progress indicator for "Test page 1" in "Course 1" has been set to "0" in the database
+    Then format_tiles progress indicator for "Test page 1" in "Course 1" is "0" in the database
 
     And I click format tiles progress indicator for "Test page 2"
-    Then format_tiles progress indicator for "Test page 2" in "Course 1" has been set to "0" in the database
+    Then format_tiles progress indicator for "Test page 2" in "Course 1" is "0" in the database
 
 #    TODO check that the completion values shown on the tile and overall are complete when these items change
