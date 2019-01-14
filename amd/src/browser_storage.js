@@ -397,6 +397,10 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                         cleanUp(parseInt(storedContentDeleteMins), 0, MAX_SECTIONS_TO_STORE);
                     }, 2000);
                 });
+                // If user switches to another role, clear any stored content so they only see new role's content.
+                $('a.menu-action[data-title="switchroleto,moodle"]').click(function() {
+                    cleanUp(0, 1, 0);
+                });
             });
         },
 
