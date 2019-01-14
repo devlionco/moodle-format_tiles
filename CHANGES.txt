@@ -67,7 +67,7 @@
 - Fix function which enables old browser stored items to be removed, remove redundant arg
 - Make instancename class consistent for subtile and standard activities
 
-3.3.0.15 (2019011400)
+3.3.0.16 (2019011401)
 =====================
 - Automated tests - basic tests added for Behat and PHPUnit (need more work)
 - Improve selectors for both colour and tile icon on course admin page and section edit pages including language strings
@@ -87,4 +87,6 @@
 - Overall progress indicator to be visible even if filter bar is not
 - Dragged and dropped items to show not dimmed
 - Icon text search new feature
+- Clear browser stored content when user switches role
+- Fix issue with in tile close button not always locating at top of section
 
