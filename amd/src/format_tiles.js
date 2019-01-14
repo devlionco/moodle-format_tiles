@@ -317,6 +317,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 if (windowOverlay.css(CSS.DISPLAY) === "none") {
                                     windowOverlay.fadeIn(300);
                                 }
+                            } else if (desiredNewPositionInSection < 0) {
+                                buttons.css("top", 0);
                             } else if (windowTop > contentArea.offset().top + contentArea.outerHeight() - 50) {
                                 // We have scrolled down and content bottom has gone out of the top of window.
                                 if (windowOverlay.css(CSS.DISPLAY) === "block") {
