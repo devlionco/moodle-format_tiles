@@ -135,7 +135,7 @@ class course_output implements \renderable, \templatable
         $data['canedit'] = has_capability('moodle/course:update', $coursecontext);
         $data['isediting'] = $PAGE->user_is_editing();
         $data['courseid'] = $this->course->id;
-        $data['completionenabled'] = $this->course->enablecompletion;
+        $data['completionenabled'] = $this->course->enablecompletion && !isguestuser();
         $data['usingjsnav'] = get_config('format_tiles', 'usejavascriptnav')
             && !get_user_preferences('format_tiles_stopjsnav');
         $data['userdisabledjsnav'] = get_user_preferences('format_tiles_stopjsnav');
@@ -180,7 +180,7 @@ class course_output implements \renderable, \templatable
             $data['course_activity_clipboard'] = $output->course_activity_clipboard($this->course, $this->sectionid);
         }
 
-        if ($this->course->enablecompletion) {
+        if ($data['completionenabled']) {
             $completioninfo = new \completion_info($this->course);
         } else {
             $completioninfo = null;
@@ -310,7 +310,7 @@ class course_output implements \renderable, \templatable
         $data['is_multi_section'] = true;
 
         // If using completion tracking, get the data.
-        if ($this->course->enablecompletion) {
+        if ($data['completionenabled']) {
             $data['overall_progress']['num_complete'] = 0;
             $data['overall_progress']['num_out_of'] = 0;
         }
@@ -346,7 +346,7 @@ class course_output implements \renderable, \templatable
                     );
                 }
                 // Include completion tracking data for each tile (if used).
-                if ($section->visible && $this->course->enablecompletion) {
+                if ($section->visible && $data['completionenabled']) {
                     if (isset($modinfo->sections[$sectionid])) {
                         $completionthistile = $this->section_progress(
                             $modinfo->sections[$sectionid],
@@ -356,7 +356,7 @@ class course_output implements \renderable, \templatable
                         $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
                         $data['overall_progress']['num_complete'] += $completionthistile['completed'];
 
-                        // We only add the tile values to the individdual tile if courseshowtileprogress is true.
+                        // We only add the tile values to the individual tile if courseshowtileprogress is true.
                         // (Otherwise we only retain overall completion as above, not for each tile).
                         if ($data['courseshowtileprogress']) {
                             $showaspercent = $data['courseshowtileprogress'] == 2 ? true : false;
@@ -400,7 +400,7 @@ class course_output implements \renderable, \templatable
                 $data['tiles'][] = $newtile;
             } else if ($sectionid == 0) {
                 // Add in section zero completion data to overall completion count.
-                if ($section->visible && $this->course->enablecompletion) {
+                if ($section->visible && $data['completionenabled']) {
                     if (isset($modinfo->sections[$sectionid])) {
                         $completionthistile = $this->section_progress(
                             $modinfo->sections[$sectionid],
@@ -438,7 +438,7 @@ class course_output implements \renderable, \templatable
             }
         }
         $data['section_zero_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control($this->course, 0, 0);
-        if ($this->course->enablecompletion && $data['overall_progress']['num_out_of'] > 0) {
+        if ($data['completionenabled'] && $data['overall_progress']['num_out_of'] > 0) {
             $data['overall_progress_indicator'] = $this->completion_indicator(
                 $data['overall_progress']['num_complete'],
                 $data['overall_progress']['num_out_of'],
