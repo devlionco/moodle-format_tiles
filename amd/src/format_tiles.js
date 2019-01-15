@@ -29,7 +29,7 @@
  */
 
 define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
-        "core/notification", "core/str", "core/config", ],
+        "core/notification", "core/str", "core/config"],
     function ($, Templates, ajax, browserStorage, Notification, str, config) {
         "use strict";
 

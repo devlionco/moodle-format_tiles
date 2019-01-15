@@ -193,8 +193,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param stdClass $section The course_section entry from DB
      * @return string HTML to output.
      */
+    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_edit_control_menu($controls, $course, $section) {
-        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_edit_control_menu($controls, $course, $section);
     }
 
@@ -288,8 +288,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param stdClass $section
      * @return string
      */
+    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function format_summary_text($section) {
-        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::format_summary_text($section);
     }
 
@@ -383,8 +383,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param bool $canviewhidden True if user can view hidden sections
      * @return string HTML to output
      */
+    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_availability_message($section, $canviewhidden) {
-        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_availability_message($section, $canviewhidden);
     }
 
@@ -395,8 +395,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param int $sectionno The section number in the coruse which is being dsiplayed
      * @return string HTML to output.
      */
+    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function course_activity_clipboard($course, $sectionno = null) {
-        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::course_activity_clipboard($course, $sectionno);
     }
 
@@ -409,8 +409,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param bool $onsectionpage true if being printed on a section page
      * @return string HTML to output.
      */
+    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_left_content($section, $course, $onsectionpage) {
-        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_left_content($section, $course, $onsectionpage);
     }
 
@@ -423,8 +423,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param bool $onsectionpage true if being printed on a section page
      * @return string HTML to output.
      */
+    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_right_content($section, $course, $onsectionpage) {
-        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::section_right_content($section, $course, $onsectionpage);
     }
 
@@ -435,8 +435,8 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param int|null $sectionreturn
      * @return string
      */
+    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function change_number_sections($course, $sectionreturn = null) {
-        // Override this here so we have access from the output class, but just call the parent (protected).
         return parent::change_number_sections($course, $sectionreturn);
     }
 

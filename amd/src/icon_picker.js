@@ -145,7 +145,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                         selectedIconName = $("#id_defaulttileicon option:selected").text();
                     } else if (pageType === "course-editsection") {
                         selectBox = $("#id_tileicon");
-                        selectedIconName = $("#id_tileicon option:selected" ).text();
+                        selectedIconName = $("#id_tileicon option:selected").text();
                     }
 
                     // If we are on the course edit settings form, render a button to be added to it.

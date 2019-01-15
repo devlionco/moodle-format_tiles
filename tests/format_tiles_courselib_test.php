@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// @codingStandardsIgnoreStart - ignore whole file this since it is copied from an old core file.
+
 /**
  * Course related unit tests for format tiles
  * This is a copy of core courselib_test but with the format changed to tiles instead of topics or weeks.
@@ -4116,3 +4118,5 @@ class format_tiles_course_courselib_testcase extends advanced_testcase {
         $this->assertFalse(can_download_from_backup_filearea('testing', $context, $user));
     }
 }
+
+// @codingStandardsIgnoreEnd

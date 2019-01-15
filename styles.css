@@ -206,6 +206,7 @@ li#section-0.section.main.clearfix {
 .format-tiles ul.tiles .sectiondraggable .alert.alert-warning {
     margin-left: 70px;
     width: 100%; /*fallback*/
+    /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
     width: calc(100% - 11em);
 }
 
@@ -216,11 +217,13 @@ li#section-0.section.main.clearfix {
 .format-tiles ul.tiles .sectiondraggable .alert.alert-danger {
     margin-left: 40px;
     width: 100%; /*fallback*/
+    /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
     width: calc(100% - 9em);
 }
 
 .format-tiles ul.tiles .sectiondraggable .tile_bar.narrow {
     width: 100%; /*fallback*/
+    /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
     width: calc(100% - 8em);
 }
 
@@ -295,7 +298,9 @@ li#section-0.section.main.clearfix {
     margin-top: 30px;
 }
 .format-tiles .activity:target {
+    /* stylelint-disable-next-line declaration-no-important */
     margin-top: 0 !important;
+    /* stylelint-disable-next-line declaration-no-important */
     padding-top: 0 !important;
 }
 .format-tiles .subtile a.menu-action {
@@ -577,6 +582,7 @@ li#section-0.section.main.clearfix {
 
 /* the following items are to avoid lots of padding under section 0 in single section view */
 .format-tiles .single-section {
+    /* stylelint-disable-next-line declaration-no-important */
     margin-top: 0 !important;
 }
 
@@ -586,6 +592,7 @@ li#section-0.section.main.clearfix {
 
 /*dealing with left border to current section in boost theme*/
 .format-tiles .course-content .current::before {
+    /* stylelint-disable-next-line declaration-no-important */
     border-left: none !important;
 }
 
@@ -677,6 +684,7 @@ body.jsenabled.format-tiles #collapsiblesec0 {
 }
 
 .format-tiles .collapsiblesec0.collapsed li#section-0 {
+    /* stylelint-disable-next-line declaration-no-important */
     opacity: 0 !important;
 }
 
@@ -875,6 +883,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 }
 
 .format-tiles .tiles .section.main {
+    /* stylelint-disable-next-line declaration-no-important */
     border: 0 !important;
 }
 
@@ -934,7 +943,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     .format-tiles ul.tiles,
     .format-tiles #section-0 ul.section,
     .format-tiles .course-content .card-block {
+        /* stylelint-disable-next-line declaration-no-important */
         margin: 0 0 0 0 !important;
+        /* stylelint-disable-next-line declaration-no-important */
         padding-left: 0 !important;
     }
 
@@ -944,10 +955,12 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     }
 
     .format-tiles .course-content .section {
+        /* stylelint-disable-next-line declaration-no-important */
         margin-left: 0 !important;
         background-color: #fff;
     }
     .format-tiles ul.tiles li.section .content {
+        /* stylelint-disable-next-line declaration-no-important */
         margin: 0 !important;
     }
     .format-tiles .pagesechead {
@@ -955,6 +968,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     }
 
     .format-tiles .sectiontitlecontainer {
+        /* stylelint-disable-next-line declaration-no-important */
         margin: 0 !important;
     }
 
@@ -966,6 +980,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 
     .format-tiles #page.container-fluid,
     .path-course-view li.activity > div {
+        /* stylelint-disable-next-line declaration-no-important */
         padding: 0 !important;
     }
 
@@ -978,18 +993,23 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     }
 
     .format-tiles ul.tiles .tile {
+        /* stylelint-disable-next-line declaration-no-important */
         flex-basis: 165px !important;
         min-height: 210px;
         position: relative;
     }
     .format-tiles li.activity.subtile {
+        /* stylelint-disable-next-line declaration-no-important */
         flex-basis: 165px !important;
         min-height: 210px;
         position: relative;
+        /* stylelint-disable-next-line declaration-no-important */
         margin: 0 0 3px 0 !important;
     }
     .format-tiles li.subtile.spacer {
+        /* stylelint-disable-next-line declaration-no-important */
         flex-basis: 165px !important;
+        /* stylelint-disable-next-line declaration-no-important */
         min-width: 165px !important;
     }
 
@@ -997,6 +1017,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         height: 130px;
     }
     .format-tiles .collapsiblesec0.expanded .buttonhidesec0 {
+        /* stylelint-disable-next-line declaration-no-important */
         background-color: rgba(255, 255, 255, 1) !important;
     }
     .format-tiles .progress-indic.percent {
@@ -1150,7 +1171,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     width: 230px;
 }
 .format-tiles #page-content li.activity.subtile.dimmed a.dropdown-toggle {
-    color: #888888;
+    color: #888;
 }
 
 .format-tiles li.activity.dimmed .inplaceeditable,
@@ -1161,6 +1182,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 /*For subtiles, use normal opacity to avoid deep edit menus going under the tile below*/
 .format-tiles li.activity.subtile.dimmed {
     opacity: 1;
+    /* stylelint-disable-next-line declaration-no-important */
     border-top-color: lightgray !important;
 }
 .format-tiles .dimmed .label_content {

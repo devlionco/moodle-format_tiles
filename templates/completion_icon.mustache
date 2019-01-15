@@ -56,8 +56,8 @@
 }}
 {{^isediting}}
     {{!complete-y-xxx is a class not an id as there will be two on the page if a modal is open}}
-    <div class="completionchangenotify complete-y-{{cmid}}">{{#str}}complete, format_tiles{{/str}}</div>
-    <div class="completionchangenotify complete-n-{{cmid}}">{{#str}}notcomplete, format_tiles{{/str}}</div>
+    <span class="completionchangenotify complete-y-{{cmid}}">{{#str}}complete, format_tiles{{/str}}</span>
+    <span class="completionchangenotify complete-n-{{cmid}}">{{#str}}notcomplete, format_tiles{{/str}}</span>
     {{#completionIsManual}}
         <form method="post" action="{{{ config.wwwroot }}}/course/togglecompletion.php"
               class="togglecompletion" data-cmid="{{cmid}}" data-section="{{tileid}}" data-toggle="tooltip" data-ismanual="1" data-placement="bottom">

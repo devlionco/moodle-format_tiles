@@ -61,13 +61,14 @@ class behat_format_tiles extends behat_base {
         $courseformat->update_course_format_options(array('id' => $courseid, 'courseusesubtiles' => $onoff));
     }
 
-
+    // @codingStandardsIgnoreStart.
     /**
      * @Given /^format_tiles progress indicator is showing as "(?P<progresstype_string>(?:[^"]|\\")*)" for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
      * @param $progresstype
      * @throws \Behat\Mink\Exception\ExpectationException
      * @throws dml_exception
      */
+    // @codingStandardsIgnoreEnd.
     public function progress_indicator_showing_as($progresstype, $coursefullname) {
         global $DB;
         if (strtolower($progresstype) == 'percent') {
@@ -82,8 +83,8 @@ class behat_format_tiles extends behat_base {
         $courseformat->update_course_format_options(array('id' => $courseid, 'courseshowtileprogress' => $numerictype));
     }
 
+    // @codingStandardsIgnoreStart.
     /**
-
      * @Then /^format_tiles progress indicator for "(?P<activitytitle_string>(?:[^"]|\\")*)" in "(?P<coursefullname_string>(?:[^"]|\\")*)" is "(?P<value>\d+)" in the database$/
      * @param $activitytitle
      * @param $coursefullname
@@ -92,6 +93,7 @@ class behat_format_tiles extends behat_base {
      * @throws dml_exception
      * @throws moodle_exception
      */
+    // @codingStandardsIgnoreEnd.
     public function progress_indicator_for_page_in_is_set_to($activitytitle, $coursefullname, $value) {
         global $DB;
         $user = $this->get_session_user();
@@ -121,7 +123,9 @@ class behat_format_tiles extends behat_base {
             );
         } else {
             throw new \Behat\Mink\Exception\ExpectationException(
-                "Completion state should be " . $value . " but found '" . $completionstate . "' for " . $activitytitle . ' cmid ' . $pagecms[$activitytitle],
+                "Completion state should be " . $value
+                . " but found '" . $completionstate
+                . "' for " . $activitytitle . ' cmid ' . $pagecms[$activitytitle],
                 $this->getSession()
             );
         }
@@ -180,6 +184,7 @@ class behat_format_tiles extends behat_base {
         $this->execute("behat_general::i_click_on", array("//span[@id=" . $tileid . "]", "xpath_element"));
         $this->execute('behat_general::wait_until_the_page_is_ready');
     }
+    // @codingStandardsIgnoreStart.
     /**
      * I wait until a certain activity is visible following AJAX load
      * @Given /^I wait until activity "(?P<activitytitle_string>(?:[^"]|\\")*)" exists in "(?P<format_string>(?:[^"]|\\")*)" format$/
@@ -187,6 +192,7 @@ class behat_format_tiles extends behat_base {
      * @param $format
      * @throws Exception
      */
+    // @codingStandardsIgnoreEnd.
     public function wait_until_activity_exists_in_format($activitytitle, $format) {
         if ($format == 'subtile' || $format == 'subtiles') {
             $liclass = 'subtile';
@@ -236,7 +242,8 @@ class behat_format_tiles extends behat_base {
         $activitytitle = behat_context_helper::escape($activitytitle);
 
         // Click the button.
-        $xpath = "//li[contains(@class, 'activity') and @data-title=" . $activitytitle . "]/descendant::button[@title=\"Click to toggle completion status\"][1]";
+        $xpath = "//li[contains(@class, 'activity') and @data-title="
+            . $activitytitle . "]/descendant::button[@title=\"Click to toggle completion status\"][1]";
         $this->execute("behat_general::i_click_on", array($xpath, "xpath_element"));
         $this->execute('behat_general::wait_until_the_page_is_ready');
         $this->wait_for_pending_js();  // Important to wait for pending JS here so as await AJAX response.

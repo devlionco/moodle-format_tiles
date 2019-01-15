@@ -31,6 +31,10 @@ require_once($CFG->dirroot . '/course/lib.php');
 class format_tiles_testcase extends advanced_testcase
 {
 
+    /**
+     * The format options to use when setting up a course in tiles format.
+     * @var array
+     */
     private $tilescourseformatoptions = array(
         'shortname' => 'GrowingCourse',
         'fullname' => 'Growing Course',
@@ -45,6 +49,10 @@ class format_tiles_testcase extends advanced_testcase
         'courseusebarforheadings' => 1
     );
 
+    /**
+     * Test updating the section format options e.g. changing the tile icon for a tile.
+     * @throws moodle_exception
+     */
     public function test_update_section_format_options() {
         $this->resetAfterTest(true);
 
@@ -71,6 +79,10 @@ class format_tiles_testcase extends advanced_testcase
         $this->assertTrue($sections[2]->tileicon == 'asterisk');
     }
 
+    /**
+     * Test updating the course format options e.g. change the tile for a course.
+     * @throws dml_exception
+     */
     public function test_update_course_format_options() {
         global $DB;
         $this->resetAfterTest(true);

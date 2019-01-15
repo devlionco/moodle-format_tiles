@@ -92,15 +92,22 @@ class course_output implements \renderable, \templatable
      * @param \renderer_base $courserenderer
      */
 
-
     /**
      *  We want to treat label and plugins that behave like labels as labels.
      * E.g. we don't render them as subtiles but show their content directly on page.
      * This includes plugins like mod_customlabel and mod_unilabel.
      * The contents of this array are defined in lib.php and populated below.
+     * @var []
      */
     private $labellikecoursemods = [];
 
+    /**
+     * course_output constructor.
+     * @param $course
+     * @param bool $fromajax
+     * @param int $sectionid
+     * @param \renderer_base|null $courserenderer
+     */
     public function __construct($course, $fromajax = false, $sectionid = 0, \renderer_base $courserenderer = null) {
         $this->course = $course;
         $this->fromajax = $fromajax;
@@ -1058,8 +1065,8 @@ class course_output implements \renderable, \templatable
      *  We want to treat label and plugins that behave like labels as labels.
      * E.g. we don't render them as subtiles but show their content directly on page.
      * This includes plugins like mod_customlabel and mod_unilabel.
-     * @param $mod
-     * @return bool
+     * @param \cm_info $mod the course module.
+     * @return bool whether it's to be treated as a label or not.
      */
     private function treat_as_label($mod) {
         return array_search($mod->modname, $this->labellikecoursemods) !== false;

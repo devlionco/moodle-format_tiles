@@ -6,6 +6,9 @@ M.course = M.course || {};
 
 M.course.format = M.course.format || {};
 
+/* jshint camelcase:false */
+// We ignore camel case as this is copied from an old core file
+
 /**
  * Get sections config for this format
  *
@@ -82,3 +85,4 @@ M.course.format.process_sections = function(Y, sectionlist, response, sectionfro
         }
     }
 };
+/* jshint camelcase:true */

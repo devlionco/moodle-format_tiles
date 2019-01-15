@@ -39,6 +39,10 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  */
 class format_tiles_externallib_testcase extends externallib_advanced_testcase {
 
+    /**
+     * The format options to use when setting up a course in tiles format.
+     * @var array
+     */
     private $tilescourseformatoptions = array(
         'shortname' => 'aname',
         'fullname' => 'A Name',
@@ -61,6 +65,16 @@ class format_tiles_externallib_testcase extends externallib_advanced_testcase {
         require_once($CFG->dirroot . '/course/format/tiles/externallib.php');
     }
 
+    /**
+     * Test the setting of a course/tile icon using the web service.
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws invalid_response_exception
+     * @throws moodle_exception
+     * @throws required_capability_exception
+     * @throws restricted_context_exception
+     */
     public function test_set_icon() {
         global $DB;
 
