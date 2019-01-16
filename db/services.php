@@ -76,4 +76,14 @@ $functions = array (
         'loginrequired' => true,
         'capabilities' => 'mod/page:view'
     ),
+    'format_tiles_get_icon_set' => array(
+        'classname'   => 'format_tiles_external',
+        'methodname'  => 'get_icon_set',
+        'classpath'   => 'course/format/tiles/externallib.php',
+        'description' => 'Return the available icon set (for editing teacher)',
+        'type'        => 'read',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities' => 'moodle/course:update'
+    ),
 );

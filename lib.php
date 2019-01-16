@@ -33,16 +33,6 @@ define('FORMAT_TILES_FILTERBAR_BOTH', 3);
 require_once($CFG->dirroot . '/course/format/lib.php');
 
 /**
- * Enable a renderable object to be generated for the course footer
- * @see format_tiles::course_footer()
- * @see \format_tiles_renderer::render_format_tiles_icon_picker_icons()
- * @copyright 2018 David Watson
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class format_tiles_icon_picker_icons implements renderable {
-}
-
-/**
  * Main class for the course format Tiles
  *
  * @since     Moodle 2.7
@@ -373,54 +363,6 @@ class format_tiles extends format_base {
     }
 
     /**
-     * In order to populate the option menus under course setting which allow the user to select
-     * a tile icon from all those available, iterates through all font awesome icons and images in
-     * the relevant directory and generates a suitable menu option for each icon.
-     * As to the display name, for an icon in the pix directory (e.g. book.svg) then lang string 'icontitle-book" is sought.
-     * Likewise for a font awesome icon called 'fa-tasks', a lang string 'icontitle-tasks' is sought.
-     * If the language string is not found (e.g. it is a custom icon added to pix with no lang string), filename is used.
-     * @return array of tile icons
-     * @throws coding_exception
-     */
-    public function format_tiles_available_icons() {
-        global $CFG;
-        $stringmanager = get_string_manager();
-        $availableicons = [];
-        // First identify which of the font awesome icons used by this plugin are intended for use as tile icons.
-        // I.e. they have the path tileicon/...
-        $fontawesomeicons = array_keys(format_tiles_get_fontawesome_icon_map());
-        foreach ($fontawesomeicons as $faicon) {
-            if (strpos($faicon, 'tileicon/') !== false) {
-                $iconname = explode('/', $faicon)[1];
-                if ($stringmanager->string_exists('icontitle-' . $iconname, 'format_tiles')) {
-                    $displayname = get_string('icontitle-' . $iconname, 'format_tiles');
-                } else {
-                    $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $iconname))));
-                }
-                $availableicons[$iconname] = $displayname;
-            }
-        }
-        // Now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons.
-        // Add them to the list.
-        $iconsindirectory = get_directory_list($CFG->dirroot
-            . '/course/format/tiles/pix/tileicon', '', false, false, true);
-        foreach ($iconsindirectory as $icon) {
-            $filename = explode('.', $icon)[0];
-            // If we don't already have it from font awesome (e.g. book, flipchart, assessment_timer), then add it here.
-            if (!isset($availableicons[$filename])) {
-                if ($stringmanager->string_exists('icontitle-' . $filename, 'format_tiles')) {
-                    $displayname = get_string('icontitle-' . $filename, 'format_tiles');
-                } else {
-                    $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $filename))));
-                }
-                $availableicons[$filename] = $displayname;
-            }
-        }
-        asort($availableicons);
-        return $availableicons;
-    }
-
-    /**
      * Whether this format allows to delete sections (Moodle 3.1+)
      * If format supports deleting sections it is also recommended to define language string
      * 'deletesection' inside the format.
@@ -493,7 +435,7 @@ class format_tiles extends format_base {
 
         if ($foreditform && !isset($courseformatoptions['coursedisplay']['label'])) {
             $tilespalette = $this->format_tiles_get_tiles_palette();
-            $tileicons = $this->format_tiles_available_icons();
+            $tileicons = (new \format_tiles\icon_set)->available_tile_icons();
             $courseconfig = get_config('moodlecourse');
             $max = $courseconfig->maxsections;
             if (!isset($max) || !is_numeric($max)) {
@@ -653,7 +595,7 @@ class format_tiles extends format_base {
             $defaulticonarray = array(
                 '' => get_string('defaultthiscourse', 'format_tiles') . ' (' . $defaultcoursetile . ')'
             );
-            $tileicons = $this->format_tiles_available_icons();
+            $tileicons = (new \format_tiles\icon_set)->available_tile_icons();
             $tileicons = array_merge($defaulticonarray, $tileicons);
             $sectionformatoptionsedit = array();
 
@@ -701,8 +643,26 @@ class format_tiles extends format_base {
      * @throws dml_exception
      */
     public function create_edit_form_elements(&$mform, $forsection = false) {
-        global $COURSE;
+        global $COURSE, $PAGE, $DB;
         $elements = parent::create_edit_form_elements($mform, $forsection);
+
+        // Call the JS edit_form_helper.js, which in turn will call icon_picker.js.
+        if ($forsection) {
+            $sectionid = optional_param('id', 0, PARAM_INT);
+            $section = $DB->get_field('course_sections', 'section', array('id' => $sectionid));
+        } else {
+            // We are on the course setting page so can ignore section.
+            $section = 0;
+            $sectionid = 0;
+        }
+        $jsparams = array(
+            'pageType' => $PAGE->pagetype,
+            'courseDefaultIcon' => $this->get_format_options()['defaulttileicon'],
+            'courseId' => $COURSE->id,
+            'sectionId' => $sectionid,
+            'section' => $section
+        );
+        $PAGE->requires->js_call_amd('format_tiles/edit_form_helper', 'init', $jsparams);
 
         if (!$forsection && (empty($COURSE->id) || $COURSE->id == SITEID)) {
             // Add "numsections" to create course form - will force the course pre-populated with empty sections.
@@ -926,53 +886,6 @@ class format_tiles extends format_base {
     }
 
     /**
-     * Course-specific information to be output on any course page (usually in the beginning of
-     * standard footer)
-     *
-     * See {@link format_base::course_header()} for usage
-     *
-     * In the case of this format, checks if the user is on the course/edit/php?id=xxx page (edit course settings)
-     * and if they are, includes necessary JS to enable icon picker window to be launched (choose default tile icon)
-     * and returns a renderable object representing the modal window to be added to course footer
-     *
-     * Previously tried course_footer() but essential theme does not call it and this works just as well
-     * @see \format_tiles_icon_picker
-     * @see \format_tiles_renderer::render_format_tiles_icon_picker()
-     *
-     * @return null|format_tiles_icon_picker_icons null for no output or object with data for plugin renderer
-     * @throws moodle_exception
-     */
-    public function course_content_footer() {
-        global $PAGE, $DB;
-        if ($PAGE->has_set_url()) {
-            if ($PAGE->user_allowed_editing()) {
-                $courseid = $PAGE->course->id;
-                $editingcoursesettings = $PAGE->pagetype == 'course-edit'
-                    && $PAGE->url->compare(new moodle_url('/course/edit.php', array('id' => $courseid)), URL_MATCH_EXACT);
-                $editingcoursesection = $PAGE->pagetype == 'course-editsection'
-                    && $PAGE->url->compare(new moodle_url('/course/editsection.php'), URL_MATCH_BASE);
-                if ($editingcoursesettings) {
-                    // Only require this on the edit course settings page, not edit section.
-                    $PAGE->requires->js_call_amd('format_tiles/edit_form_helper', 'init', array());
-                }
-                if ($editingcoursesettings || $editingcoursesection) {
-                    $jsparams = array('courseId' => $courseid, 'pagetype' => $PAGE->pagetype, 'sectionId' => 0);
-                    if ($editingcoursesection) {
-                        $sectionid = optional_param('id', 0, PARAM_INT);
-                        $jsparams['sectionId'] = $sectionid;
-                        $jsparams['defaultCourseIcon'] = $this->get_format_options()['defaulttileicon'];
-                        $jsparams['section'] = $DB->get_field('course_sections', 'section', array('id' => $sectionid));
-                    }
-                    $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init', $jsparams);
-                    return new format_tiles_icon_picker_icons();
-                }
-            }
-
-        }
-        return null;
-    }
-
-    /**
      * Allows course format to execute code on moodle_page::set_course()
      * Used here to ensure that, before starting to load the page,
      * we establish if the user is changing their pref for using JS nav
@@ -1029,142 +942,6 @@ function format_tiles_inplace_editable($itemtype, $itemid, $newvalue) {
  * (does not specify $THEME->iconsystem as fa like Boost and Essential do)
  */
 function format_tiles_get_fontawesome_icon_map() {
-    return [
-        // First the general icons (not specific to tiles).
-        'format_tiles:bullhorn' => 'fa-bullhorn',
-        'format_tiles:check' => 'fa-check',
-        'format_tiles:chevron-down' => 'fa-chevron-down',
-        'format_tiles:chevron-left' => 'fa-chevron-left',
-        'format_tiles:chevron-right' => 'fa-chevron-right',
-        'format_tiles:chevron-up' => 'fa-chevron-up',
-        'format_tiles:clone' => 'fa-clone',
-        'format_tiles:close' => 'fa-close',
-        'format_tiles:cloud-download' => 'fa-cloud-download',
-        'format_tiles:filter' => 'fa-filter',
-        'format_tiles:expand2' => 'fa-expand',
-        'format_tiles:eye-slash' => 'fa-eye-slash',
-        'format_tiles:file-pdf-o' => 'fa-file-pdf-o',
-        'format_tiles:home' => 'fa-home',
-        'format_tiles:list' => 'fa-list',
-        'format_tiles:lock' => 'fa-lock',
-        'format_tiles:star-o' => 'fa-star-o',
-        'format_tiles:pencil' => 'fa-pencil',
-        'format_tiles:random' => 'fa-random',
-        'format_tiles:star' => 'fa-star',
-        'format_tiles:stop' => 'fa-stop',
-        'format_tiles:table' => 'fa-table',
-        'format_tiles:toggle-off' => 'fa-toggle-off',
-        'format_tiles:toggle-on' => 'fa-toggle-on',
-        'format_tiles:trash-o' => 'fa-trash-o',
-        'format_tiles:volume-up' => 'fa-volume-up',
-
-        // Sub tile icons.
-        'format_tiles:subtile/comments-o' => 'fa-comments-o',
-        'format_tiles:subtile/database' => 'fa-database',
-        'format_tiles:subtile/feedback' => 'fa-bullhorn',
-        'format_tiles:subtile/file-excel' => 'fa-table',
-        'format_tiles:subtile/file-pdf-o' => 'fa-file-pdf-o',
-        'format_tiles:subtile/file-powerpoint-o' => 'fa-file-powerpoint-o',
-        'format_tiles:subtile/file-text-o' => 'fa-file-text-o',
-        'format_tiles:subtile/file-word-o' => 'fa-file-word-o',
-        'format_tiles:subtile/file-zip-o' => 'fa-file-zip-o',
-        'format_tiles:subtile/film' => 'fa-film',
-        'format_tiles:subtile/folder-o' => 'fa-folder-o',
-        'format_tiles:subtile/globe' => 'fa-globe',
-        'format_tiles:subtile/puzzle-piece' => 'fa-puzzle-piece',
-        'format_tiles:subtile/question-circle' => 'fa-question-circle',
-        'format_tiles:subtile/star' => 'fa-star',
-        'format_tiles:subtile/star-o' => 'fa-star-o',
-        'format_tiles:subtile/survey' => 'fa-bar-chart',
-        'format_tiles:subtile/volume-up' => 'fa-volume-up',
-
-        // Now the tile icons.
-        'format_tiles:tileicon/asterisk' => 'fa-asterisk',
-        'format_tiles:tileicon/address-book' => 'fa-address-book-o',
-        'format_tiles:tileicon/balance-scale' => 'fa-balance-scale',
-        'format_tiles:tileicon/bar-chart' => 'fa-bar-chart',
-        'format_tiles:tileicon/bell-o' => 'fa-bell-o',
-        'format_tiles:tileicon/binoculars' => 'fa-binoculars',
-        'format_tiles:tileicon/bitcoin' => 'fa-bitcoin',
-        'format_tiles:tileicon/bookmark-o' => 'fa-bookmark-o',
-        'format_tiles:tileicon/briefcase' => 'fa-briefcase',
-        'format_tiles:tileicon/building' => 'fa-building',
-        'format_tiles:tileicon/bullhorn' => 'fa-bullhorn',
-        'format_tiles:tileicon/bullseye' => 'fa-bullseye',
-        'format_tiles:tileicon/calculator' => 'fa-calculator',
-        'format_tiles:tileicon/calendar' => 'fa-calendar',
-        'format_tiles:tileicon/calendar-check-o' => 'fa-calendar-check-o',
-        'format_tiles:tileicon/check' => 'fa-check',
-        'format_tiles:tileicon/child' => 'fa-child',
-        'format_tiles:tileicon/clock-o' => 'fa-clock-o',
-        'format_tiles:tileicon/clone' => 'fa-clone',
-        'format_tiles:tileicon/cloud-download' => 'fa-cloud-download',
-        'format_tiles:tileicon/cloud-upload' => 'fa-cloud-upload',
-        'format_tiles:tileicon/comment-o' => 'fa-comment-o',
-        'format_tiles:tileicon/comments-o' => 'fa-comments-o',
-        'format_tiles:tileicon/compass' => 'fa-compass',
-        'format_tiles:tileicon/diamond' => 'fa-diamond',
-        'format_tiles:tileicon/dollar' => 'fa-dollar',
-        'format_tiles:tileicon/euro' => 'fa-euro',
-        'format_tiles:tileicon/exclamation-triangle' => 'fa-exclamation-triangle',
-        'format_tiles:tileicon/feed' => 'fa-feed',
-        'format_tiles:tileicon/file-text-o' => 'fa-file-text-o',
-        'format_tiles:tileicon/film' => 'fa-film',
-        'format_tiles:tileicon/flag-checkered' => 'fa-flag-checkered',
-        'format_tiles:tileicon/flag-o' => 'fa-flag-o',
-        'format_tiles:tileicon/flash' => 'fa-flash',
-        'format_tiles:tileicon/flask' => 'fa-flask',
-        'format_tiles:tileicon/frown-o' => 'fa-frown-o',
-        'format_tiles:tileicon/gavel' => 'fa-gavel',
-        'format_tiles:tileicon/gbp' => 'fa-gbp',
-        'format_tiles:tileicon/globe' => 'fa-globe',
-        'format_tiles:tileicon/handshake-o' => 'fa-handshake-o',
-        'format_tiles:tileicon/headphones' => 'fa-headphones',
-        'format_tiles:tileicon/heartbeat' => 'fa-heartbeat',
-        'format_tiles:tileicon/history' => 'fa-history',
-        'format_tiles:tileicon/home' => 'fa-home',
-        'format_tiles:tileicon/id-card-o' => 'fa-id-card-o',
-        'format_tiles:tileicon/info' => 'fa-info',
-        'format_tiles:tileicon/key' => 'fa-key',
-        'format_tiles:tileicon/laptop' => 'fa-laptop',
-        'format_tiles:tileicon/life-buoy' => 'fa-life-buoy',
-        'format_tiles:tileicon/lightbulb-o' => 'fa-lightbulb-o',
-        'format_tiles:tileicon/line-chart' => 'fa-line-chart',
-        'format_tiles:tileicon/list' => 'fa-list',
-        'format_tiles:tileicon/list-ol' => 'fa-list-ol',
-        'format_tiles:tileicon/location-arrow' => 'fa-location-arrow',
-        'format_tiles:tileicon/map-marker' => 'fa-map-marker',
-        'format_tiles:tileicon/map-o' => 'fa-map-o',
-        'format_tiles:tileicon/map-signs' => 'fa-map-signs',
-        'format_tiles:tileicon/microphone' => 'fa-microphone',
-        'format_tiles:tileicon/mobile-phone' => 'fa-mobile-phone',
-        'format_tiles:tileicon/mortar-board' => 'fa-mortar-board',
-        'format_tiles:tileicon/newspaper-o' => 'fa-newspaper-o',
-        'format_tiles:tileicon/pencil-square-o' => 'fa-pencil-square-o',
-        'format_tiles:tileicon/pie-chart' => 'fa-pie-chart',
-        'format_tiles:tileicon/podcast' => 'fa-podcast',
-        'format_tiles:tileicon/puzzle-piece' => 'fa-puzzle-piece',
-        'format_tiles:tileicon/question-circle' => 'fa-question-circle',
-        'format_tiles:tileicon/random' => 'fa-random',
-        'format_tiles:tileicon/refresh' => 'fa-refresh',
-        'format_tiles:tileicon/road' => 'fa-road',
-        'format_tiles:tileicon/search' => 'fa-search',
-        'format_tiles:tileicon/sliders' => 'fa-sliders',
-        'format_tiles:tileicon/smile-o' => 'fa-smile-o',
-        'format_tiles:tileicon/star' => 'fa-star',
-        'format_tiles:tileicon/star-half-o' => 'fa-star-half-o',
-        'format_tiles:tileicon/star-o' => 'fa-star-o',
-        'format_tiles:tileicon/tags' => 'fa-tags',
-        'format_tiles:tileicon/tasks' => 'fa-tasks',
-        'format_tiles:tileicon/television' => 'fa-television',
-        'format_tiles:tileicon/thumbs-o-down' => 'fa-thumbs-o-down',
-        'format_tiles:tileicon/thumbs-o-up' => 'fa-thumbs-o-up',
-        'format_tiles:tileicon/trophy' => 'fa-trophy',
-        'format_tiles:tileicon/umbrella' => 'fa-umbrella',
-        'format_tiles:tileicon/university' => 'fa-university',
-        'format_tiles:tileicon/user-o' => 'fa-user-o',
-        'format_tiles:tileicon/users' => 'fa-users',
-        'format_tiles:tileicon/volume-up' => 'fa-volume-up',
-        'format_tiles:tileicon/wrench' => 'fa-wrench',
-    ];
+    $iconset = new format_tiles\icon_set();
+    return $iconset->get_font_awesome_icon_map();
 }

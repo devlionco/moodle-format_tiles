@@ -478,7 +478,8 @@ li#section-0.section.main.clearfix {
     font-size: 55px;
 }
 .format-tiles .course-content .icon,
-.format-tiles .iconpickericons .icon {
+.format-tiles .iconpickericons .icon,
+.format-site .iconpickericons .icon {
     color: #979797;
     opacity: 1;
 }
@@ -767,17 +768,6 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     border: 2px solid #666;
     font-size: 0.9em;
 }
-.format-tiles #colourselectnotify {
-    color: #212529;
-    background-color: #e9ecef;
-    border-radius: 0.2rem;
-    padding: 2px 8px;
-    height: 26px;
-    font-size: 0.9em;
-    display: none;
-    top: 0;
-    position: absolute;
-}
 .format-tiles .allcomplete .icon {
     font-size: 2em;
     width: 30px;
@@ -1060,7 +1050,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     opacity: 0.9;
 }
 
-.format-tiles .iconpickericons .pickericondiv {
+.format-tiles .iconpickericons .pickericondiv,
+.format-site .iconpickericons .pickericondiv {
     padding: 10px;
     cursor: pointer;
     display: inline-block;
@@ -1071,7 +1062,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     color: #333;
 }
 
-.format-tiles .iconpickericons .pickericondiv:hover {
+.format-tiles .iconpickericons .pickericondiv:hover,
+.format-site .iconpickericons .pickericondiv:hover {
     background-color: rgb(243, 243, 243);
 }
 
@@ -1081,7 +1073,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .modal-dialog {
     margin: 5px auto;
 }
-.format-tiles .pickericon .icon {
+.format-tiles .pickericon .icon,
+#page-course-edit.format-site .pickericon .icon {
     width: 55px;
     height: 55px;
     font-size: 55px;
@@ -1526,7 +1519,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     right: 1.5em;
     margin-top: 0.5em;
 }
-.format-tiles #selectedicon .icon {
+.format-tiles #selectedicon .icon,
+#page-course-edit.format-site #selectedicon .icon {
     font-size: 1.9em;
     width: 25px;
     height: 25px;
@@ -1581,7 +1575,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     opacity: 0.6;
 }
 
-.format-tiles .colourpickercircle {
+.format-tiles fieldset#id_courseformathdr .colourpickercircle,
+.format-site fieldset#id_courseformathdr .colourpickercircle {
     width: 25px;
     height: 25px;
     border-radius: 50%;
@@ -1590,12 +1585,26 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     border: 3px solid;
 }
 
-.format-tiles .colourpickercircle:hover {
+.format-tiles fieldset#id_courseformathdr .colourpickercircle:hover,
+.format-site fieldset#id_courseformathdr .colourpickercircle:hover {
     border-color: orange;
 }
-.format-tiles .colourpickercircle.selected {
+.format-tiles fieldset#id_courseformathdr .colourpickercircle.selected,
+.format-site fieldset#id_courseformathdr .colourpickercircle.selected {
     background-image: url([[pix:format_tiles|check-white]]);
     background-size: contain;
+}
+.format-tiles fieldset#id_courseformathdr #colourselectnotify,
+.format-site fieldset#id_courseformathdr #colourselectnotify {
+    color: #212529;
+    background-color: #e9ecef;
+    border-radius: 0.2rem;
+    padding: 2px 8px;
+    height: 26px;
+    font-size: 0.9em;
+    display: none;
+    top: 0;
+    position: relative;
 }
 
 .format-tiles li.dndupload-preview {

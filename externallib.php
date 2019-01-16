@@ -64,7 +64,7 @@ class format_tiles_external extends external_api
         self::validate_context($context);
         require_capability('moodle/course:update', $context);
 
-        $availableicons = \course_get_format($courseid)->format_tiles_available_icons();
+        $availableicons = (new \format_tiles\icon_set)->available_tile_icons();
         if (!isset($availableicons[$data['icon']])) {
             throw new invalid_parameter_exception('Icon is invalid');
         }
@@ -447,6 +447,81 @@ class format_tiles_external extends external_api
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success')
+            )
+        );
+    }
+
+
+    /**
+     * Get the available icon set
+     * @param int $courseid
+     * @return array of warnings and status result
+     * @since Moodle 3.3
+     * @throws moodle_exception
+     */
+    public static function get_icon_set($courseid) {
+        $params = self::validate_parameters(
+            self::get_icon_set_parameters(),
+            array('courseid' => $courseid)
+        );
+        // Request and permission validation.
+        // Note course id could be zero if creating new course.
+
+        if ($params['courseid'] != 0) {
+            $context = context_course::instance($params['courseid']);
+        } else {
+            $context = context_coursecat::instance(optional_param('category', 0, PARAM_INT));
+        }
+        self::validate_context($context);
+        if (!has_capability('moodle/course:update', $context) && !has_capability('moodle/course:create', $context)) {
+            if (!has_capability('moodle/course:update', $context)) {
+                throw new required_capability_exception(
+                    $context,
+                    'moodle/course:update',
+                    "nopermissions",
+                    ""
+                );
+            } else {
+                throw new required_capability_exception(
+                    $context,
+                    'moodle/course:create',
+                    "nopermissions",
+                    ""
+                );
+            }
+        };
+        return array(
+            'status' => true,
+            'warnings' => [],
+            'icons' => json_encode((new \format_tiles\icon_set)->available_tile_icons())
+        );
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.3
+     */
+    public static function get_icon_set_parameters() {
+        return new external_function_parameters(
+            array(
+                'courseid' => new external_value(PARAM_INT, 'Course id'),
+            )
+        );
+    }
+
+    /**
+     *
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle 3.3
+     */
+    public static function get_icon_set_returns () {
+        return new external_single_structure(
+            array(
+                'icons' => new external_value(PARAM_RAW, 'Icon set available for use on tile icons (JSON array)')
             )
         );
     }

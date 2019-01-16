@@ -127,15 +127,12 @@ if ($isediting && get_config('format_tiles', 'allowsubtilesview') && $course->co
         )
     );
 }
-// This is also called from lib.php, if the user is on course/edit.php (edit course settings).
+// This is also called from lib.php, via edit_form_helper, if user is on course/edit.php or editsection.php.
 if ($isediting) {
     $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init',
         array(
             'courseId' => $course->id,
-            'pagetype' => $PAGE->pagetype,
-            'sectionId' => $displaysection,
-            '', // This field is for the course default icon, but is not required when called from here so we leave blank.
-            '' // This field is for the section number, but is not required when called from here so we leave blank.
+            'pagetype' => $PAGE->pagetype
         )
     );
     if (strpos($PAGE->pagetype, 'course-view-') === 0 && $PAGE->theme->name == 'snap') {

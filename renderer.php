@@ -238,22 +238,6 @@ class format_tiles_renderer extends format_section_renderer_base
     }
 
     /**
-     * When we are on the course edit settings page, we need to be able to render an icon picker
-     * modal window to add to the footer.  This satisfies that
-     * @see \format_tiles::course_footer()
-     * @see \format_tiles_icon_picker_icons
-     * @return string the rendered HTML
-     * @throws moodle_exception
-     */
-    protected function render_format_tiles_icon_picker_icons() {
-        global $PAGE;
-        $format = course_get_format($PAGE->course);
-        $templateable = new \format_tiles\output\edit_course_settings_output($format->format_tiles_available_icons());
-        $data = $templateable->export_for_template($this);
-        return $this->render_from_template('format_tiles/icon_picker_modal_body', $data);
-    }
-
-    /**
      * Generate the display of the footer part of a section
      * @see section_header() for more explanation of this
      * @return string HTML to output.

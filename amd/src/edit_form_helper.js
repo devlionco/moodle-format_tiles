@@ -33,7 +33,7 @@
 define(["jquery", "core/notification", "core/str", "core/templates"], function ($, Notification, str, Templates) {
     "use strict";
     return {
-        init: function () {
+        init: function (pageType, courseDefaultIcon, courseId, sectionId, section) {
             $(document).ready(function () {
                 $("select#id_courseusesubtiles").change(function (e) {
                     if (e.currentTarget.value !== "0") {
@@ -109,6 +109,45 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                         $("#colourpick_" + colourSelectMenu.val().replace("#", "")).addClass("selected");
                     });
                 });
+
+                // If we are on the course edit settings form, render a button to be added to it.
+                // Put it next to the existing drop down select box for course default tile icon.
+                // Add it to the page.
+
+                var selectedIconName;
+                var selectBox;
+                if (pageType === "course-edit") {
+                    selectBox = $("#id_defaulttileicon");
+                    selectedIconName = $("#id_defaulttileicon option:selected").text();
+                } else if (pageType === "course-editsection") {
+                    selectBox = $("#id_tileicon");
+                    selectedIconName = $("#id_tileicon option:selected" ).text();
+                }
+                if (pageType === "course-edit" || (pageType === "course-editsection" && section !== "0")) {
+                    var currentIcon;
+                    switch (selectBox.val()) {
+                        case "":
+                            currentIcon = courseDefaultIcon;
+                            break;
+                        default:
+                            currentIcon = selectBox.val();
+                    }
+                    Templates.render("format_tiles/icon_picker_launch_btn", {
+                        initialicon: currentIcon,
+                        initialname: selectedIconName,
+                        sectionId: sectionId
+                    }).done(function (html) {
+                        $(html).insertAfter(selectBox);
+
+                        // We can hide the original select box now as users will use the button instead.
+                        selectBox.hide();
+                        require(["format_tiles/icon_picker"], function(iconPicker) {
+                            iconPicker.init(courseId, pageType);
+                        });
+                    });
+                } else if (pageType === "course-editsection" && section === "0") {
+                    selectBox.closest(".row").hide(); // Don't have an icon for section zero.
+                }
             });
         }
     };

@@ -146,11 +146,6 @@ class course_output implements \renderable, \templatable
         } else {
             $data['showJScancelLink'] = 0;
         };
-        if ($data['isediting']) {
-            foreach ($format->format_tiles_available_icons() as $filename => $displayname) {
-                $data['icon_picker_icons'][] = array('filename' => $filename, 'displayname' => $displayname);
-            }
-        }
 
         // Custom course settings not in course object if called from AJAX, so make sure we get them.
         if (!$this->fromajax) {
