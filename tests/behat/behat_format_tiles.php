@@ -85,7 +85,7 @@ class behat_format_tiles extends behat_base {
 
     // @codingStandardsIgnoreStart.
     /**
-     * @Then /^format_tiles progress indicator for "(?P<activitytitle_string>(?:[^"]|\\")*)" in "(?P<coursefullname_string>(?:[^"]|\\")*)" is "(?P<value>\d+)" in the database$/
+     * @Then /^format_tiles progress for "(?P<activitytitle_string>(?:[^"]|\\")*)" in "(?P<coursefullname_string>(?:[^"]|\\")*)" is "(?P<value>\d+)" in the database$/
      * @param $activitytitle
      * @param $coursefullname
      * @param $value
@@ -247,5 +247,34 @@ class behat_format_tiles extends behat_base {
         $this->execute("behat_general::i_click_on", array($xpath, "xpath_element"));
         $this->execute('behat_general::wait_until_the_page_is_ready');
         $this->wait_for_pending_js();  // Important to wait for pending JS here so as await AJAX response.
+    }
+
+    /**
+     * Progress Indicator for tile shows correct out of values e.g. 1 / 2 complete.
+     *
+     * @Given /^format_tiles progress indicator for tile "(?P<tilenumber>\d+)" is "(?P<numcomplete>\d+)" out of "(?P<outof>\d+)"$/
+     * @param $tilenumber
+     * @param $numcomplete
+     * @param $outof
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws \Behat\Mink\Exception\ExpectationException
+     */
+    public function progress_indicator_tile_shows_outof($tilenumber, $numcomplete, $outof) {
+        $xpath = "//div[@id='tileprogress-" . $tilenumber. "']";
+        $node = $this->get_selected_node("xpath_element", $xpath);
+        if($node->getAttribute('data-numcomplete') !== $numcomplete){
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'Tile ' . $tilenumber . ': Expected number complete ' . $numcomplete
+                . ' but found ' . $node->getAttribute('data-numcomplete'),
+                $this->getSession()
+            );
+        }
+        if($node->getAttribute('data-numoutof') !== $outof){
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'Tile ' . $tilenumber . ': Expected number out of ' . $numcomplete
+                . ' but found ' . $node->getAttribute('data-numoutof'),
+                $this->getSession()
+            );
+        }
     }
 }
