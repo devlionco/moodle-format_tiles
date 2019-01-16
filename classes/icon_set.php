@@ -24,7 +24,6 @@
 namespace format_tiles;
 
 use core\output\icon_system;
-use Horde\Socket\Client\Exception;
 
 defined('MOODLE_INTERNAL') || die();
 
