@@ -23,6 +23,9 @@
 
 namespace format_tiles;
 
+use core\output\icon_system;
+use Horde\Socket\Client\Exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -143,19 +146,24 @@ class icon_set {
      * @throws \coding_exception
      */
     public function available_tile_icons() {
-        global $CFG, $THEME;
+        global $CFG, $PAGE;
         $stringmanager = get_string_manager();
         $availableicons = [];
         // First if the theme supports font awesome, use the available font awesome tile icons.
-
-        foreach ($this->fontawesometileicons as $iconname) {
-            $pixname = str_replace('fa-',  '', $iconname);
-            if ($stringmanager->string_exists('icontitle-' . $pixname, 'format_tiles')) {
-                $displayname = get_string('icontitle-' . $pixname, 'format_tiles');
-            } else {
-                $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $pixname))));
+        // Using $PAGE->theme->get_icon_system()==icons_system::fontawesome does not work for Moove.
+        // However Moover does support fotn awesome for {{pix}}, so we add a whitelist too.
+        $fontawesomethemeswhitelist = ['moove', 'boost'];
+        $iconsystem = $PAGE->theme->get_icon_system();
+        if ($iconsystem == icon_system::FONTAWESOME || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
+            foreach ($this->fontawesometileicons as $iconname) {
+                $pixname = str_replace('fa-',  '', $iconname);
+                if ($stringmanager->string_exists('icontitle-' . $pixname, 'format_tiles')) {
+                    $displayname = get_string('icontitle-' . $pixname, 'format_tiles');
+                } else {
+                    $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $pixname))));
+                }
+                $availableicons[$pixname] = $displayname;
             }
-            $availableicons[$pixname] = $displayname;
         }
 
         // Now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons.

@@ -262,14 +262,14 @@ class behat_format_tiles extends behat_base {
     public function progress_indicator_tile_shows_outof($tilenumber, $numcomplete, $outof) {
         $xpath = "//div[@id='tileprogress-" . $tilenumber. "']";
         $node = $this->get_selected_node("xpath_element", $xpath);
-        if($node->getAttribute('data-numcomplete') !== $numcomplete){
+        if ($node->getAttribute('data-numcomplete') !== $numcomplete) {
             throw new \Behat\Mink\Exception\ExpectationException(
                 'Tile ' . $tilenumber . ': Expected number complete ' . $numcomplete
                 . ' but found ' . $node->getAttribute('data-numcomplete'),
                 $this->getSession()
             );
         }
-        if($node->getAttribute('data-numoutof') !== $outof){
+        if ($node->getAttribute('data-numoutof') !== $outof) {
             throw new \Behat\Mink\Exception\ExpectationException(
                 'Tile ' . $tilenumber . ': Expected number out of ' . $numcomplete
                 . ' but found ' . $node->getAttribute('data-numoutof'),
