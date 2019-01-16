@@ -149,7 +149,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                                 });
 
                                 // Icon search box handling.
-                                modalRoot.on("input", "input.icon-search", function (e) {
+                                modalRoot.on("input", "input.iconsearch", function (e) {
                                     var searchText = e.currentTarget.value.toLowerCase();
                                     modalRoot.find(".pickericon").show();
                                     if (searchText.length >= 3) {
