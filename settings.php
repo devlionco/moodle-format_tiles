@@ -180,7 +180,7 @@ if ($ADMIN->fulltree) {
         $colournumber++;
     }
 
-    $settings->add(new admin_setting_heading('hovercolourheading', get_string('hovercolourname', 'format_tiles'), ''));
+    $settings->add(new admin_setting_heading('hovercolourheading', get_string('hovercolour', 'format_tiles'), ''));
     // Hover colour for all tiles (in hexadecimal RGB with preceding '#').
     $name = 'format_tiles/hovercolour';
     $title = get_string('hovercolour', 'format_tiles');
