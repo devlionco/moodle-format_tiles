@@ -189,14 +189,6 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $settings->add($setting);
 
-    // Hover colour display name.
-    $name = 'format_tiles/hovercolourname';
-    $title = get_string('hovercolourname', 'format_tiles');
-    $description = '';
-    $default = get_string('colourorange', 'format_tiles');
-    $setting = new admin_setting_configtext($name, $title, $description, $default, PARAM_RAW, 30);
-    $settings->add($setting);
-
     // Other settings.
 
     // Custom css.
