@@ -736,6 +736,7 @@ class course_output implements \renderable, \templatable
                 $moduleobject['description'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
             }
             $moduleobject['extraclasses'] = $mod->extraclasses;
+            $moduleobject['afterlink'] = $mod->afterlink;
             if ((!$mod->visible && !$mod->visibleold)
                 || $mod->is_stealth() || !$mod->available
                 || (isset($moduleobject['availabilitymessage']) && strlen($moduleobject['availabilitymessage']) > 1 )
