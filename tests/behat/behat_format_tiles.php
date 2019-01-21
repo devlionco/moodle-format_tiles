@@ -39,7 +39,8 @@ class behat_format_tiles extends behat_base {
 
     /**
      * @Given /^format_tiles subtiles are on for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
-     * @param $coursefullname
+     * @param string $coursefullname
+     * @throws dml_exception
      */
     public function format_tiles_sub_tiles_are_on_for_course($coursefullname) {
         $this->sub_tiles_on_off($coursefullname, 1);
@@ -47,12 +48,18 @@ class behat_format_tiles extends behat_base {
 
     /**
      * @Given /^format_tiles subtiles are off for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
-     * @param $coursefullname
+     * @param string $coursefullname
+     * @throws dml_exception
      */
     public function format_tiles_sub_tiles_are_off_for_course($coursefullname) {
         $this->sub_tiles_on_off($coursefullname, 0);
     }
 
+    /**
+     * @param string $coursefullname
+     * @param int $onoff
+     * @throws dml_exception
+     */
     private function sub_tiles_on_off($coursefullname, $onoff) {
         global $DB;
         $onoff = $onoff ? 1 : 0;
@@ -64,7 +71,8 @@ class behat_format_tiles extends behat_base {
     // @codingStandardsIgnoreStart.
     /**
      * @Given /^format_tiles progress indicator is showing as "(?P<progresstype_string>(?:[^"]|\\")*)" for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
-     * @param $progresstype
+     * @param string $progresstype
+     * @param string $coursefullname
      * @throws \Behat\Mink\Exception\ExpectationException
      * @throws dml_exception
      */
@@ -147,7 +155,7 @@ class behat_format_tiles extends behat_base {
 
     /**
      * @Then /^activity in format tiles is not dimmed "(?P<activityname_string>(?:[^"]|\\")*)"$/
-     * @param $activityname
+     * @param string $activityname
      * @return bool
      * @throws \Behat\Mink\Exception\ExpectationException
      */
@@ -159,7 +167,7 @@ class behat_format_tiles extends behat_base {
      * I click a tile (to open it)
      *
      * @Given /^I click on tile "(?P<tilenumber>\d+)"$/
-     * @param $tileumber
+     * @param string $tileumber
      * @throws Exception
      */
     public function i_click_on_tile($tileumber) {
@@ -174,7 +182,7 @@ class behat_format_tiles extends behat_base {
      * I click a tile (to open it)
      *
      * @Given /^I click on close button for tile "(?P<tilenumber>\d+)"$/
-     * @param $tilenumber
+     * @param string $tilenumber
      * @throws Exception
      */
     public function i_click_tile_close_button($tilenumber) {
@@ -188,8 +196,8 @@ class behat_format_tiles extends behat_base {
     /**
      * I wait until a certain activity is visible following AJAX load
      * @Given /^I wait until activity "(?P<activitytitle_string>(?:[^"]|\\")*)" exists in "(?P<format_string>(?:[^"]|\\")*)" format$/
-     * @param $activitytitle
-     * @param $format
+     * @param string $activitytitle
+     * @param string $format
      * @throws Exception
      */
     // @codingStandardsIgnoreEnd.
@@ -217,7 +225,7 @@ class behat_format_tiles extends behat_base {
      * I click a certain activity
      *
      * @Given /^I click format tiles activity "(?P<activitytitle_string>(?:[^"]|\\")*)"$/
-     * @param $activitytitle
+     * @param string $activitytitle
      * @throws Exception
      */
     public function click_format_tiles_activity($activitytitle) {
@@ -235,7 +243,7 @@ class behat_format_tiles extends behat_base {
      * I click a tile's progress indicator
      *
      * @Given /^I click format tiles progress indicator for "(?P<activitytitle_string>(?:[^"]|\\")*)"$/
-     * @param $tilenumber
+     * @param string $activitytitle
      * @throws Exception
      */
     public function i_click_progress_indicator_for($activitytitle) {
@@ -253,9 +261,9 @@ class behat_format_tiles extends behat_base {
      * Progress Indicator for tile shows correct out of values e.g. 1 / 2 complete.
      *
      * @Given /^format_tiles progress indicator for tile "(?P<tilenumber>\d+)" is "(?P<numcomplete>\d+)" out of "(?P<outof>\d+)"$/
-     * @param $tilenumber
-     * @param $numcomplete
-     * @param $outof
+     * @param string $tilenumber
+     * @param string $numcomplete
+     * @param string $outof
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      * @throws \Behat\Mink\Exception\ExpectationException
      */

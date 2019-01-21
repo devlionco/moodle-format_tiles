@@ -33,6 +33,9 @@ require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/course/tests/fixtures/course_capability_assignment.php');
 require_once($CFG->dirroot . '/enrol/imsenterprise/tests/imsenterprise_test.php');
 
+/**
+ * Class format_tiles_course_courselib_testcase
+ */
 class format_tiles_course_courselib_testcase extends advanced_testcase {
 
     /**
@@ -2585,7 +2588,7 @@ class format_tiles_course_courselib_testcase extends advanced_testcase {
      * Returns a user object and its assigned new role.
      *
      * @param testing_data_generator $generator
-     * @param $contextid
+     * @param int $contextid
      * @return array The user object and the role ID
      */
     protected function get_user_objects(testing_data_generator $generator, $contextid) {

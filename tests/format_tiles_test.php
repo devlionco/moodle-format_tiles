@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/course/lib.php');
 
+/**
+ * Class format_tiles_testcase
+ */
 class format_tiles_testcase extends advanced_testcase
 {
 
