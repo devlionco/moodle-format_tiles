@@ -90,3 +90,14 @@
 - Clear browser stored content when user switches role
 - Fix issue with in tile close button not always locating at top of section
 
+3.3.1 (2019012100)
+==================
+- Graphical colour and icon pickers to be available on course edit form when course is switched into tiles for first time (not just afterwards)
+- Overall progress indicator shows when filter bar not shown
+- Add 'afterlink' html to course module display
+- Check if theme supports font awesome
+- Include tile progress indicator value in completion behat test
+- Avoid minor layout issue with clean theme icon search box
+- Remove redundant setting tile hover colour name
+- No completion tracking for user viewing course as guest
+- Minor changes to please Moodle code checker

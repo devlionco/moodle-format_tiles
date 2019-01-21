@@ -41,7 +41,7 @@ Feature: Teacher can add a page to a course and open it with subtiles off
       | Name                | Test page 2                                          |
       | Page content        | Test page 2 content                                  |
       | Completion tracking | Students can manually mark the activity as completed |
-    And I wait "10" seconds
+    And I wait "2" seconds
     And I click on "Save and display" "button"
 
     And I am on "Course 1" course homepage
@@ -75,6 +75,7 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And I click on "#expand1" "css_element"
     And I add a "page" to section "1"
     And I wait until the page is ready
+    And I wait "2" seconds
     And I set the following fields to these values:
       | Name                | Test page 2                                          |
       | Page content        | Test page 2 content                                  |
