@@ -38,7 +38,7 @@ Feature: PDFs can be set to open in modal windows with subtiles off
     And I click on "#expand1" "css_element"
     And I add a "File" to section "1"
     And I wait until the page is ready
-    And I wait "1" seconds
+    And I wait "3" seconds
     And I set the following fields to these values:
       | Name        | Test PDF         |
       | Description | File description |
@@ -86,8 +86,4 @@ Feature: PDFs can be set to open in modal windows with subtiles off
     And I click on "Close" "button"
     And I wait until the page is ready
     And "Test PDF" "dialogue" should not be visible
-    And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
-
 

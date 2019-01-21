@@ -90,7 +90,7 @@
 - Clear browser stored content when user switches role
 - Fix issue with in tile close button not always locating at top of section
 
-3.3.1 (2019012100)
+3.3.1 (2019012101)
 ==================
 - Graphical colour and icon pickers to be available on course edit form when course is switched into tiles for first time (not just afterwards)
 - Overall progress indicator shows when filter bar not shown
