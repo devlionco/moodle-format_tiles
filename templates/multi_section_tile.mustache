@@ -46,9 +46,9 @@
         "restricted": 0
         }
 }}
-<li class="tile{{#hidden}} tile-hidden{{/hidden}}{{#restricted}} tile-restricted{{/restricted}}{{#isactive}} current{{/isactive}}" id="tile-{{tileid}}" data-section="{{tileid}}"
-    data-sectionid="{{secid}}" tabindex="2" aria-role="button">
-    <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&section={{tileid}}"
+<li class="tile{{#hidden}} tile-hidden{{/hidden}}{{#restricted}} tile-restricted{{/restricted}}{{#isactive}} current{{/isactive}}{{#userclickable}} tile-clickable{{/userclickable}}"
+    id="tile-{{tileid}}" data-section="{{tileid}}" data-sectionid="{{secid}}" tabindex="2" aria-role="button">
+    <a{{#userclickable}} href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&section={{tileid}}"{{/userclickable}}
        data-section="{{tileid}}" id="sectionlink-{{tileid}}">
         <div class="tile-content" id="tilecontent-{{tileid}}">
             <div class="tile-top" id="tileTop-{{tileid}}">

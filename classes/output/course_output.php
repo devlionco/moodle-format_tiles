@@ -301,7 +301,6 @@ class course_output implements \renderable, \templatable
      * @throws \moodle_exception
      */
     private function append_multi_section_page_data($output, $data, $modinfo, $completioninfo) {
-        global $PAGE;
         $data['is_multi_section'] = true;
 
         // If using completion tracking, get the data.
@@ -312,8 +311,12 @@ class course_output implements \renderable, \templatable
         $data['hasNoSections'] = true;
 
         foreach ($modinfo->get_section_info_all() as $sectionid => $section) {
-            if ($section->uservisible && $sectionid != 0) {
-                // We deal with section zero separately in the common data section as required on single and multi page.
+            // Show the section if the user is permitted to access it, OR if it's not available
+            // but there is some available info text which explains the reason & should display,
+            // OR it is hidden but the course has a setting to display hidden sections as unavilable.
+            $showsection = $section->uservisible ||
+                ($section->visible && !$section->available && !empty($section->availableinfo));
+            if ($sectionid != 0 && $showsection) {
                 $title = $this->truncate_title(get_section_name($this->course, $sectionid));
 
                 $longtitlelength = 65;
@@ -326,6 +329,7 @@ class course_output implements \renderable, \templatable
                     'hidden' => !$section->visible,
                     'visible' => $section->visible,
                     'restricted' => !($section->available),
+                    'userclickable' => $section->available || $section->uservisible,
                     'activity_summary' => $output->section_activity_summary($section, $this->course, null),
                     'titleclass' => strlen($title) >= $longtitlelength ? ' longtitle' : '',
                     'progress' => false,
@@ -365,10 +369,9 @@ class course_output implements \renderable, \templatable
                     }
                 }
 
-                // If user can view hidden items, include the explanation as to why an item is hidden.
-                if ($data['canviewhidden']) {
-                    $newtile['availabilitymessage'] = $output->section_availability_message($section, $data['canviewhidden']);
-                }
+                // If item is restricted, user needs to know why.
+                $newtile['availabilitymessage'] = $output->section_availability_message($section, $data['canviewhidden']);
+
                 if ($this->course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES
                     || $this->course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
                     $newtile['tileoutcomeid'] = $section->tileoutcomeid;

@@ -54,6 +54,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             FILTER_BUTTON: ".filterbutton",
             TILE_LOADING_ICON: ".tile-loading-icon",
             TILE_COLLAPSED: ".tile-collapsed",
+            TILE_CLICKABLE: ".tile-clickable",
             ACTIVITY: ".activity",
             SPACER: ".spacer",
             SECTION_MOVEABLE: ".moveablesection",
@@ -603,7 +604,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                          // On a tile click, decide what to do an do it.
                          // (Collapse if already expanded, or expand it and fill with content).
-                        pageContent.on(Event.CLICK, Selector.TILE, function (e) {
+                        pageContent.on(Event.CLICK, Selector.TILE_CLICKABLE, function (e) {
                             // Prevent the link being followed to reload the PHP page as we are using JS instead.
                             if (!useJavascriptNav) {
                                 return;

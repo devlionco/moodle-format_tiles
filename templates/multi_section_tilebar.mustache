@@ -37,7 +37,7 @@
     {}
 }}
 
-<li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#isactive}}current {{/isactive}}clearfix"
+<li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#isactive}}current {{/isactive}}clearfix{{#restricted}} tile_bar_restricted{{/restricted}}"
     role="region" data-section="{{tileid}}" data-sectionid="{{secid}}"
     aria-label="{{{title}}}">
     {{!hidden section requried for drag and drop to work, left side and right side for edit controls}}
@@ -62,8 +62,7 @@
                 <span class="tile_bar_text" tabindex="3">
                     {{{inplace_editable_title}}}
                 </span>
-                <div class="icon20 pull-right" id="hiddeneye{{tileid}}" title="Hidden"></div>
-
+                <div class="icon20 pull-right" id="hiddeneye{{tileid}}" title="{{#str}}hidden, format_tiles{{/str}}"></div>
                 {{^is_expanded}}
                     <a class="expand-section pull-right"
                        href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand={{tileid}}#section-{{tileid}}">
@@ -78,7 +77,9 @@
         {{#isediting}}
             <div class="summary">{{{section_summary}}}</div>
             <div class="section_availability">
-                {{{availabilityinfo}}}
+                {{#availabilitymessage}}
+                    {{>format_tiles/availability_info}}
+                {{/availabilitymessage}}
             </div>
             <ul class="section img-text {{^useSubtiles}}no{{/useSubtiles}}subtiles">
                 {{#is_expanded}}

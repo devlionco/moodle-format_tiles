@@ -386,7 +386,7 @@ li#section-0.section.main.clearfix {
     color: #818a91;
 }
 
-.format-tiles .course-content ul.tiles .tile:hover {
+.format-tiles .course-content ul.tiles .tile-clickable:hover {
     transform: translateY(-6px);
     transition: transform 0.2s ease-in-out;
     -moz-transition: transform 0.2s ease-in-out;
@@ -413,7 +413,7 @@ li#section-0.section.main.clearfix {
 }
 
 .format-tiles ul.tiles .tile.tile-hidden:hover,
-.format-tiles ul.tiles .tile.tile-restricted:hover {
+.format-tiles ul.tiles .tile-restricted.tile-clickable:hover {
     opacity: 0.3;
 }
 
