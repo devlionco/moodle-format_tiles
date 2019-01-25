@@ -167,6 +167,9 @@ class icon_set {
 
         // Now look for any supplemental image file (i.e. non font awesome icons) which are available as tile icons.
         // Add them to the list.
+        // Ideally all of the icons would be removed from the pix directorym except custom non font-awesome icons.
+        // The reason is that those fallback images are never called if the theme is font awesome compatible (as fa is used).
+        // However they are left in pix for now as some older themes (e.g. Clean) may need them.
         $iconsindirectory = get_directory_list($CFG->dirroot
             . '/course/format/tiles/pix/tileicon', '', false, false, true);
         foreach ($iconsindirectory as $icon) {

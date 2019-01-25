@@ -935,11 +935,7 @@ function format_tiles_inplace_editable($itemtype, $itemid, $newvalue) {
 
 /**
  * Get icon mapping for font-awesome.
- * To make additional font awesome icons available as tile icons, add them below (or indeed remove)
- * Ideally all of the icons specific here would be removed from the pix directory as those images
- * are never called if the theme is font awesome compatible.  However they are left in pix for now
- * as fallbacks, since the clean theme does not yet support font awesome
- * (does not specify $THEME->iconsystem as fa like Boost and Essential do)
+ * @return array the icons for which theme should use font awesome.
  */
 function format_tiles_get_fontawesome_icon_map() {
     $iconset = new format_tiles\icon_set();
