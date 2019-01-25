@@ -192,14 +192,11 @@
                     {{/isediting}}
                 {{/useSubtiles}}
 
-                {{^useSubtiles}}
-                    <div class="contentafterlink">
-                        {{{availabilityinfo}}}
-                    </div>
-                {{/useSubtiles}}
-                {{#availabilitymessage}}
-                    {{>format_tiles/availability_info}}
-                {{/availabilitymessage}}
+                <div class="contentafterlink">
+                    {{#availabilitymessage}}
+                        {{>format_tiles/availability_info}}
+                    {{/availabilitymessage}}
+                </div>
             {{/is_label}}
 
             {{#isediting}}

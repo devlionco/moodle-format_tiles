@@ -34,23 +34,20 @@
 
     Context variables required for this template:
         * id - id of the course module
-        * modtitle - title of the cm e.g. "Lecture 1 slides PDF",
-        * intro - intro of the cm (i.e. the description entered on the course module edit page)
         * objectType - the object type for the <object> tag's type field e.g. 'text/html'
         * pluginfileUrl - the url to get the resource directly e.g. "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF"
-        * completion - array of info for the completion_icon template
+        * width - width of the item
+        * height - height of the item
 
     Example context (json):
     {
         "id": 123,
-        "modtitle": "Lecture 1 slides PDF",
-        "intro": "This is the description entered on the course module edit page",
         "objectType": "application/pdf",
         "pluginfileUrl": "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF",
-        "completion": []
+        "width": 800,
+        "height": 600
     }
 }}
-
 <object id="resourceobject_{{id}}" class="resourceobject" data="{{{pluginfileUrl}}}" type="{{objectType}}"
         width="{{#width}}{{width}}{{/width}}{{^width}}800{{/width}}"
         height="{{#height}}{{height}}{{/height}}{{^height}}600{{/height}}">
