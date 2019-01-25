@@ -729,13 +729,9 @@ class course_output implements \renderable, \templatable
                 $moduleobject['isEmbeddedModule'] = 1;
                 $moduleobject['launchtype'] = 'module-modal';
             }
-            $moduleobject['showdescription'] = isset($mod->showdescription) ? $mod->showdescription : 0;
+            $moduleobject['showdescription'] = isset($mod->showdescription) && !$this->treat_as_label($mod) ? $mod->showdescription : 0;
             if ($moduleobject['showdescription']) {
                 // The reason we need 'noclean' arg here is that otherwise youtube etc iframes will be stripped out.
-                $moduleobject['intro'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
-            }
-
-            if ($this->treat_as_label($mod)) {
                 $moduleobject['description'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
             }
             $moduleobject['extraclasses'] = $mod->extraclasses;
