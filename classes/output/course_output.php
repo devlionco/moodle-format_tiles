@@ -661,14 +661,17 @@ class course_output implements \renderable, \templatable
             if ($canviewhidden) {
                 $moduleobject['uservisible'] = true;
                 $moduleobject['clickable'] = true;
+                $moduleobject['dimmed'] = !$mod->visible || !$section->visible;
             } else if ((!$mod->uservisible && $mod->visibleoncoursepage && $mod->availableinfo && $mod->visible)) {
                 // Activity is not available, not hidden from course page and has availability info.
                 // So it is actually visible on the course page (with availability info and without a link).
                 $moduleobject['uservisible'] = true;
                 $moduleobject['clickable'] = false;
+                $moduleobject['dimmed'] = true;
             } else {
                 $moduleobject['uservisible'] = $mod->uservisible;
                 $moduleobject['clickable'] = $mod->uservisible;
+                $moduleobject['dimmed'] = !$mod->visible || !$section->visible;
             }
             if (!$moduleobject['uservisible'] || $mod->deletioninprogress) {
                 continue;
@@ -755,8 +758,13 @@ class course_output implements \renderable, \templatable
                 $moduleobject['cmeditmenu'] = $this->courserenderer->course_section_cm_edit_actions($editactions, $mod);
                 $moduleobject['cmeditmenu'] .= $mod->afterediticons;
                 if (!$this->treat_as_label($mod)) {
+                    if(!$mod->visible || !$section->visible) {
+                        $attr = array('class' => 'dimmed');
+                    } else {
+                        $attr = null;
+                    }
                     $moduleobject['modtitle_inplaceeditable'] = array(
-                        "displayvalue" => \html_writer::link($mod->url, $mod->get_formatted_name()),
+                        "displayvalue" => \html_writer::link($mod->url, $mod->get_formatted_name(), $attr),
                         "value" => $mod->name,
                         "itemid" => $mod->id,
                         "component" => "core_course",

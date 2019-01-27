@@ -621,6 +621,9 @@ li#section-0.section.main.clearfix {
 .format-tiles .label_content {
     overflow: hidden;
 }
+.format-tiles .label.dimmed {
+    opacity: 0.7;
+}
 .format-tiles .label-collapse-btn {
     float: left;
 }
