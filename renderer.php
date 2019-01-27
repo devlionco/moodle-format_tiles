@@ -185,6 +185,7 @@ class format_tiles_renderer extends format_section_renderer_base
         }
     }
 
+    // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
     /**
      * Generate the edit control action menu
      *
@@ -193,10 +194,10 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param stdClass $section The course_section entry from DB
      * @return string HTML to output.
      */
-    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_edit_control_menu($controls, $course, $section) {
         return parent::section_edit_control_menu($controls, $course, $section);
     }
+    // @codingStandardsIgnoreEnd.
 
     /**
      * Generate the html for the single section page
@@ -267,15 +268,16 @@ class format_tiles_renderer extends format_section_renderer_base
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
 
+    // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
     /**
      * Generate html for a section summary text
      * @param stdClass $section
      * @return string
      */
-    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function format_summary_text($section) {
         return parent::format_summary_text($section);
     }
+    // @codingStandardsIgnoreEnd.
 
     /**
      * Generate a summary of the activites in a section
@@ -359,6 +361,7 @@ class format_tiles_renderer extends format_section_renderer_base
         return $o;
     }
 
+    // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
     /**
      * If section is not visible, display the message about that ('Not available
      * until...', that sort of thing). Otherwise, returns blank.
@@ -367,11 +370,12 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param bool $canviewhidden True if user can view hidden sections
      * @return string HTML to output
      */
-    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_availability_message($section, $canviewhidden) {
         return parent::section_availability_message($section, $canviewhidden);
     }
+    // @codingStandardsIgnoreEnd.
 
+    // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
     /**
      * Show if something is on on the course clipboard (moving around)
      *
@@ -379,11 +383,12 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param int $sectionno The section number in the coruse which is being dsiplayed
      * @return string HTML to output.
      */
-    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function course_activity_clipboard($course, $sectionno = null) {
         return parent::course_activity_clipboard($course, $sectionno);
     }
+    // @codingStandardsIgnoreEnd.
 
+    // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
     /**
      * Generate the content to displayed on the left part of a section
      * before course modules are included
@@ -393,11 +398,12 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param bool $onsectionpage true if being printed on a section page
      * @return string HTML to output.
      */
-    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_left_content($section, $course, $onsectionpage) {
         return parent::section_left_content($section, $course, $onsectionpage);
     }
+    // @codingStandardsIgnoreEnd.
 
+    // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
     /**
      * Generate the content to displayed on the right part of a section
      * before course modules are included
@@ -407,11 +413,12 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param bool $onsectionpage true if being printed on a section page
      * @return string HTML to output.
      */
-    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function section_right_content($section, $course, $onsectionpage) {
         return parent::section_right_content($section, $course, $onsectionpage);
     }
+    // @codingStandardsIgnoreEnd.
 
+    // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
     /**
      * Returns controls in the bottom of the page to increase/decrease number of sections
      *
@@ -419,10 +426,10 @@ class format_tiles_renderer extends format_section_renderer_base
      * @param int|null $sectionreturn
      * @return string
      */
-    // @codingStandardsIgnoreLine - Override this here so we have access from the output class.
     public function change_number_sections($course, $sectionreturn = null) {
         return parent::change_number_sections($course, $sectionreturn);
     }
+    // @codingStandardsIgnoreEnd.
 
     /**
      * Generate html for course module content

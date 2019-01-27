@@ -236,7 +236,7 @@ class course_output implements \renderable, \templatable
             return $data;
         }
         if (!$thissection->uservisible) {
-            // Can't view this section.
+            // Can't view this section - in that case the template will just render 'Not available' and nothing else.
             $data['hidden_section'] = true;
             return $data;
         }
@@ -729,7 +729,8 @@ class course_output implements \renderable, \templatable
                 $moduleobject['isEmbeddedModule'] = 1;
                 $moduleobject['launchtype'] = 'module-modal';
             }
-            $moduleobject['showdescription'] = isset($mod->showdescription) && !$this->treat_as_label($mod) ? $mod->showdescription : 0;
+            $moduleobject['showdescription'] =
+                isset($mod->showdescription) && !$this->treat_as_label($mod) ? $mod->showdescription : 0;
             if ($moduleobject['showdescription']) {
                 // The reason we need 'noclean' arg here is that otherwise youtube etc iframes will be stripped out.
                 $moduleobject['description'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
