@@ -1,5 +1,5 @@
 @format @format_tiles @format_tiles_completion @javascript
-Feature: Teacher can add a page to a course and open it with subtiles off
+Feature: Progress indicators can be used to change progress status and changes are reflected in database
 
   Background:
     Given the following "users" exist:

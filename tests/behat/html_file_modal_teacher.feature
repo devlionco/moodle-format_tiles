@@ -90,5 +90,3 @@ Feature: HTML file can be set to open in modal windows with subtiles off
     And I click on close button for tile "1"
     And I wait until the page is ready
     And I log out
-
-

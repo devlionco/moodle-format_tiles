@@ -86,4 +86,3 @@ Feature: PDFs can be set to open in modal windows with subtiles off
     And I click on "Close" "button"
     And I wait until the page is ready
     And "Test PDF" "dialogue" should not be visible
-

@@ -38,6 +38,8 @@ require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 class behat_format_tiles extends behat_base {
 
     /**
+     * Set course format option for subtiles on for course.
+     *
      * @Given /^format_tiles subtiles are on for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
      * @param string $coursefullname
      * @throws dml_exception
@@ -47,6 +49,8 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
+     * * Set course format option for subtiles off for course.
+     *
      * @Given /^format_tiles subtiles are off for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
      * @param string $coursefullname
      * @throws dml_exception
@@ -56,6 +60,7 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
+     * Set course format option for subtiles on or off for course.
      * @param string $coursefullname
      * @param int $onoff
      * @throws dml_exception
@@ -70,6 +75,8 @@ class behat_format_tiles extends behat_base {
 
     // @codingStandardsIgnoreStart.
     /**
+     * Set the course format option for the progress indicator for a course as percent or fraction.
+     *
      * @Given /^format_tiles progress indicator is showing as "(?P<progresstype_string>(?:[^"]|\\")*)" for course "(?P<coursefullname_string>(?:[^"]|\\")*)"$/
      * @param string $progresstype
      * @param string $coursefullname
@@ -93,10 +100,12 @@ class behat_format_tiles extends behat_base {
 
     // @codingStandardsIgnoreStart.
     /**
+     * For a given page, check that its progress indicator shows a certain value (i.e. complete or not).
+     *
      * @Then /^format_tiles progress for "(?P<activitytitle_string>(?:[^"]|\\")*)" in "(?P<coursefullname_string>(?:[^"]|\\")*)" is "(?P<value>\d+)" in the database$/
-     * @param $activitytitle
-     * @param $coursefullname
-     * @param $value
+     * @param string $activitytitle
+     * @param string $coursefullname
+     * @param int $value
      * @throws \Behat\Mink\Exception\ExpectationException
      * @throws dml_exception
      * @throws moodle_exception
@@ -140,6 +149,8 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
+     * Check that a named activity is dimmed.
+     *
      * @Then /^activity in format tiles is dimmed "(?P<activityname_string>(?:[^"]|\\")*)"$/
      * @param string $activityname
      * @return bool
@@ -154,6 +165,8 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
+     * Check that a named activity is not dimmed.
+     *
      * @Then /^activity in format tiles is not dimmed "(?P<activityname_string>(?:[^"]|\\")*)"$/
      * @param string $activityname
      * @return bool
@@ -194,7 +207,8 @@ class behat_format_tiles extends behat_base {
     }
     // @codingStandardsIgnoreStart.
     /**
-     * I wait until a certain activity is visible following AJAX load
+     * I wait until a certain activity is visible following AJAX load.
+     *
      * @Given /^I wait until activity "(?P<activitytitle_string>(?:[^"]|\\")*)" exists in "(?P<format_string>(?:[^"]|\\")*)" format$/
      * @param string $activitytitle
      * @param string $format
@@ -222,7 +236,7 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
-     * I click a certain activity
+     * I click a certain activity.
      *
      * @Given /^I click format tiles activity "(?P<activitytitle_string>(?:[^"]|\\")*)"$/
      * @param string $activitytitle
@@ -240,7 +254,7 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
-     * I click a tile's progress indicator
+     * I click a tile's progress indicator.
      *
      * @Given /^I click format tiles progress indicator for "(?P<activitytitle_string>(?:[^"]|\\")*)"$/
      * @param string $activitytitle
@@ -335,9 +349,11 @@ class behat_format_tiles extends behat_base {
     }
 
     /**
+     * Show or hide a certain tile.
+     *
      * @param int $sectionnumber
      * @param string $showhide
-     * @param $xpath
+     * @param string $xpath
      * @throws \Behat\Mink\Exception\ExpectationException
      * @throws coding_exception
      */

@@ -35,6 +35,8 @@ require_once($CFG->dirroot . '/enrol/imsenterprise/tests/imsenterprise_test.php'
 
 /**
  * Class format_tiles_course_courselib_testcase
+ * @copyright 2018 David Watson based on core version 2012 Petr Skoda {@link http://skodak.org}
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_tiles_course_courselib_testcase extends advanced_testcase {
 

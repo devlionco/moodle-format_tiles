@@ -78,7 +78,6 @@ Feature: Teacher can restrict course modules to groups
     And I wait "1" seconds
     And I log out
 
-
      # Log back in as student.
     And I log in as "studenta"
     And I am on "Course 1" course homepage

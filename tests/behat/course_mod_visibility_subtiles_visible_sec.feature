@@ -1,5 +1,5 @@
 @format @format_tiles @course_mod_visibility_subtiles_visible_sec  @javascript
-Feature: Teacher can hide course modules when subtiles being used and this is respected
+Feature: Teacher can hide course modules when subtiles being used in a visible section and this is respected
 
   Background:
     Given the following "users" exist:
@@ -64,7 +64,6 @@ Feature: Teacher can hide course modules when subtiles being used and this is re
     And I should see "Test URL NV"
     And "Test URL NV" activity should be hidden
 
-
     And I click on close button for tile "1"
     And I wait "1" seconds
     And I log out
@@ -83,7 +82,6 @@ Feature: Teacher can hide course modules when subtiles being used and this is re
     And I should not see "Test page NV"
     And I should not see "Test forum NV"
     And I should not see "Test URL NV"
-
 
     And I click on close button for tile "1"
     And I wait until the page is ready

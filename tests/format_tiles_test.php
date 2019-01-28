@@ -30,6 +30,8 @@ require_once($CFG->dirroot . '/course/lib.php');
 
 /**
  * Class format_tiles_testcase
+ * @copyright  2018 David Watson
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_tiles_testcase extends advanced_testcase
 {

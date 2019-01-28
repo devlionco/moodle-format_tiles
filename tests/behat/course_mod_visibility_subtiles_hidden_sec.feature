@@ -66,7 +66,6 @@ Feature: Teacher can hide course modules when subtiles being used and this is re
     And I should see "Test URL NV"
     And activity in format tiles is dimmed "Test URL NV"
 
-
     And I click on close button for tile "1"
     And I wait "1" seconds
     And I log out

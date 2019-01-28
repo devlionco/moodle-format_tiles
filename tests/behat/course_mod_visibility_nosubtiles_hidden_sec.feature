@@ -1,5 +1,5 @@
 @format @format_tiles @course_mod_visibility_nosubtiles_hidden_sec @javascript
-Feature:  In a section for Teacher, hidden activities are dimmed.
+Feature:  In a section for Teacher, hidden activities are dimmed where subtiles are not being used.
   In this specific case when Teacher hides a whole section, its contents are *all* dimmed even if not individually hidden
 
   Background:
@@ -76,7 +76,6 @@ Feature:  In a section for Teacher, hidden activities are dimmed.
 
     And I should see "Test URL NV"
     And activity in format tiles is dimmed "Test URL NV"
-
 
     And I click on close button for tile "1"
     And I wait "1" seconds

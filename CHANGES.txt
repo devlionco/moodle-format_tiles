@@ -105,5 +105,5 @@
 3.3.2 (2019012800)
 ==================
 - Avoid issue with duplicate labels showing where database shows cm.showdescription=1 (only happens sometimes)
-- Allow teacher to set restricted tiles as being visible to students but greyed out (instead of always hidden until restriction satisfied)
+- Allow teacher to set restricted tiles as being visible to students but greyed out
 - Improve dimming of hidden activities

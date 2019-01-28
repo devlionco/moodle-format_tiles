@@ -16,6 +16,20 @@
 }}
 
 {{!
+    @template format_tiles/progress
+
+    Progress indicator template.
+
+    The purpose of this template is to render a progress indicator
+    as a radial % indicator or fraction (e.g. 2/3 complete) to be
+    displayed on a tile.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
     Context variables required for this template:
         * complete - is the section 100% complete (if yes will show check mark instead of indicator)
         * tileid - which section / tile are we in

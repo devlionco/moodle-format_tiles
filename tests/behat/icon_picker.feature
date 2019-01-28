@@ -31,7 +31,6 @@ Feature: Teacher can allocate icons to tiles
       | jsmaxstoreditems       | 0        | format_tiles |
     # We set jsmaxstoreditems to zero as otherwise when we switch between subtiles and tiles format we may not see an immediate change in display
 
-
   @javascript
   Scenario: Teacher can use icon picker to pick icons, and can rename section afterwards
     When I log in as "teacher1"
