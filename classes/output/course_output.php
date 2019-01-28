@@ -758,7 +758,7 @@ class course_output implements \renderable, \templatable
                 $moduleobject['cmeditmenu'] = $this->courserenderer->course_section_cm_edit_actions($editactions, $mod);
                 $moduleobject['cmeditmenu'] .= $mod->afterediticons;
                 if (!$this->treat_as_label($mod)) {
-                    if(!$mod->visible || !$section->visible) {
+                    if (!$mod->visible || !$section->visible) {
                         $attr = array('class' => 'dimmed');
                     } else {
                         $attr = null;

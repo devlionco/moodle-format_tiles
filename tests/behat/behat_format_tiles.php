@@ -76,8 +76,8 @@ class behat_format_tiles extends behat_base {
      * @throws \Behat\Mink\Exception\ExpectationException
      * @throws dml_exception
      */
-    // @codingStandardsIgnoreEnd.
     public function progress_indicator_showing_as($progresstype, $coursefullname) {
+        // @codingStandardsIgnoreEnd.
         global $DB;
         if (strtolower($progresstype) == 'percent') {
             $numerictype = 2;
@@ -101,8 +101,8 @@ class behat_format_tiles extends behat_base {
      * @throws dml_exception
      * @throws moodle_exception
      */
-    // @codingStandardsIgnoreEnd.
     public function progress_indicator_for_page_in_is_set_to($activitytitle, $coursefullname, $value) {
+        // @codingStandardsIgnoreEnd.
         global $DB;
         $user = $this->get_session_user();
         $courseid = $DB->get_field('course', 'id', array('fullname' => $coursefullname), MUST_EXIST);
@@ -141,7 +141,7 @@ class behat_format_tiles extends behat_base {
 
     /**
      * @Then /^activity in format tiles is dimmed "(?P<activityname_string>(?:[^"]|\\")*)"$/
-     * @param $activityname
+     * @param string $activityname
      * @return bool
      * @throws \Behat\Mink\Exception\ExpectationException
      */
@@ -200,8 +200,8 @@ class behat_format_tiles extends behat_base {
      * @param string $format
      * @throws Exception
      */
-    // @codingStandardsIgnoreEnd.
     public function wait_until_activity_exists_in_format($activitytitle, $format) {
+        // @codingStandardsIgnoreEnd.
         if ($format == 'subtile' || $format == 'subtiles') {
             $liclass = 'subtile';
         } else if ($format == 'non-subtile') {
@@ -283,6 +283,88 @@ class behat_format_tiles extends behat_base {
                 . ' but found ' . $node->getAttribute('data-numoutof'),
                 $this->getSession()
             );
+        }
+    }
+
+    /**
+     * Checks if the course section exists.
+     *
+     * @throws \Behat\Mink\Exception\ElementNotFoundException Thrown by behat_base::find
+     * @throws \Behat\Mink\Exception\ExpectationException
+     * @param int $sectionnumber
+     * @return string The xpath of the section.
+     */
+    protected function tile_exists($sectionnumber) {
+
+        // Just to give more info in case it does not exist.
+        $xpath = "//li[@id='section-" . $sectionnumber . "']";
+        $exception = new \Behat\Mink\Exception\ElementNotFoundException($this->getSession(), "Tile $sectionnumber ");
+        $this->find('xpath', $xpath, $exception);
+
+        return $xpath;
+    }
+
+    /**
+     * Hides the specified visible tile. You need to be in the course page and on editing mode.
+     *
+     * @Given /^I hide tile "(?P<section_number>\d+)"$/
+     * @param int $sectionnumber
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws \Behat\Mink\Exception\ExpectationException
+     * @throws coding_exception
+     */
+    public function i_hide_tile($sectionnumber) {
+        // Ensures the section exists.
+        $xpath = $this->tile_exists($sectionnumber);
+        $this->i_show_hide($sectionnumber, 'hidefromothers', $xpath);
+    }
+
+    /**
+     * Hides the specified visible tile. You need to be in the course page and on editing mode.
+     *
+     * @Given /^I show tile "(?P<section_number>\d+)"$/
+     * @param int $sectionnumber
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws \Behat\Mink\Exception\ExpectationException
+     * @throws coding_exception
+     */
+    public function i_show_tile($sectionnumber) {
+        // Ensures the section exists.
+        $xpath = $this->tile_exists($sectionnumber);
+        $this->i_show_hide($sectionnumber, 'showfromothers', $xpath);
+    }
+
+    /**
+     * @param int $sectionnumber
+     * @param string $showhide
+     * @param $xpath
+     * @throws \Behat\Mink\Exception\ExpectationException
+     * @throws coding_exception
+     */
+    private function i_show_hide($sectionnumber, $showhide, $xpath) {
+
+        // If javascript is on, link is inside a menu.
+        if ($this->running_javascript()) {
+            $fullxpath = $xpath
+                . "/descendant::div[contains(@class, 'section-actions')]/descendant::a[contains(@class, 'dropdown-toggle')]";
+            $exception = new \Behat\Mink\Exception\ExpectationException(
+                'Tile "' . $sectionnumber . '" was not found', $this->getSession()
+            );
+            $menu = $this->find('xpath', $fullxpath, $exception);
+            $menu->click();
+        }
+
+        // Click on hide link.
+        $fullxpath = $xpath . '/descendant::a[@title="' . get_string($showhide, 'format_tiles') .'"]';
+        echo $fullxpath;
+        $exception = new \Behat\Mink\Exception\ExpectationException(
+            'Hide link for tile "' . $sectionnumber . '" was not found', $this->getSession()
+        );
+        $link = $this->find('xpath', $fullxpath, $exception);
+        $link->click();
+
+        if ($this->running_javascript()) {
+            $this->getSession()->wait(self::TIMEOUT * 1000, self::PAGE_READY_JS);
         }
     }
 }

@@ -92,7 +92,7 @@
 
 3.3.1 (2019012101)
 ==================
-- Graphical colour and icon pickers to be available on course edit form when course is switched into tiles for first time (not just afterwards)
+- Graphical colour and icon pickers to be available on course edit form when course is switched into tiles for first time
 - Overall progress indicator shows when filter bar not shown
 - Add 'afterlink' html to course module display
 - Check if theme supports font awesome
@@ -101,3 +101,9 @@
 - Remove redundant setting tile hover colour name
 - No completion tracking for user viewing course as guest
 - Minor changes to please Moodle code checker
+
+3.3.2 (2019012800)
+==================
+- Avoid issue with duplicate labels showing where database shows cm.showdescription=1 (only happens sometimes)
+- Allow teacher to set restricted tiles as being visible to students but greyed out (instead of always hidden until restriction satisfied)
+- Improve dimming of hidden activities
