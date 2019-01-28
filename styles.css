@@ -32,13 +32,13 @@
     opacity: 0.2;
 }
 .format-tiles .header-overlay {
-    opacity: 0.2;
+    opacity: 0.3;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1040;
-    background-color: #000;
+    background-color: #aaa;
     height: 60px;
 }
 

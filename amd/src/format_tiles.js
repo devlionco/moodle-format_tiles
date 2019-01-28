@@ -45,7 +45,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         var reOrgLocked = false;
         var scrollFuncLock = false;
         var sectionIsOpen = false;
-        var NAVBAR_HEIGHT = 60;
+        var HEADER_BAR_HEIGHT = 60; // This varies by theme and version so will be reset once pages loads below.
         var reopenLastVisitedSection = "0";
         var Selector = {
             PAGE: "#page",
@@ -226,7 +226,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 setTimeout(function () {
                                     // Allow very short delay so we dont skip forward on the basis of our last key press.
                                     contentArea.find(Selector.SECTION_TITLE).focus();
-                                    bodyHtml.animate({scrollTop: contentArea.offset().top - NAVBAR_HEIGHT}, "slow");
+                                    bodyHtml.animate({scrollTop: contentArea.offset().top - HEADER_BAR_HEIGHT}, "slow");
                                     contentArea.find('#sectionbuttons').css("top", "");
                                 }, 200);
                             }
@@ -274,7 +274,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             var expandAndScroll = function () {
                 // Scroll to the top of content bearing section
                 // we have to wait until possible reOrg and slide down totally before calling this, else co-ords are wrong.
-                var scrollTo = $("#tileText-" + tileId).offset().top - NAVBAR_HEIGHT;
+                var scrollTo = $("#tileText-" + tileId).offset().top - HEADER_BAR_HEIGHT;
                 if (scrollTo === $(window).scrollTop) {
                     // Scroll by at least one pixel otherwise z-index on selected tile is not changed.
                     // Until mouse moves.
@@ -770,12 +770,13 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         // If it is clicked, cancel tile selections and click the item behind where clicked.
                         // Do not include for Moodle 3.5 or higher as not needed.
 
-                        if (headerBar.outerHeight() !== undefined) {
+                        if (headerBar.height() !== undefined) {
+                            HEADER_BAR_HEIGHT = headerBar.height();
                             headerOverlay = $("<div></div>")
                                 .addClass(ClassNames.HEADER_OVERLAY).attr("id", ClassNames.HEADER_OVERLAY)
                                 .css(CSS.DISPLAY, "none");
                             headerOverlay.insertAfter(Selector.PAGE)
-                                .css(CSS.Z_INDEX, (overlayZindex) + 3).css(CSS.HEIGHT, headerBar.outerHeight())
+                                .css(CSS.Z_INDEX, (overlayZindex) + 3).css(CSS.HEIGHT, HEADER_BAR_HEIGHT)
                                 .click(function (e) {
                                     cancelTileSelections(0);
                                     clickItemBehind(e);

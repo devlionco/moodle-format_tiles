@@ -121,7 +121,7 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                     selectedIconName = $("#id_defaulttileicon option:selected").text();
                 } else if (pageType === "course-editsection") {
                     selectBox = $("#id_tileicon");
-                    selectedIconName = $("#id_tileicon option:selected" ).text();
+                    selectedIconName = $("#id_tileicon option:selected").text();
                 }
                 if (pageType === "course-edit" || (pageType === "course-editsection" && section !== "0")) {
                     var currentIcon;
