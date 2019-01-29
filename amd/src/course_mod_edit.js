@@ -191,7 +191,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
             var returnData = {
                 cmid: cmObject.attr("id").split("-").slice(-1)[0], // Last item.
                 modtitle: cmObject.find(Selector.INSTANCE_NAME).html().split("<")[0],
-                cmeditmenu: cmObject.find(Selector.SECTION_CM_EDIT_ACTIONS).html().replace(/\n/g, ""),
+                cmeditmenu: cmObject.find(Selector.SECTION_CM_EDIT_ACTIONS)[0].outerHTML.replace(/\n/g, ""),
                 cmmove: cmObject.find(Selector.EDITING_MOVE)[0].outerHTML,
                 modname: "resource",
                 modResourceType: modResourceType,
