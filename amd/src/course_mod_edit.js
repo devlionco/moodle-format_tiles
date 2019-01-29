@@ -71,7 +71,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
 
         var Event = {
             CLICK: "click",
-            MODULE_ADDED: "filter-content-updated"
+            MODULE_ADDED: "filter-content-updated",
+            MOUSEDOWN: "mousedown"
         };
 
         /**
@@ -180,11 +181,18 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                 // Failed to get string for this type
                 displayname = stringStore.other; // Use "other" instead of proper word.
             }
+            // We take the course module edit menu from the new CM which core added to the course.
+            // We remove the data-action attributes from the hide menu item, as we dont want it to call JS.
+            // if it called JS, the result would not only hide the item (good) but re-render it using standard core template (bad).
+            cmObject.find('a.cm-edit-action').each(function (index, editItem) {
+                $(editItem).attr('data-action', '');
+            });
+            cmObject.find('a.editing_moveright').remove(); // We do not use this with subtiles (indent).
             var returnData = {
                 cmid: cmObject.attr("id").split("-").slice(-1)[0], // Last item.
                 modtitle: cmObject.find(Selector.INSTANCE_NAME).html().split("<")[0],
                 cmeditmenu: cmObject.find(Selector.SECTION_CM_EDIT_ACTIONS).html().replace(/\n/g, ""),
-                cmmove: cmObject.find(Selector.EDITING_MOVE).html().replace(/\n/g, ""),
+                cmmove: cmObject.find(Selector.EDITING_MOVE)[0].outerHTML,
                 modname: "resource",
                 modResourceType: modResourceType,
                 modnameDisplay: displayname,
@@ -297,9 +305,12 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                                         } else {
                                             string = "";
                                         }
+                                        var cmAttributes = courseModGetSubtileAttributes(
+                                            addedCourseModule, modResourceType, string
+                                        );
                                         Templates.render(
                                             "format_tiles/course_module",
-                                            courseModGetSubtileAttributes(addedCourseModule, modResourceType, string)
+                                            cmAttributes
                                         ).done(function (html) {
                                             addedCourseModule.replaceWith(html);
                                             // Flash the new item to bring attention to it.
@@ -308,15 +319,28 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                                             for (var x = 0; x < 3; x++) {
                                                 newItem.fadeOut(300).fadeIn(300);
                                             }
+                                            // The move cm icon will not work, so if is clicked, we refresh page so it works.
+                                            // TODO fix this so that no page refresh necessary.
+                                            $('#module-' + cmAttributes.cmid).find('.editing_move')
+                                                .attr('data-action', '')
+                                                .on(Event.MOUSEDOWN, function() {
+                                                window.location.reload();
+                                            });
                                         });
                                     });
                             } else {
-                                Templates.render("format_tiles/course_module", courseModGetSubtileAttributes(
-                                    addedCourseModule,
-                                    modResourceType,
-                                    stringStore[stringKey]
-                                )).done(function (html) {
+                                var cmAttributes = courseModGetSubtileAttributes(
+                                    addedCourseModule, modResourceType, stringStore[stringKey]
+                                );
+                                Templates.render("format_tiles/course_module", cmAttributes).done(function (html) {
                                     addedCourseModule.replaceWith(html);
+                                    // The move cm icon will not work, so if is clicked, we refresh page so it works.
+                                    // TODO fix this so that no page refresh necessary.
+                                    $('#module-' + cmAttributes.cmid).find('.editing_move')
+                                        .attr('data-action', '')
+                                        .on(Event.MOUSEDOWN, function() {
+                                        window.location.reload();
+                                    });
                                 });
                             }
                         } else {
