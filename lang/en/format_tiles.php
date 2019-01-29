@@ -174,6 +174,7 @@ $string['icontitle-map-signs'] = 'Map signs';
 $string['icontitle-microphone'] = 'Microphone';
 $string['icontitle-mobile-phone'] = 'Mobile phone';
 $string['icontitle-mortar-board'] = 'Mortar board';
+$string['icontitle-music'] = 'Music';
 $string['icontitle-newspaper-o'] = 'Newspaper';
 $string['icontitle-number_1'] = 'Number 1';
 $string['icontitle-number_10'] = 'Number 10';
