@@ -317,7 +317,7 @@ class course_output implements \renderable, \templatable
             $showsection = $section->uservisible ||
                 ($section->visible && !$section->available && !empty($section->availableinfo));
             if ($sectionid != 0 && $showsection) {
-                $title = $this->truncate_title(get_section_name($this->course, $sectionid));
+                $title = htmlspecialchars_decode($this->truncate_title(get_section_name($this->course, $sectionid)));
 
                 $longtitlelength = 65;
                 $newtile = array(

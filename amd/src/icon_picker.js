@@ -159,7 +159,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                                         }).hide();
                                     }
                                 });
-
+                                $(".pickericon").tooltip();
                             });
                         });
                     });
