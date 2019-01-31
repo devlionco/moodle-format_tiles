@@ -324,8 +324,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                                             $('#module-' + cmAttributes.cmid).find('.editing_move')
                                                 .attr('data-action', '')
                                                 .on(Event.MOUSEDOWN, function() {
-                                                window.location.reload();
-                                            });
+                                                    window.location.reload();
+                                                });
                                         });
                                     });
                             } else {
@@ -339,8 +339,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                                     $('#module-' + cmAttributes.cmid).find('.editing_move')
                                         .attr('data-action', '')
                                         .on(Event.MOUSEDOWN, function() {
-                                        window.location.reload();
-                                    });
+                                            window.location.reload();
+                                        });
                                 });
                             }
                         } else {
