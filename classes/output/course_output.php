@@ -665,7 +665,7 @@ class course_output implements \renderable, \templatable
                 $moduleobject['clickable'] = $mod->uservisible;
                 $moduleobject['dimmed'] = !$mod->visible || !$section->visible;
             }
-            if (!$moduleobject['uservisible'] || $mod->deletioninprogress) {
+            if (!$moduleobject['uservisible'] || $mod->deletioninprogress || ($mod->is_stealth() && !$canviewhidden)) {
                 continue;
             }
             // If the module isn't available, or we are a teacher (can view hidden activities) get availability info.
