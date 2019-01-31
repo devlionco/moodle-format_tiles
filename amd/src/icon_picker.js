@@ -155,7 +155,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                                     if (searchText.length >= 3) {
                                         modalRoot.find(".pickericon").filter(function (index, icon) {
                                             // Show all icons then hide icons which do not match the search term.
-                                            return $(icon).attr('title').toLowerCase().indexOf(searchText) < 0;
+                                            return $(icon).attr('data-original-title').toLowerCase().indexOf(searchText) < 0;
                                         }).hide();
                                     }
                                 });
