@@ -85,14 +85,6 @@ class course_output implements \renderable, \templatable
     private $devicetype;
 
     /**
-     * course_output constructor
-     * @param \stdClass $course the course DB object
-     * @param bool $fromajax whether this is requested from AJAX
-     * @param int $sectionid the section ID (if we are calling a specific single section)
-     * @param \renderer_base $courserenderer
-     */
-
-    /**
      *  We want to treat label and plugins that behave like labels as labels.
      * E.g. we don't render them as subtiles but show their content directly on page.
      * This includes plugins like mod_customlabel and mod_unilabel.
@@ -662,7 +654,7 @@ class course_output implements \renderable, \templatable
                 $moduleobject['uservisible'] = true;
                 $moduleobject['clickable'] = true;
                 $moduleobject['dimmed'] = !$mod->visible || !$section->visible;
-            } else if ((!$mod->uservisible && $mod->visibleoncoursepage && $mod->availableinfo && $mod->visible)) {
+            } else if (!$mod->uservisible && $mod->visibleoncoursepage && $mod->availableinfo && $mod->visible) {
                 // Activity is not available, not hidden from course page and has availability info.
                 // So it is actually visible on the course page (with availability info and without a link).
                 $moduleobject['uservisible'] = true;
