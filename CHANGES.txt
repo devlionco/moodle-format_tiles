@@ -107,3 +107,12 @@
 - Avoid issue with duplicate labels showing where database shows cm.showdescription=1 (only happens sometimes)
 - Allow teacher to set restricted tiles as being visible to students but greyed out
 - Improve dimming of hidden activities
+
+3.3.3 (2019013100)
+==================
+- Stop stealth activities showing for students
+- Add title tooltip to icon picker icons where it is missing
+- Add music icon lang string
+- Fix course mod edit menu not working in Essential theme after new item drag dropped to course
+- Fix issue with move not working after drag new item into course
+- Adapt icon picker to allow for tooltip use
