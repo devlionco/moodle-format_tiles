@@ -46,8 +46,8 @@
 
 <div class="tileiconcontainer" {{#isediting}}data-toggle="tooltip"{{/isediting}} data-sectionid="{{secid}}"
      data-section="{{tileid}}"{{#isediting}} data-original-title="{{#str}}tooltipchangeicon, format_tiles{{/str}}"{{/isediting}}>
-    <span class="launchiconpicker" data-toggle="modal" id="tileicon_{{tileid}}" data-sectionid="{{secid}}"
-          data-section="{{tileid}}" data-target="#iconpickermodal">
+    <span class="launchiconpicker" id="tileicon_{{tileid}}" data-sectionid="{{secid}}"
+          data-section="{{tileid}}">
         {{#tileicon}}
             {{#pix}}tileicon/{{{tileicon}}}, format_tiles, {{{title}}}{{/pix}}
         {{/tileicon}}
