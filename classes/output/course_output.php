@@ -1022,13 +1022,14 @@ class course_output implements \renderable, \templatable
 
         // Otherwise proceed to adapt the standard items to this format.
         foreach ($actions as $actionname => $action) {
-            $actionstomodify = ['hide', 'show', 'duplicate', 'groupsseparate', 'groupsvisible', 'groupsnone'];
+            $actionstomodify = ['hide', 'show', 'duplicate', 'groupsseparate', 'groupsvisible', 'groupsnone', 'stealth'];
             if (!$this->treat_as_label($mod) && array_search($actionname, $actionstomodify) > -1) {
                 // For non labels, we don't want core JS to be used to hide/show etc when these menu items are used.
                 // Core converts the cm HTML to the standard activity display format (not subtile).
                 // Instead we want to use our own JS to render the new cm adding 'tiles-' to the start of data-action.
                 // E.g. tiles-show will prevent core JS running and allow our custom JS to run instead.
                 // (The core JS is in core_course/actions::editModule (actions.js).
+                // Note 'stealth' action can only be available if site admin has allowed stealth activities.
                 $action->attributes['data-action'] = "tiles-" . $action->attributes['data-action'];
                 $action->attributes['data-cmid'] = $mod->id;
             }

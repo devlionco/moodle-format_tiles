@@ -54,7 +54,8 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
             CM_EDIT_ACTION: ".cm-edit-action",
             ACTIVITY_ICON: ".activityicon",
             EDITING_DELETE: ".editing_delete",
-            SECTION_MAIN: ".section.main"
+            SECTION_MAIN: ".section.main",
+            STEALTH_UNAVAIL_LINK: '.editing_makeunavailable'
         };
 
         var ClassNames = {
@@ -84,7 +85,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
             var actions;
             if (clickedLink.attr("data-action") === "tiles-hide") {
                 actions = {changeTo: ClassNames.HIDE, old: ClassNames.SHOW};
-
+                $(Selector.STEALTH_UNAVAIL_LINK).hide();
             } else if (clickedLink.attr("data-action") === "tiles-show") {
                 actions = {changeTo: ClassNames.SHOW, old: ClassNames.HIDE};
             }
