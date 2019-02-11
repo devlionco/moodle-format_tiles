@@ -47,6 +47,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         var sectionIsOpen = false;
         var HEADER_BAR_HEIGHT = 60; // This varies by theme and version so will be reset once pages loads below.
         var reopenLastVisitedSection = "0";
+        var backDropZIndex = 0;
         var Selector = {
             PAGE: "#page",
             TILE: ".tile",
@@ -433,7 +434,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
          */
         var setOverlay = function (secNumOnTop) {
             windowOverlay.fadeIn(300);
-            var backDropZIndex = parseInt(windowOverlay.css(CSS.Z_INDEX));
+            backDropZIndex = parseInt(windowOverlay.css(CSS.Z_INDEX));
             var tile = $("#tile-" + secNumOnTop);
             tile.css(CSS.Z_INDEX, (backDropZIndex + 1));
             headerOverlay.fadeIn(300);
@@ -904,6 +905,18 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         // Move focus to the first tile in the course (not sec zero contents if present).
                         $("ul.tiles .tile").first().focus();
                     }
+
+                    // If Adaptable theme is being used, and Glossary auto link filter is on, we need this.
+                    // Otherwise when the auto link is clicked, the resulting dialogue is under the main overlay.
+                    // Don't need this when Boost or Clean themes are used as they handle it themselves.
+                    $(document).on("filter-content-updated", function (event, msg) {
+                        if (msg.length > 0) {
+                            var elem = $(msg[0]);
+                            if (elem.hasClass("moodle-dialogue") && elem.css("z-index") < backDropZIndex) {
+                                    elem.css("z-index", backDropZIndex + 1);
+                            }
+                        }
+                    });
                 });
             }
         };
