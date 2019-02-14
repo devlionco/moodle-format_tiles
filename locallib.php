@@ -155,8 +155,6 @@ function format_tiles_allowed_modal_modules() {
             'modules' => explode(",", get_config('format_tiles', 'modalmodules'))
         );
     } else {
-        return array();
+        return array('resources' => [], 'modules' => []);
     }
 }
-
-
