@@ -941,6 +941,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         /* stylelint-disable-next-line declaration-no-important */
         padding-left: 0 !important;
     }
+    .format-tiles .subtiles {
+        /* stylelint-disable-next-line declaration-no-important */
+        width: calc(100% - 12px) !important;
+    }
 
     .format-tiles.path-course-view .card-block {
         padding-left: 0.3em;
