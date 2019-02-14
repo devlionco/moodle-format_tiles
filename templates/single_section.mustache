@@ -85,9 +85,25 @@
             {{^from_ajax}}
                 {{>format_tiles/single_section_nav}}
             {{/from_ajax}}
-            <div class="pagesechead">
-                <div class="tileiconcontainer"{{#isediting}}data-toggle="tooltip" data-placement="left"
-                     data-original-title="{{#str}}tooltipchangeicon, format_tiles{{/str}}"{{/isediting}}>
+            {{#from_ajax}}
+                <div id="sectionbuttons">
+                        <span class="sectionbutton closesectionbtn pull-right" id="closesectionbtn-{{tileid}}"
+                              title="{{#str}}close, format_tiles{{/str}}" tabindex="3" data-section="{{tileid}}">
+                            {{#pix}}close, format_tiles, {{#str}}close, format_tiles{{/str}}{{/pix}}
+                        </span>
+                    {{#canedit}}
+                        {{^isediting}}
+                            <a class="sectionbutton pull-right" id="editsectiontbtn-{{tileid}}"
+                               href="{{{ config.wwwroot }}}/course/view.php?id={{courseid}}&section={{tileid}}&sesskey={{sesskey}}&edit=on">
+                            {{#pix}}pencil, format_tiles, {{#str}}edit{{/str}}{{/pix}}
+                            </a>
+                        {{/isediting}}
+                    {{/canedit}}
+                </div>
+
+            {{/from_ajax}}
+            <div class="tileiconcontainer"{{#isediting}}data-toggle="tooltip" data-placement="left"
+                 data-original-title="{{#str}}tooltipchangeicon, format_tiles{{/str}}"{{/isediting}}>
                     <span class="tile-icon{{#isediting}} launchiconpicker{{/isediting}}"{{#isediting}}
                           data-section="{{tileid}}" data-sectionid="{{secid}}"{{/isediting}} id="tileicon_{{tileid}}"{{#isediting}}
                           data-sectionid="3" data-section="2"{{/isediting}}>
@@ -98,24 +114,8 @@
                             {{#pix}}tileicon/{{{defaulttileicon}}}, format_tiles{{/pix}}
                         {{/tileicon}}
                     </span>
-                </div>
-                {{#from_ajax}}
-                    <div id="sectionbuttons">
-                        <span class="sectionbutton closesectionbtn pull-right" id="closesectionbtn-{{tileid}}"
-                              title="{{#str}}close, format_tiles{{/str}}" tabindex="3" data-section="{{tileid}}">
-                            {{#pix}}close, format_tiles, {{#str}}close, format_tiles{{/str}}{{/pix}}
-                        </span>
-                        {{#canedit}}
-                            {{^isediting}}
-                                <a class="sectionbutton pull-right" id="editsectiontbtn-{{tileid}}"
-                                   href="{{{ config.wwwroot }}}/course/view.php?id={{courseid}}&section={{tileid}}&sesskey={{sesskey}}&edit=on">
-                                    {{#pix}}pencil, format_tiles, {{#str}}edit{{/str}}{{/pix}}
-                                </a>
-                            {{/isediting}}
-                        {{/canedit}}
-                    </div>
-
-                {{/from_ajax}}
+            </div>
+            <div class="pagesechead">
                 <div class="sectiontitlecontainer">
                     <div class="sectiontitle" id="sectiontitle{{tileid}}" tabindex="3">
                         <h2>

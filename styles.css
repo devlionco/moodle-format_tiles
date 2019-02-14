@@ -460,7 +460,9 @@ li#section-0.section.main.clearfix {
     padding-right: 0.5em;
     vertical-align: top;
 }
-
+.format-tiles .tileiconcontainer {
+    margin-left: 1rem;
+}
 .format-tiles .tileiconcontainer,
 .format-tiles .tileiconcontainer img {
     display: inline-block;
@@ -493,7 +495,6 @@ li#section-0.section.main.clearfix {
 }
 .format-tiles .pagesechead {
     min-height: 60px;
-    width: 100%;
     z-index: 1;
     position: relative;
     display: inline-block;
@@ -501,7 +502,7 @@ li#section-0.section.main.clearfix {
 }
 
 .format-tiles #sectionbuttons {
-    position: absolute;
+    position: relative;
     right: 30px;
     top: 0;
 }
@@ -513,15 +514,9 @@ li#section-0.section.main.clearfix {
     height: 45px;
     text-align: center;
 }
-
 .format-tiles .expand-section {
     margin-top: 10px;
 }
-.format-tiles .pagesechead .tile-icon {
-    position: absolute;
-    left: 0;
-}
-
 .format-tiles ul.tiles .tile .tile-text {
     text-align: left;
     width: 100%;
@@ -844,7 +839,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
     font-size: 1em;
 }
 .format-tiles .sectiontitlecontainer {
-    margin: 0 0 1.5em 1.5em;
+    margin: 0 0 0.5em 0.5em;
     display: inline-block;
 }
 
@@ -945,16 +940,19 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         /* stylelint-disable-next-line declaration-no-important */
         width: calc(100% - 12px) !important;
     }
-
     .format-tiles.path-course-view .card-block {
         padding-left: 0.3em;
         padding-right: 0.3em;
     }
-
     .format-tiles .course-content .section {
         /* stylelint-disable-next-line declaration-no-important */
         margin-left: 0 !important;
         background-color: #fff;
+    }
+    .format-tiles .navigation-arrows {
+        float: right;
+        margin-bottom: 0;
+        position: unset;
     }
     .format-tiles ul.tiles li.section .content {
         /* stylelint-disable-next-line declaration-no-important */
@@ -966,32 +964,26 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     .format-tiles .pagesechead {
         margin: 0 0 0 5px;
     }
-
     .format-tiles .sectiontitlecontainer {
         /* stylelint-disable-next-line declaration-no-important */
         margin: 0 !important;
     }
-
     .format-tiles .sectiontitle {
         width: 100%;
         margin-left: 5px;
-        max-width: 100%;
+        max-width: 98%;
     }
-
+    .format-tiles .sectiontitle h2 {
+        font-size: 1em;
+    }
     .format-tiles #page.container-fluid,
     .path-course-view li.activity > div {
         /* stylelint-disable-next-line declaration-no-important */
         padding: 0 !important;
     }
-
     .format-tiles ul.tiles#multi_section_tiles {
         justify-content: center;
     }
-
-    .format-tiles .tileiconcontainer {
-        left: 1rem;
-    }
-
     .format-tiles ul.tiles .tile {
         /* stylelint-disable-next-line declaration-no-important */
         flex-basis: 160px !important;
