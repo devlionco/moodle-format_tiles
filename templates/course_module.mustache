@@ -197,7 +197,8 @@
 
                 <div class="contentafterlink">
                     {{#availabilitymessage}}
-                        {{>format_tiles/availability_info}}
+                        {{#stealth}}{{{availabilitymessage}}}{{/stealth}}
+                        {{^stealth}}{{>format_tiles/availability_info}}{{/stealth}}
                     {{/availabilitymessage}}
                 </div>
             {{/is_label}}

@@ -879,7 +879,9 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles li.section .availabilityinfo {
     margin-left: 3em;
 }
-
+.availabilityinfo.isstealth .tag {
+    font-size: 0.6em;
+}
 .format-tiles .hidden #hiddeneye {
     background-image: url([[pix:format_tiles|eye-slash]]);
     margin-left: 10px;
