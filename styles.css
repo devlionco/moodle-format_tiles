@@ -932,7 +932,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 
 /* get rid of wide margins when viewing course on narrow (mobile) device and
 allow tiles to be taller and thinner so can fit two side by side in portrait on iphone 6/7 */
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 600px) {
     .format-tiles ul.tiles,
     .format-tiles #section-0 ul.section,
     .format-tiles .course-content .card-block {
@@ -987,29 +987,33 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 
     .format-tiles ul.tiles .tile {
         /* stylelint-disable-next-line declaration-no-important */
-        flex-basis: 165px !important;
+        flex-basis: 160px !important;
         min-height: 210px;
         position: relative;
         /* stylelint-disable-next-line declaration-no-important */
-        max-width: 160px !important;
+        max-width: 45% !important;
         /* stylelint-disable-next-line declaration-no-important */
         padding: 7px 2px 5px 7px !important;
     }
     .format-tiles li.activity.subtile {
         /* stylelint-disable-next-line declaration-no-important */
-        flex-basis: 165px !important;
+        flex-basis: 160px !important;
         min-height: 210px;
         position: relative;
         /* stylelint-disable-next-line declaration-no-important */
         margin: 0 5px 3px 0 !important;
         /* stylelint-disable-next-line declaration-no-important */
-        max-width: 152px !important;
+        max-width: 45% !important;
+    }
+    .format-tiles .clickable-region {
+        /* stylelint-disable-next-line declaration-no-important */
+        width: 150px !important;
     }
     .format-tiles li.subtile.spacer {
         /* stylelint-disable-next-line declaration-no-important */
-        flex-basis: 165px !important;
+        flex-basis: 160px !important;
         /* stylelint-disable-next-line declaration-no-important */
-        min-width: 165px !important;
+        min-width: 160px !important;
     }
 
     .format-tiles ul.tiles .tile .tile-text {
