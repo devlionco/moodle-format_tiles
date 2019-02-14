@@ -990,6 +990,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         flex-basis: 165px !important;
         min-height: 210px;
         position: relative;
+        /* stylelint-disable-next-line declaration-no-important */
+        max-width: 160px !important;
+        /* stylelint-disable-next-line declaration-no-important */
+        padding: 7px 2px 5px 7px !important;
     }
     .format-tiles li.activity.subtile {
         /* stylelint-disable-next-line declaration-no-important */
@@ -997,7 +1001,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         min-height: 210px;
         position: relative;
         /* stylelint-disable-next-line declaration-no-important */
-        margin: 0 0 3px 0 !important;
+        margin: 0 5px 3px 0 !important;
+        /* stylelint-disable-next-line declaration-no-important */
+        max-width: 152px !important;
     }
     .format-tiles li.subtile.spacer {
         /* stylelint-disable-next-line declaration-no-important */
