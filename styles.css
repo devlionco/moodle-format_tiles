@@ -956,6 +956,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         /* stylelint-disable-next-line declaration-no-important */
         margin: 0 !important;
     }
+    .format-tiles .course-content ul.section {
+        padding: 0.5em 0.5em 0.5em 1em;
+    }
     .format-tiles .pagesechead {
         margin: 0 0 0 5px;
     }
@@ -1003,11 +1006,14 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         /* stylelint-disable-next-line declaration-no-important */
         margin: 0 5px 3px 0 !important;
         /* stylelint-disable-next-line declaration-no-important */
-        max-width: 45% !important;
+        max-width: 48% !important;
     }
     .format-tiles .clickable-region {
         /* stylelint-disable-next-line declaration-no-important */
         width: 150px !important;
+    }
+    .format-tiles .section .label .mod-indent-outer {
+        padding-left: 0;
     }
     .format-tiles li.subtile.spacer {
         /* stylelint-disable-next-line declaration-no-important */
