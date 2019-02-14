@@ -732,8 +732,12 @@ class course_output implements \renderable, \templatable
             }
             $moduleobject['extraclasses'] = $mod->extraclasses;
             $moduleobject['afterlink'] = $mod->afterlink;
-            if ((!$mod->visible && !$mod->visibleold)
-                || $mod->is_stealth() || !$mod->available
+            if ($mod->is_stealth()){
+                $moduleobject['extraclasses'] .= ' stealth dimmed';
+                $moduleobject['stealth'] = 1;
+            } else if (
+                (!$mod->visible && !$mod->visibleold)
+                || !$mod->available
                 || (isset($moduleobject['availabilitymessage']) && strlen($moduleobject['availabilitymessage']) > 1 )
             ) {
                 $moduleobject['extraclasses'] .= ' dimmed';
