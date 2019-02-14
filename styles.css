@@ -505,6 +505,7 @@ li#section-0.section.main.clearfix {
     position: relative;
     right: 30px;
     top: 0;
+    z-index: 2;
 }
 .format-tiles .sectionbutton {
     background-color: rgba(100, 100, 100, 0.05);
@@ -935,10 +936,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         margin: 0 0 0 0 !important;
         /* stylelint-disable-next-line declaration-no-important */
         padding-left: 0 !important;
-    }
-    .format-tiles .subtiles {
-        /* stylelint-disable-next-line declaration-no-important */
-        width: calc(100% - 12px) !important;
     }
     .format-tiles.path-course-view .card-block {
         padding-left: 0.3em;
