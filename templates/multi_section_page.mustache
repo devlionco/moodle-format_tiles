@@ -71,7 +71,10 @@
 {{/from_ajax}}
 
 {{#userdisabledjsnav}}
-    <div id="jswarning" class="alert alert-info">{{#str}}jsdeactivated, format_tiles{{/str}}</div>
+    <div id="jswarning" class="alert alert-info">
+        {{#str}}jsdeactivated, format_tiles{{/str}}
+        <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&stopjsnav=1">({{#str}}reactivate, format_tiles{{/str}})</a>
+    </div>
 {{/userdisabledjsnav}}
 {{^userdisabledjsnav}}
     <noscript>
