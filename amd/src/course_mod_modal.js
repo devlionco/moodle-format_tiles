@@ -117,7 +117,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                 Templates.render("format_tiles/embed_file_modal_body", templateData).done(function (html) {
                     modal.setBody(html);
-                    modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
+                    modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
                 }).fail(Notification.exception);
 
                 // Render the modal header / title and set it to the page.
@@ -133,7 +133,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 }
                 Templates.render("format_tiles/embed_module_modal_header", templateData).done(function (html) {
                     modal.setTitle(html);
-                    modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
+                    modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
                 }).fail(Notification.exception);
 
                 return true;
