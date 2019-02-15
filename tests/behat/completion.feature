@@ -8,7 +8,7 @@ Feature: Progress indicators can be used to change progress status and changes a
       | teacher1 | Teacher   | 1        | teacher1@example.com |
     And the following "courses" exist:
       | fullname | shortname | format | coursedisplay | numsections | enablecompletion |
-      | Course 1 | C1        | tiles  | 0             | 5           | 1                |
+      | Course 1 | C1        | tiles  | 0             | 7           | 1                |
     And the following "activities" exist:
     # completion 1 is manual completion, 2 is automatic then add an extra column completionpass = 1
       | activity | name         | intro           | course | idnumber | section | visible | completion |
