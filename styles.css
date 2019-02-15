@@ -145,11 +145,9 @@ li#section-0.section.main.clearfix {
 .format-tiles .navigation-arrows {
     min-width: 130px;
     display: inline-block;
-    right: 0;
+    float: right;
     margin-right: 40px;
     z-index: 2;
-    position: absolute;
-    margin-bottom: 35px;
     /*z-index needs to be on top of pagesechead*/
 }
 
@@ -268,6 +266,7 @@ li#section-0.section.main.clearfix {
 .format-tiles #single_section_tiles {
     display: block;
     padding-left: 0;
+    margin-left: 0;
 }
 .format-tiles ul.tiles#multi_section_tiles li.section {
     display: block;
@@ -285,13 +284,12 @@ li#section-0.section.main.clearfix {
     position: relative;
 }
 .format-tiles .course-content ul li.section.main {
-    width: 100%;
+    width: calc(100% - 2px);
     background-color: white;
     /* stop 'dot' background image in essential theme*/
     background-image: none;
     margin-top: 10px;
     padding-top: 12px;
-    padding-left: 10px;
 }
 .format-tiles .course-content ul li.section.main:target {
     padding-top: 0;
@@ -310,6 +308,7 @@ li#section-0.section.main.clearfix {
 .format-tiles #page .course-content ul li.section.main {
     /*adaptable theme*/
     background: #fff;
+    border: 0;
 }
 .format-tiles .course-content ul li.section.main.moveablesection {
     padding: 30px 10px 10px 10px;
@@ -877,7 +876,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 }
 
 .format-tiles li.section .availabilityinfo {
-    margin-left: 3em;
+    margin-left: 2em;
 }
 .availabilityinfo.isstealth .tag {
     font-size: 0.6em;
@@ -947,11 +946,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         /* stylelint-disable-next-line declaration-no-important */
         margin-left: 0 !important;
         background-color: #fff;
-    }
-    .format-tiles .navigation-arrows {
-        float: right;
-        margin-bottom: 0;
-        position: unset;
     }
     .format-tiles ul.tiles li.section .content {
         /* stylelint-disable-next-line declaration-no-important */
@@ -1102,11 +1096,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     color: #979797;
 }
 .format-tiles .embed_cm_modal .modal-body {
-    padding: 5px;
     max-height: 95%;
     overflow-y: auto;
     min-height: 200px;
-    margin-left: 1em;
+    padding: 0;
 }
 
 .format-tiles .embed_cm_modal.page .modal-body {
@@ -1406,10 +1399,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles #embed_module_buttons img.icon {
     width: 25px;
     height: 25px;
-    margin: 0;
     padding-right: 10px;
     padding-bottom: 10px;
-    margin-top: 2px;
+    margin: 2px 0 0;
 }
 .format-tiles #embed_module_buttons a:focus,
 .format-tiles #embed_module_buttons form:focus {

@@ -77,9 +77,7 @@
         {{#isediting}}
             <div class="summary">{{{section_summary}}}</div>
             <div class="section_availability">
-                {{#availabilitymessage}}
-                    {{>format_tiles/availability_info}}
-                {{/availabilitymessage}}
+                {{{availabilitymessage}}}
             </div>
             <ul class="section img-text {{^useSubtiles}}no{{/useSubtiles}}subtiles">
                 {{#is_expanded}}
