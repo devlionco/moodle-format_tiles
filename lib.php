@@ -908,7 +908,7 @@ class format_tiles extends format_base {
                     unset_user_preference('format_tiles_stopjsnav');
                     \core\notification::success(get_string('jsreactivated', 'format_tiles'));
                 }
-                if($page->course->id) {
+                if ($page->course->id) {
                     redirect(new moodle_url('/course/view.php', array('id' => $page->course->id)));
                 }
             }

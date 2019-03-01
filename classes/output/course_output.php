@@ -729,7 +729,7 @@ class course_output implements \renderable, \templatable
             }
             $moduleobject['extraclasses'] = $mod->extraclasses;
             $moduleobject['afterlink'] = $mod->afterlink;
-            if ($mod->is_stealth()){
+            if ($mod->is_stealth()) {
                 $moduleobject['extraclasses'] .= ' stealth';
                 $moduleobject['stealth'] = 1;
             } else if (
