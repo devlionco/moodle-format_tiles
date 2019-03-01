@@ -100,7 +100,7 @@
         <li class="subtile spacer" aria-hidden="true"></li>
     {{/isediting}}
 {{/hasSpacersBefore}}
-<li class="activity{{#useSubtiles}}{{^is_label}} subtile{{/is_label}}{{/useSubtiles}} {{#is_label}}fullwidth{{/is_label}} {{modname}} modtype_{{modname}} {{modResourceType}}{{^clickable}} unclickable {{/clickable}}{{#dimmed}} dimmed{{/dimmed}}{{extraclasses}}"
+<li class="activity{{#useSubtiles}}{{^is_label}} subtile{{/is_label}}{{/useSubtiles}} {{#is_label}}fullwidth{{/is_label}} {{modname}} modtype_{{modname}} {{modResourceType}}{{^clickable}} unclickable {{/clickable}} {{extraclasses}}"
     id="module-{{cmid}}" data-modtype="{{modname}}{{#modResourceType}}_{{{modResourceType}}}{{/modResourceType}}"
     tabindex="3"
     data-cmid="{{cmid}}"
@@ -112,7 +112,7 @@
             {{#is_label}}
                 {{#clickable}}
                     {{! clickable really means user is allowed to see content - }}
-                    <span class="label_content{{#dimmed}} dimmed{{/dimmed}}"
+                    <span class="label_content {{extraclasses}}"
                           id="label_content_{{cmid}}">{{{content}}}</span>
                 {{/clickable}}
                 {{#availabilitymessage}}
@@ -128,8 +128,7 @@
                                 {{#clickable}}
                                     {{#isEmbeddedResource}}
                                         <h4 class="activitytitle">
-                                            <a {{#dimmed}}class="dimmed"{{/dimmed}}
-                                                    href="{{{config.wwwroot}}}/mod/resource/view.php?id={{{cmid}}}" data-title="{{{modtitle}}}">
+                                            <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}} href="{{{config.wwwroot}}}/mod/resource/view.php?id={{{cmid}}}" data-title="{{{modtitle}}}">
                                                 {{{modtitle}}}
                                             </a>
                                         </h4>
@@ -137,7 +136,7 @@
 
                                     {{^isEmbeddedResource}}
                                     <h4 class="activitytitle">
-                                        <a class="{{extraclasses}}{{#dimmed}} dimmed {{/dimmed}}" onclick="{{onclick}}" href="{{url}}">{{{modtitle}}}</a>
+                                        <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}} onclick="{{onclick}}" href="{{url}}">{{{modtitle}}}</a>
                                     </h4>
                                     {{/isEmbeddedResource}}
                                 {{/clickable}}
@@ -176,7 +175,7 @@
                         {{#clickable}}
                             <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}}
                                data-action="launch-tiles-module-modal"{{/isEmbeddedModule}}{{/clickable}}{{/clickable}}
-                               data-title="{{{modtitle}}}" class="instancename{{#availabilitymessage}} dimmed{{/availabilitymessage}}{{#dimmed}} dimmed{{/dimmed}}">
+                               data-title="{{{modtitle}}}" class="instancename {{{extraclasses}}}">
                                 <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
                                      role="presentation">
                                 <span class="activitytitle">{{{modtitle}}}</span>

@@ -653,17 +653,14 @@ class course_output implements \renderable, \templatable
             if ($canviewhidden) {
                 $moduleobject['uservisible'] = true;
                 $moduleobject['clickable'] = true;
-                $moduleobject['dimmed'] = !$mod->visible || !$section->visible;
             } else if (!$mod->uservisible && $mod->visibleoncoursepage && $mod->availableinfo && $mod->visible) {
                 // Activity is not available, not hidden from course page and has availability info.
                 // So it is actually visible on the course page (with availability info and without a link).
                 $moduleobject['uservisible'] = true;
                 $moduleobject['clickable'] = false;
-                $moduleobject['dimmed'] = true;
             } else {
                 $moduleobject['uservisible'] = $mod->uservisible;
                 $moduleobject['clickable'] = $mod->uservisible;
-                $moduleobject['dimmed'] = !$mod->visible || !$section->visible;
             }
             if (!$moduleobject['uservisible'] || $mod->deletioninprogress || ($mod->is_stealth() && !$canviewhidden)) {
                 continue;
@@ -733,11 +730,12 @@ class course_output implements \renderable, \templatable
             $moduleobject['extraclasses'] = $mod->extraclasses;
             $moduleobject['afterlink'] = $mod->afterlink;
             if ($mod->is_stealth()){
-                $moduleobject['extraclasses'] .= ' stealth dimmed';
+                $moduleobject['extraclasses'] .= ' stealth';
                 $moduleobject['stealth'] = 1;
             } else if (
                 (!$mod->visible && !$mod->visibleold)
                 || !$mod->available
+                || !$section->visible
                 || (isset($moduleobject['availabilitymessage']) && strlen($moduleobject['availabilitymessage']) > 1 )
             ) {
                 $moduleobject['extraclasses'] .= ' dimmed';

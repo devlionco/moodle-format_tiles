@@ -142,13 +142,15 @@
                 {{#course_modules}}
                     {{>format_tiles/course_module}}
                 {{/course_modules}}
-                <li class="activity subtile spacer" aria-hidden="true"></li>
-                <li class="activity subtile spacer" aria-hidden="true"></li>
-                <li class="activity subtile spacer" aria-hidden="true"></li>
-                <li class="activity subtile spacer" aria-hidden="true"></li>
-                <li class="activity subtile spacer" aria-hidden="true"></li>
-                <li class="activity subtile spacer" aria-hidden="true"></li>
-                <li class="activity subtile spacer" aria-hidden="true"></li>
+                {{#useSubtiles}}
+                    <li class="activity subtile spacer" aria-hidden="true"></li>
+                    <li class="activity subtile spacer" aria-hidden="true"></li>
+                    <li class="activity subtile spacer" aria-hidden="true"></li>
+                    <li class="activity subtile spacer" aria-hidden="true"></li>
+                    <li class="activity subtile spacer" aria-hidden="true"></li>
+                    <li class="activity subtile spacer" aria-hidden="true"></li>
+                    <li class="activity subtile spacer" aria-hidden="true"></li>
+                {{/useSubtiles}}
             </ul>
 
             {{#isediting}}
