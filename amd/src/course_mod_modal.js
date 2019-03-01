@@ -62,11 +62,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             // Cap width at 900 even if screen bigger.
             if (winWidth >= 900) {
                 return 900;
-            } else if (winWidth >= 500) {
-                // Big as we can but allow 50px for download / new window icons on right.
-                return winWidth - 65;
             } else {
-                // Download and new window icons will have to float on the PDF.
+                // Big as we can.
                 return winWidth;
             }
         };
