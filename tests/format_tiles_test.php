@@ -18,7 +18,6 @@
  * Course related unit tests for format tiles
  *
  * @package    format_tiles
- * @category   phpunit
  * @copyright  2018 David Watson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

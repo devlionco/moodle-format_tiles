@@ -20,7 +20,6 @@
  * Course related tests for format tiles (copied core courselib_test with format changed to tiles).
  *
  * @package    format_tiles
- * @category   phpunit
  * @copyright  2018 David Watson based on core version 2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

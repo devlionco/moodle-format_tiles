@@ -16,7 +16,7 @@
 
 /**
  * This class implements the Privacy API explained at https://docs.moodle.org/dev/Privacy_API
- * @package format_tiles\privacy
+ * @package format_tiles
  * @copyright 2018 David Watson
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

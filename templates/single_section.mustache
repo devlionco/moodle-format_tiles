@@ -118,14 +118,7 @@
             <div class="pagesechead">
                 <div class="sectiontitlecontainer">
                     <div class="sectiontitle" id="sectiontitle{{tileid}}" tabindex="3">
-                        <h2>
-                            {{#isediting}}
-                                {{{inplace_editable_title}}}
-                            {{/isediting}}
-                            {{^isediting}}
-                                {{{title}}}
-                            {{/isediting}}
-                        </h2>
+                        <h2>{{#isediting}}{{{inplace_editable_title}}}{{/isediting}}{{^isediting}}{{{title}}}{{/isediting}}</h2>
                         {{#hidden}}<span class="icon20" id="hiddeneye" title="Hidden"></span>{{/hidden}}
                     </div>
                 </div>
