@@ -48,6 +48,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             launchModuleModal: '[data-action="launch-tiles-module-modal"]',
             toggleCompletion: ".togglecompletion",
             modal: ".modal-dialog",
+            modalBody: ".modal-body",
             sectionMain: ".section.main",
             pageContent: "#page-content",
             completionState: "#completionstate_"
@@ -115,6 +116,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 Templates.render("format_tiles/embed_file_modal_body", templateData).done(function (html) {
                     modal.setBody(html);
                     modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
+                    modalRoot.find(Selector.modalBody).animate({"min-height": Math.round(win.height() - 60)}, "fast");
                 }).fail(Notification.exception);
 
                 // Render the modal header / title and set it to the page.
@@ -187,6 +189,14 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     }
                     modal.setBody(templateData.content);
                     modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
+
+                    // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is wide enough.
+                    modalRoot.find("iframe").each(function (index, iframe) {
+                        var iframeWidth = $(iframe).width();
+                        if (iframeWidth > modalWidth()) {
+                            modalRoot.find(Selector.modal).animate({"max-width": iframeWidth + 70}, "fast");
+                        }
+                    });
                     return true;
                 }).fail(function(ex) {
                     if (config.developerdebug !== true) {
