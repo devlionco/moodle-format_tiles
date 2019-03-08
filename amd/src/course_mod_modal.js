@@ -93,7 +93,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     id: cmid,
                     pluginfileUrl: clickedCmObject.attr("data-url"),
                     objectType: "text/html",
-                    width: modalWidth(),
+                    width: modalWidth() - 5,
                     height: Math.round(win.height() - 60), // Embedded object height in modal - make as high as poss.
                     cmid: cmid,
                     tileid: clickedCmObject.closest(Selector.sectionMain).attr("data-section"),
