@@ -459,8 +459,8 @@ li#section-0.section.main.clearfix {
     padding-right: 0.5em;
     vertical-align: top;
 }
-.format-tiles .tileiconcontainer {
-    margin-left: 1rem;
+.format-tiles .moveablesection .tileiconcontainer {
+    margin-left: 0.5rem;
 }
 .format-tiles .tileiconcontainer,
 .format-tiles .tileiconcontainer img {
