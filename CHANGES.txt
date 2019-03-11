@@ -130,3 +130,10 @@
 - Ensure tiles are narrower and 2 to a row on mobile
 - Remove redundant references to modal
 - Code checker changes
+
+3.3.5 (2019031100)
+==================
+Fix tile icon left margin
+PDF modal - ensure nav bar is visible on right of PDF, correct height in chrome (was too short)
+Iframe e.g. Youtube video embedded in page - ensure width no larger than window width
+Correct header overlay height
