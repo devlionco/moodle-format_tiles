@@ -772,7 +772,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         // Do not include for Moodle 3.5 or higher as not needed.
 
                         if (headerBar.height() !== undefined) {
-                            HEADER_BAR_HEIGHT = headerBar.height();
+                            // Height must always be 50 minimum (Firefox and Moodle 3.3 will return 34 if we let them).
+                            HEADER_BAR_HEIGHT = Math.max(headerBar.height(), 50);
                             headerOverlay = $("<div></div>")
                                 .addClass(ClassNames.HEADER_OVERLAY).attr("id", ClassNames.HEADER_OVERLAY)
                                 .css(CSS.DISPLAY, "none");
