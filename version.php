@@ -17,15 +17,14 @@
 /**
  * Version details
  *
- * @package     format
- * @subpackage  tiles
- * @copyright   1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @package     format_tiles
+ * @copyright   2016 onwards David Watson
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2019031100;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2019031101;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2017050500;        // Requires this Moodle version.
 $plugin->component = 'format_tiles';    // Full name of the plugin (used for diagnostics).
 $plugin->maturity  = MATURITY_STABLE;
