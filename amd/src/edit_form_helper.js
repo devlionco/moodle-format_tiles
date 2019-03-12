@@ -32,128 +32,129 @@
 
 define(["jquery", "core/notification", "core/str", "core/templates", "format_tiles/browser_storage"],
     function ($, Notification, str, Templates, browserStorage) {
-    "use strict";
-    return {
-        init: function (pageType, courseDefaultIcon, courseId, sectionId, section, userId) {
-            $(document).ready(function () {
-                $("select#id_courseusesubtiles").change(function (e) {
-                    if (e.currentTarget.value !== "0") {
-                        // We are changing to use sub tiles.
-                        // For convenience, uncheck the "Emphasise headings with coloured tab" box.
-                        // Wser can change it back if they want.
-                        $("input#id_courseusebarforheadings").prop("checked", false);
-                    }
-                });
-                $("select#id_courseshowtileprogress").change(function (e) {
-                    if (e.currentTarget.value !== "0") {
-                        var enableCompBox = $("select#id_enablecompletion");
-                        if (enableCompBox.val() === "0") {
-                            // We are changing to show progress on tiles
-                            // For convenience, if completion tracking if off at course level, switch it on and tell the user.
-                            // User can change it back if they want.  See under "completion tracking > enable.
-                            enableCompBox.val("1");
-                            str.get_strings([
-                                {key: "completion", component: "completion"},
-                                {key: "completionswitchhelp", component: "format_tiles"}
-                            ]).done(function (s) {
-                                Notification.alert(
-                                    s[0],
-                                    s[1]
-                                );
-                            });
+        "use strict";
+        return {
+            init: function (pageType, courseDefaultIcon, courseId, sectionId, section, userId) {
+                $(document).ready(function () {
+                    $("select#id_courseusesubtiles").change(function (e) {
+                        if (e.currentTarget.value !== "0") {
+                            // We are changing to use sub tiles.
+                            // For convenience, uncheck the "Emphasise headings with coloured tab" box.
+                            // Wser can change it back if they want.
+                            $("input#id_courseusebarforheadings").prop("checked", false);
                         }
-                    }
-                });
-                $("select#id_enablecompletion").change(function (e) {
-                    if (e.currentTarget.value === "0") {
-                        // We are changing switch completion tracking off at course level too.
-                        // See under "completion tracking > enable.
-                        // It follows that we must be hiding progress on tiles too.
-                        $("select#id_courseshowtileprogress").val("0");
-                    }
-                });
-
-                // Create clickable colour swatch for each colour in the select drop down to help user choose.
-                var colourSelectMenu = $("select#id_basecolour");
-                Templates.render("format_tiles/colour_picker", {
-                    colours: colourSelectMenu.find("option").map(
-                        function (index, option) {
-                            var optselector = $(option);
-                            var colour = optselector.attr("value");
-                            return {
-                                colour: colour,
-                                colourname: optselector.text(),
-                                selected: colour === colourSelectMenu.val(),
-                                id: colour.replace("#", "")
-                            };
+                    });
+                    $("select#id_courseshowtileprogress").change(function (e) {
+                        if (e.currentTarget.value !== "0") {
+                            var enableCompBox = $("select#id_enablecompletion");
+                            if (enableCompBox.val() === "0") {
+                                // We are changing to show progress on tiles
+                                // For convenience, if completion tracking if off at course level, switch it on and tell the user.
+                                // User can change it back if they want.  See under "completion tracking > enable.
+                                enableCompBox.val("1");
+                                str.get_strings([
+                                    {key: "completion", component: "completion"},
+                                    {key: "completionswitchhelp", component: "format_tiles"}
+                                ]).done(function (s) {
+                                    Notification.alert(
+                                        s[0],
+                                        s[1]
+                                    );
+                                });
+                            }
                         }
-                    ).toArray()
-                }).done(function (html) {
-                    // Add the newly created colour picker next to the standard select menu.
-                    $(html).insertAfter(colourSelectMenu);
-                    // Now that users are using the colour circles we can hide the text menu.
-                    colourSelectMenu.hide();
-                    // Watch for clicks on each circle and set select menu to correct colour on click.
-
-                    var circles = $(".colourpickercircle");
-
-                    circles.click(function (e) {
-                        var clicked = $(e.currentTarget);
-                        circles.removeClass("selected");
-                        clicked.addClass("selected");
-                        colourSelectMenu.val(clicked.attr("data-colour"));
-                        $("#colourselectnotify").fadeIn(200).fadeOut(1200);
+                    });
+                    $("select#id_enablecompletion").change(function (e) {
+                        if (e.currentTarget.value === "0") {
+                            // We are changing switch completion tracking off at course level too.
+                            // See under "completion tracking > enable.
+                            // It follows that we must be hiding progress on tiles too.
+                            $("select#id_courseshowtileprogress").val("0");
+                        }
                     });
 
-                    colourSelectMenu.change(function () {
-                        circles.removeClass("selected");
-                        $("#colourpick_" + colourSelectMenu.val().replace("#", "")).addClass("selected");
-                    });
-                });
-
-                // If we are on the course edit settings form, render a button to be added to it.
-                // Put it next to the existing drop down select box for course default tile icon.
-                // Add it to the page.
-
-                var selectedIconName;
-                var selectBox;
-                if (pageType === "course-edit") {
-                    selectBox = $("#id_defaulttileicon");
-                    selectedIconName = $("#id_defaulttileicon option:selected").text();
-                } else if (pageType === "course-editsection") {
-                    selectBox = $("#id_tileicon");
-                    selectedIconName = $("#id_tileicon option:selected").text();
-                }
-                if (pageType === "course-edit" || (pageType === "course-editsection" && section !== "0")) {
-                    var currentIcon;
-                    switch (selectBox.val()) {
-                        case "":
-                            currentIcon = courseDefaultIcon;
-                            break;
-                        default:
-                            currentIcon = selectBox.val();
-                    }
-                    Templates.render("format_tiles/icon_picker_launch_btn", {
-                        initialicon: currentIcon,
-                        initialname: selectedIconName,
-                        sectionId: sectionId
+                    // Create clickable colour swatch for each colour in the select drop down to help user choose.
+                    var colourSelectMenu = $("select#id_basecolour");
+                    Templates.render("format_tiles/colour_picker", {
+                        colours: colourSelectMenu.find("option").map(
+                            function (index, option) {
+                                var optselector = $(option);
+                                var colour = optselector.attr("value");
+                                return {
+                                    colour: colour,
+                                    colourname: optselector.text(),
+                                    selected: colour === colourSelectMenu.val(),
+                                    id: colour.replace("#", "")
+                                };
+                            }
+                        ).toArray()
                     }).done(function (html) {
-                        $(html).insertAfter(selectBox);
+                        // Add the newly created colour picker next to the standard select menu.
+                        $(html).insertAfter(colourSelectMenu);
+                        // Now that users are using the colour circles we can hide the text menu.
+                        colourSelectMenu.hide();
+                        // Watch for clicks on each circle and set select menu to correct colour on click.
 
-                        // We can hide the original select box now as users will use the button instead.
-                        selectBox.hide();
-                        require(["format_tiles/icon_picker"], function(iconPicker) {
-                            iconPicker.init(courseId, pageType);
+                        var circles = $(".colourpickercircle");
+
+                        circles.click(function (e) {
+                            var clicked = $(e.currentTarget);
+                            circles.removeClass("selected");
+                            clicked.addClass("selected");
+                            colourSelectMenu.val(clicked.attr("data-colour"));
+                            $("#colourselectnotify").fadeIn(200).fadeOut(1200);
+                        });
+
+                        colourSelectMenu.change(function () {
+                            circles.removeClass("selected");
+                            $("#colourpick_" + colourSelectMenu.val().replace("#", "")).addClass("selected");
                         });
                     });
-                } else if (pageType === "course-editsection" && section === "0") {
-                    selectBox.closest(".row").hide(); // Don't have an icon for section zero.
-                }
 
-                // Clean up all browser storage since the settings may have changed so stored content is wrong.
-                browserStorage.init(courseId, 1, 1, 1, 0, 0, userId);
-                browserStorage.cleanUpStorage();
-            });
-        }
-    };
-});
+                    // If we are on the course edit settings form, render a button to be added to it.
+                    // Put it next to the existing drop down select box for course default tile icon.
+                    // Add it to the page.
+
+                    var selectedIconName;
+                    var selectBox;
+                    if (pageType === "course-edit") {
+                        selectBox = $("#id_defaulttileicon");
+                        selectedIconName = $("#id_defaulttileicon option:selected").text();
+                    } else if (pageType === "course-editsection") {
+                        selectBox = $("#id_tileicon");
+                        selectedIconName = $("#id_tileicon option:selected").text();
+                    }
+                    if (pageType === "course-edit" || (pageType === "course-editsection" && section !== "0")) {
+                        var currentIcon;
+                        switch (selectBox.val()) {
+                            case "":
+                                currentIcon = courseDefaultIcon;
+                                break;
+                            default:
+                                currentIcon = selectBox.val();
+                        }
+                        Templates.render("format_tiles/icon_picker_launch_btn", {
+                            initialicon: currentIcon,
+                            initialname: selectedIconName,
+                            sectionId: sectionId
+                        }).done(function (html) {
+                            $(html).insertAfter(selectBox);
+
+                            // We can hide the original select box now as users will use the button instead.
+                            selectBox.hide();
+                            require(["format_tiles/icon_picker"], function(iconPicker) {
+                                iconPicker.init(courseId, pageType);
+                            });
+                        });
+                    } else if (pageType === "course-editsection" && section === "0") {
+                        selectBox.closest(".row").hide(); // Don't have an icon for section zero.
+                    }
+
+                    // Clean up all browser storage since the settings may have changed so stored content is wrong.
+                    browserStorage.init(courseId, 1, 1, 1, 0, 0, userId);
+                    browserStorage.cleanUpStorage();
+                });
+            }
+        };
+    }
+);
