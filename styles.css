@@ -816,15 +816,12 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles .editor_atto_content_wrap h2,
 .format-tiles .editor_atto_content_wrap h3,
 .format-tiles .editor_atto_content_wrap h4 {
+    font-weight: bold;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-top: 0.3em;
     padding-bottom: 0.3em;
-    padding-left: 0.4em;
     overflow: hidden;
-    font-weight: bold;
-    border-left-width: 10px;
-    /*border colour is set dynamically in format.php*/
 }
 
 .format-tiles ul.tiles .tile h3 {
