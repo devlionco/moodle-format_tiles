@@ -37,6 +37,10 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         local: false,
         session: false
     };
+    var storageType = {
+        local: "local",
+        session: "session"
+    };
     var storageUserConsent = {
         GIVEN: "yes", // What to store in local storage to indicate consent granted.
         DENIED: "no", // Or to indicate consent denied.
@@ -134,9 +138,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             return false;
         }
         try {
-            if (localOrSession === "local") {
+            if (localOrSession === storageType.local) {
                 storage = localStorage;
-            } else if (localOrSession === "session") {
+            } else if (localOrSession === storageType.session) {
                 storage = sessionStorage;
             }
             if (typeof storage === "undefined") {
@@ -294,8 +298,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 function () {
                     storageUserConsent.userChoice = storageUserConsent.GIVEN;
                     localStorage.setItem(encodeUserPrefStorageKey(), storageUserConsent.GIVEN);
-                    storageEnabled.local = storageInitialCheck("local", MAX_SECTIONS_TO_STORE);
-                    storageEnabled.session = storageInitialCheck("session", MAX_SECTIONS_TO_STORE);
+                    storageEnabled.local = storageInitialCheck(storageType.local, MAX_SECTIONS_TO_STORE);
+                    storageEnabled.session = storageInitialCheck(storageType.session, MAX_SECTIONS_TO_STORE);
                 },
                 function () {
                     storageUserConsent.userChoice = storageUserConsent.DENIED;
@@ -340,8 +344,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 storageEnabled.session = 0;
                 cleanUp(0, 1, 0);
             } else {
-                storageEnabled.local = storageInitialCheck("local", MAX_SECTIONS_TO_STORE);
-                storageEnabled.session = storageInitialCheck("session", MAX_SECTIONS_TO_STORE);
+                storageEnabled.local = storageInitialCheck(storageType.local, MAX_SECTIONS_TO_STORE);
+                storageEnabled.session = storageInitialCheck(storageType.session, MAX_SECTIONS_TO_STORE);
             }
 
             $(document).ready(function () {
@@ -480,9 +484,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             }
         },
 
-        cleanUp: function (contentDeleteMins, clearBrowserStorage, maxNumberToKeep) {
-            // Return object ("public") access to the "private" method above.
-            cleanUp(contentDeleteMins, clearBrowserStorage, maxNumberToKeep);
+        cleanUpStorage: function () {
+            // Return object ("public") access to the "private" method above (used when teacher edits course settings).
+            cleanUp(0, 1, 1);
         },
 
         launchUserPreferenceWindow: function () {

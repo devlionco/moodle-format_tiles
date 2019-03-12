@@ -30,10 +30,11 @@
  * @since       Moodle 3.3
  */
 
-define(["jquery", "core/notification", "core/str", "core/templates"], function ($, Notification, str, Templates) {
+define(["jquery", "core/notification", "core/str", "core/templates", "format_tiles/browser_storage"],
+    function ($, Notification, str, Templates, browserStorage) {
     "use strict";
     return {
-        init: function (pageType, courseDefaultIcon, courseId, sectionId, section) {
+        init: function (pageType, courseDefaultIcon, courseId, sectionId, section, userId) {
             $(document).ready(function () {
                 $("select#id_courseusesubtiles").change(function (e) {
                     if (e.currentTarget.value !== "0") {
@@ -148,6 +149,10 @@ define(["jquery", "core/notification", "core/str", "core/templates"], function (
                 } else if (pageType === "course-editsection" && section === "0") {
                     selectBox.closest(".row").hide(); // Don't have an icon for section zero.
                 }
+
+                // Clean up all browser storage since the settings may have changed so stored content is wrong.
+                browserStorage.init(courseId, 1, 1, 1, 0, 0, userId);
+                browserStorage.cleanUpStorage();
             });
         }
     };

@@ -643,7 +643,7 @@ class format_tiles extends format_base {
      * @throws dml_exception
      */
     public function create_edit_form_elements(&$mform, $forsection = false) {
-        global $COURSE, $PAGE, $DB;
+        global $COURSE, $PAGE, $DB, $USER;
         $elements = parent::create_edit_form_elements($mform, $forsection);
 
         // Call the JS edit_form_helper.js, which in turn will call icon_picker.js.
@@ -660,7 +660,8 @@ class format_tiles extends format_base {
             'courseDefaultIcon' => $this->get_format_options()['defaulttileicon'],
             'courseId' => $COURSE->id,
             'sectionId' => $sectionid,
-            'section' => $section
+            'section' => $section,
+            'userId' => $USER->id
         );
         $PAGE->requires->js_call_amd('format_tiles/edit_form_helper', 'init', $jsparams);
 
