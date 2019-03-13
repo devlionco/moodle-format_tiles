@@ -334,7 +334,10 @@ li#section-0.section.main.clearfix {
     box-shadow: 2px 4px 5px 0 #bdbdbd;
     position: relative;
 }
-
+.format-tiles .course-content ul.tiles .tile.spacer {
+    margin: 0;
+    padding: 0;
+}
 .format-tiles.jsenabled .course-content ul.tiles .tile.tile-collapsed {
     display: none;
     -webkit-transition: all 0.3s ease-in-out;
