@@ -118,7 +118,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
                     modalRoot.find(Selector.modalBody).animate({"min-height": Math.round(win.height() - 60)}, "fast");
                 }).fail(Notification.exception);
-
                 // Render the modal header / title and set it to the page.
                 if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
                     var inverseCompletionState = parseInt(
@@ -126,6 +125,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     );
                     templateData.completionInUseForCm = 1;
                     templateData.completionstate = 1 - inverseCompletionState;
+                    templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
                     templateData.completionstateInverse = inverseCompletionState;
                     templateData.completionIsManual = clickedCmObject
                         .find(Selector.toggleCompletion).attr("data-ismanual");
