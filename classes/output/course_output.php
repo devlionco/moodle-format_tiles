@@ -798,6 +798,7 @@ class course_output implements \renderable, \templatable
                 $moduleobject['completionInUseForCm'] = true;
                 $completiondata = $completioninfo->get_data($mod, true);
                 $moduleobject['completionstate'] = $completiondata->completionstate;
+                $moduleobject['completionicon'] = 'n'; // Not yet complete i.e. grey check in circle.
                 $moduleobject['completionstateInverse'] = $completiondata->completionstate == 1 ? 0 : 1;
                 if ($mod->completion == COMPLETION_TRACKING_MANUAL) {
                     $moduleobject['completionIsManual'] = 1;
@@ -807,6 +808,7 @@ class course_output implements \renderable, \templatable
                             break;
                         case COMPLETION_COMPLETE:
                             $moduleobject['completionstring'] = get_string('togglecompletion', 'format_tiles');
+                            $moduleobject['completionicon'] = 'y'; // Green check in circle.
                             break;
                     }
                 } else { // Automatic.
@@ -816,12 +818,15 @@ class course_output implements \renderable, \templatable
                             break;
                         case COMPLETION_COMPLETE:
                             $moduleobject['completionstring'] = get_string('complete-y-auto', 'format_tiles');
+                            $moduleobject['completionicon'] = 'y'; // Green check in circle.
                             break;
                         case COMPLETION_COMPLETE_PASS:
-                            $moduleobject['completionstring'] = get_string('complete-y', 'core_completion', $mod->name);
+                            $moduleobject['completionstring'] = get_string('completion-pass', 'core_completion', $mod->name);
+                            $moduleobject['completionicon'] = 'y'; // Green check in circle.
                             break;
                         case COMPLETION_COMPLETE_FAIL:
-                            $moduleobject['completionstring'] = get_string('completion-n', 'core_completion', $mod->name);
+                            $moduleobject['completionstring'] = get_string('completion-fail', 'core_completion', $mod->name);
+                            $moduleobject['completionicon'] = 'fail'; // Red cross in circle.
                             break;
                     }
                 }

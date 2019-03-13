@@ -41,6 +41,11 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         resourceModule: '.activity.resource'
     };
 
+    var Icon =  {
+        completionYes: 'completion-icon-y',
+        completionNo: 'completion-icon-n'
+    };
+
     // This will be populated on init with the items which we treat as labels.
     // I.e. which we ignore for completion tracking.
     var noCompletionTrackingMods = [];
@@ -161,7 +166,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     $("#completion_dynamic_change").attr("value", 0);
                     completionState.attr("value", 0);
                     progressChange = +1;
-                    completionImage.addClass("completion-state-1").removeClass("completion-state-0");
+                    completionImage.addClass(Icon.completionYes).removeClass(Icon.completionNo);
                     $(".complete-y-" + cmid).fadeIn(200).fadeOut(1000);
                 } else {
                     // We have un-checked a progress box.
@@ -169,7 +174,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     completionState.attr("value", 1);
                     progressChange = -1;
                     $(".complete-n-" + cmid).fadeIn(200).fadeOut(1000);
-                    completionImage.addClass("completion-state-0").removeClass("completion-state-1");
+                    completionImage.addClass(Icon.completionNo).removeClass(Icon.completionYes);
                 }
                 if (!completionState.closest("li.activity").is(
                     // If the activity is not one of the mods we ignore for completion tracking e.g. label.
@@ -202,7 +207,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     var markAsAutoComplete = function(e) {
         var completionIcon = $(e.currentTarget).closest("li.activity").find('.completion-icon');
         if (completionIcon.attr('data-ismanual') === "0" && completionIcon.attr('data-completionstate') === "0") {
-            completionIcon.addClass("completion-state-1").removeClass("completion-state-0");
+            completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
             completionIcon.attr('data-completionstate', 1);
             completionIcon.attr('data-original-title', strings.completeauto);
             completionIcon.tooltip();

@@ -67,7 +67,7 @@
                 <input type="hidden" name="modulename" value="{{modtitle}}">
                 <input type="hidden" name="completionstate" id="completionstate_{{cmid}}" value="{{completionstateInverse}}">
                 <button class="btn" title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}">
-                    <span class="completion-icon completion_img_{{cmid}} completion-state-{{completionstate}}">
+                    <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}">
                     </span>
                 </button>
                     {{! completion_img_[id] is the **class** if the img, not its id, because we have two per page, one on the main page and one in the modal }}
@@ -78,8 +78,7 @@
         <span class="completioncheckbox completion-auto" id="completion-check-{{cmid}}"
               title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}"
               data-ismanual="0" data-completionstate="{{completionstate}}" data-toggle="tooltip">
-            {{#completionstate}}{{#pix}}completion-y, format_tiles{{/pix}}{{/completionstate}}
-            {{^completionstate}}{{#pix}}completion-n, format_tiles{{/pix}}{{/completionstate}}
+            <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}"></span>
         </span>
     {{/completionIsManual}}
 {{/isediting}}
@@ -87,7 +86,6 @@
 {{#isediting}}
     <div class="completioncheckbox" id="completion-check-{{cmid}}"
     title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}" data-ismanual="0">
-        {{#completionstate}}{{#pix}}completion-y, format_tiles{{/pix}}{{/completionstate}}
-        {{^completionstate}}{{#pix}}completion-n, format_tiles{{/pix}}{{/completionstate}}
+        <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}"></span>
     </div>
 {{/isediting}}

@@ -747,8 +747,11 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     display: block;
     background-size: contain;
 }
-.format-tiles .completion-icon.completion-state-1 {
+.format-tiles .completion-icon.completion-icon-y {
     background-image: url([[pix:format_tiles|completion-y]]);
+}
+.format-tiles .completion-icon.completion-icon-fail {
+    background-image: url([[pix:format_tiles|completion-fail]]);
 }
 .format-tiles #embed_module_buttons .completion-icon {
     opacity: 1;
@@ -1358,6 +1361,11 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 
 .format-tiles .subtiles .completioncheckbox {
     padding: 3px;
+}
+.format-tiles .nosubtiles .completioncheckbox {
+    width: 30px;
+    height: 30px;
+    padding-top: 3px;
 }
 .format-tiles .subtiles .completioncheckbox.completion-auto .icon {
     padding-top: 4px;
