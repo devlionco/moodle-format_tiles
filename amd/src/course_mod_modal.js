@@ -192,7 +192,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                     // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is wide enough.
                     modalRoot.find("iframe").each(function (index, iframe) {
-                        var iframeWidth = Math.max($(iframe).width(), win.width());
+                        var iframeWidth = Math.min($(iframe).width(), win.width());
                         if (iframeWidth > modalWidth()) {
                             modalRoot.find(Selector.modal).animate({"max-width": iframeWidth + 70}, "fast");
                         }
