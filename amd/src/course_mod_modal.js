@@ -93,7 +93,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     id: cmid,
                     pluginfileUrl: clickedCmObject.attr("data-url"),
                     objectType: "text/html",
-                    width: modalWidth() - 5,
+                    width: "100%",
                     height: Math.round(win.height() - 60), // Embedded object height in modal - make as high as poss.
                     cmid: cmid,
                     tileid: clickedCmObject.closest(Selector.sectionMain).attr("data-section"),
@@ -115,8 +115,17 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                 Templates.render("format_tiles/embed_file_modal_body", templateData).done(function (html) {
                     modal.setBody(html);
-                    modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
                     modalRoot.find(Selector.modalBody).animate({"min-height": Math.round(win.height() - 60)}, "fast");
+
+                    if (clickedCmObject.attr('data-modtype') === "resource_html") {
+                        // HTML files only - set widths to 100% since they may contain embedded videos etc.
+                        modalRoot.find(Selector.modal).animate({"max-width": "100%"}, "fast");
+                        modalRoot.find(Selector.modalBody).animate({"max-width": "100%"}, "fast");
+                    } else {
+                        // Otherwise (e.g for PDF) we don't need 100% width.
+                        modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
+                    }
+
                 }).fail(Notification.exception);
                 // Render the modal header / title and set it to the page.
                 if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
@@ -132,7 +141,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 }
                 Templates.render("format_tiles/embed_module_modal_header", templateData).done(function (html) {
                     modal.setTitle(html);
-                    modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
                 }).fail(Notification.exception);
 
                 return true;
