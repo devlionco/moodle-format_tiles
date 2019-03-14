@@ -335,7 +335,8 @@ li#section-0.section.main.clearfix {
     position: relative;
 }
 .format-tiles .course-content ul.tiles .tile.spacer {
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
     padding: 0;
 }
 .format-tiles.jsenabled .course-content ul.tiles .tile.tile-collapsed {
