@@ -388,7 +388,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 // It looks like we may not have a connection so we can't launch notifications.
                 // We can warn the user like this instead.
                 setCourseContentHTML(contentArea, "<p>" + stringStore.noconnectionerror + "</p>");
-                expandSection(contentArea, sectionNum);
+                setTimeout(function () {
+                    expandSection(contentArea, sectionNum);
+                }, 500);
             }
             throw new Error("Not successful retrieving tile content by AJAX for section " + sectionNum);
         };
@@ -555,6 +557,86 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             $("body").removeClass("modal-open");
         };
 
+        /**
+         * To be called when a tile is clicked.  Get content from server or storage and display/store it.
+         * @param {number} courseId the id of this course.
+         * @param {Object} thisTile jquery the tile object clicked.
+         * @param {number} dataSection the id number of the tile.
+         * @param {number} storedContentExpirySecs.
+         */
+        var populateAndExpandSection = function(courseId, thisTile, dataSection, storedContentExpirySecs) {
+            setOverlay(dataSection);
+            $(Selector.TILE).removeClass(ClassNames.SELECTED);
+            thisTile.addClass(ClassNames.SELECTED);
+            // Then close all open secs.
+            // Timed to finish in 200 so that it completes well before the opening next.
+            $(Selector.MOVEABLE_SECTION).slideUp(200);
+            // Log the fact we viewed the section.
+            ajax.call([{
+                methodname: "format_tiles_log_tile_click", args: {
+                    courseid: courseId,
+                    sectionid: dataSection
+                }
+            }])[0].fail(Notification.exception);
+            // Get the content - use locally stored content first if available.
+            var relatedContentArea = $(Selector.SECTION_ID + dataSection);
+            if (relatedContentArea.find(".content").length > 0) {
+                // There is already some content on the screen so display immediately.
+                expandSection(relatedContentArea, dataSection);
+                // Then refresh the content in storage only but do not change on screen.
+                getSectionContentFromServer(courseId, dataSection).done(function (response) {
+                    if (browserStorage.storageEnabledSession()) {
+                        browserStorage.storeCourseContent(courseId, dataSection, $(response.html).html());
+                    }
+                });
+            } else {
+                relatedContentArea.html(loadingIconHtml);
+                if (browserStorage.storageEnabledLocal()) {
+                    var contentAge = browserStorage.getStoredContentAge(courseId, dataSection);
+                    if (contentAge) {
+                        // We have some stored content so display it even if it's expired.
+                        setCourseContentHTML(
+                            relatedContentArea,
+                            browserStorage.getCourseContent(courseId, dataSection)
+                        );
+                        expandSection(relatedContentArea, dataSection);
+                    }
+                    if (!contentAge || contentAge > storedContentExpirySecs) {
+                        // Content in local storage may not exist or have expired.
+                        // If so, get it again from server and display new content on receipt.
+                        var loadingIcon = $("#loading-icon-" + dataSection);
+                        if (loadingIcon !== undefined) {
+                            loadingIcon.html(loadingIconHtml).fadeIn(200);
+                        } else {
+                            loadingIcon = $("<div>").html(loadingIconHtml);
+                            relatedContentArea.html(loadingIcon);
+                        }
+                        getSectionContentFromServer(courseId, dataSection).done(function (response) {
+                            var contentToDisplay = $(response.html).html();
+                            setCourseContentHTML(relatedContentArea, contentToDisplay);
+                            expandSection(relatedContentArea, dataSection);
+                            if (browserStorage.storageEnabledSession()) {
+                                browserStorage.storeCourseContent(courseId, dataSection, contentToDisplay);
+                            }
+                        }).fail(function (failResult) {
+                            failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
+                            cancelTileSelections(dataSection);
+                        });
+                    }
+                } else {
+                    // Not using storage so get from server.
+                    getSectionContentFromServer(courseId, dataSection).done(function (response) {
+                        setCourseContentHTML(relatedContentArea, $(response.html).html());
+                        expandSection(relatedContentArea, dataSection);
+                    }).fail(function (failResult) {
+                        failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
+                        cancelTileSelections(dataSection);
+                    });
+                }
+            }
+            browserStorage.setLastVisitedSection(dataSection);
+        };
+
         return {
             init: function (
                 courseId,
@@ -618,81 +700,14 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             });
                             var thisTile = $(e.currentTarget).closest(Selector.TILE);
                             var dataSection = parseInt(thisTile.attr("data-section"));
-                            var relatedContentArea = $(Selector.SECTION_ID + dataSection);
                             if (thisTile.hasClass(ClassNames.SELECTED)) {
                                 // This tile is already expanded so collapse it.
                                 cancelTileSelections(dataSection);
                                 browserStorage.setLastVisitedSection(0);
                             } else {
-                                setOverlay(dataSection);
-                                $(Selector.TILE).removeClass(ClassNames.SELECTED); // Remove selected from all tiles.
-                                thisTile.addClass(ClassNames.SELECTED);
-                                // Then close all open secs.
-                                // Timed to finish in 200 so that it completes well before the opening next.
-                                $(Selector.MOVEABLE_SECTION).slideUp(200);
-                                // Log the fact we viewed the section.
-                                ajax.call([{
-                                    methodname: "format_tiles_log_tile_click", args: {
-                                        courseid: courseId,
-                                        sectionid: dataSection
-                                    }
-                                }])[0].fail(Notification.exception);
-                                // Get the content - use locally stored content first if available.
-                                if (relatedContentArea.find(".content").length > 0) {
-                                    // There is already some content on the screen so display immediately.
-                                    expandSection(relatedContentArea, dataSection);
-                                    // Then refresh the content in storage only but do not change on screen.
-                                    getSectionContentFromServer(courseId, dataSection).done(function (response) {
-                                        if (browserStorage.storageEnabledSession()) {
-                                            browserStorage.storeCourseContent(courseId, dataSection, $(response.html).html());
-                                        }
-                                    });
-                                } else {
-                                    relatedContentArea.html(loadingIconHtml);
-                                    if (browserStorage.storageEnabledLocal()) {
-                                        var contentAge = browserStorage.getStoredContentAge(courseId, dataSection);
-                                        if (contentAge) {
-                                            // We have some stored content so display it even if it's expired.
-                                            setCourseContentHTML(
-                                                relatedContentArea,
-                                                browserStorage.getCourseContent(courseId, dataSection)
-                                            );
-                                            expandSection(relatedContentArea, dataSection);
-                                        }
-                                        if (!contentAge || contentAge > storedContentExpirySecs) {
-                                            // Content in local storage may not exist or have expired.
-                                            // If so, get it again from server and display new content on receipt.
-                                            var loadingIcon = $("#loading-icon-" + sectionNum);
-                                            if (loadingIcon !== undefined) {
-                                                loadingIcon.html(loadingIconHtml).fadeIn(200);
-                                            } else {
-                                                loadingIcon = $("<div>").html(loadingIconHtml);
-                                                relatedContentArea.html(loadingIcon);
-                                            }
-                                            getSectionContentFromServer(courseId, dataSection).done(function (response) {
-                                                var contentToDisplay = $(response.html).html();
-                                                setCourseContentHTML(relatedContentArea, contentToDisplay);
-                                                expandSection(relatedContentArea, dataSection);
-                                                if (browserStorage.storageEnabledSession()) {
-                                                    browserStorage.storeCourseContent(courseId, dataSection, contentToDisplay);
-                                                }
-                                            }).fail(function (failResult) {
-                                                failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
-                                                cancelTileSelections(dataSection);
-                                            });
-                                        }
-                                    } else {
-                                        // Not using storage so get from server.
-                                        getSectionContentFromServer(courseId, dataSection).done(function (response) {
-                                            setCourseContentHTML(relatedContentArea, $(response.html).html());
-                                            expandSection(relatedContentArea, dataSection);
-                                        }).fail(function (failResult) {
-                                            failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
-                                            cancelTileSelections(dataSection);
-                                        });
-                                    }
-                                }
-                                browserStorage.setLastVisitedSection(dataSection);
+                                populateAndExpandSection(
+                                    courseId, thisTile, dataSection, storedContentExpirySecs
+                                );
                             }
                             // Silently set the *next* section's content to if it exists and if user is not on mobile.
                             // short delay as more important to get current section content first (above).
