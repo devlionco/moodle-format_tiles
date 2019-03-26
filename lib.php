@@ -247,7 +247,7 @@ class format_tiles extends format_base {
                 $generalsection->remove();
             }
         }
-        if (get_config('format_tiles', 'usejavascriptnav') && !$PAGE->user_is_editing()) {
+        if (get_config('format_tiles', 'usejavascriptnav') && !$PAGE->user_is_editing() && !(\core_useragent::is_ie())) {
             if (!get_user_preferences('format_tiles_stopjsnav', 0)) {
                 $url = new moodle_url('/course/view.php', array('id' => $course->id, 'stopjsnav' => 1));
                 $settingnode = $node->add(
