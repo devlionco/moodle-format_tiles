@@ -59,7 +59,7 @@ if ($isediting && $cmid = optional_param('labelconvert', 0, PARAM_INT)) {
     format_tiles_convert_label_to_page($cmid, $course);
 }
 
-// JS navigation in Internet Explorer is not supported by this plugin so we disable it here.
+// JS navigation and modals in Internet Explorer are not supported by this plugin so we disable JS nav here.
 $usejsnav = get_config('format_tiles', 'usejavascriptnav')
     && !get_user_preferences('format_tiles_stopjsnav', 0) && !core_useragent::is_ie();
 

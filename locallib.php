@@ -149,7 +149,9 @@ function format_tiles_get_first_line($text) {
  */
 function format_tiles_allowed_modal_modules() {
     $devicetype = \core_useragent::get_device_type();
-    if ($devicetype != \core_useragent::DEVICETYPE_TABLET && $devicetype != \core_useragent::DEVICETYPE_MOBILE) {
+    if ($devicetype != \core_useragent::DEVICETYPE_TABLET && $devicetype != \core_useragent::DEVICETYPE_MOBILE
+        && !(\core_useragent::is_ie())) {
+        // JS navigation and modals in Internet Explorer are not supported by this plugin so we disable modals here.
         return array(
             'resources' => explode(",", get_config('format_tiles', 'modalresources')),
             'modules' => explode(",", get_config('format_tiles', 'modalmodules'))
