@@ -59,8 +59,9 @@ if ($isediting && $cmid = optional_param('labelconvert', 0, PARAM_INT)) {
     format_tiles_convert_label_to_page($cmid, $course);
 }
 
+// JS navigation in Internet Explorer is not supported by this plugin so we disable it here.
 $usejsnav = get_config('format_tiles', 'usejavascriptnav')
-    && !get_user_preferences('format_tiles_stopjsnav', 0);
+    && !get_user_preferences('format_tiles_stopjsnav', 0) && !core_useragent::is_ie();
 
 // We display the multi section page if the user is not requesting a specific single section.
 // We also display it if user is requesting a specific section (URL &section=xx) with JS enabled.
