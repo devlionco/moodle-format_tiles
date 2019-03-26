@@ -784,7 +784,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                     clickItemBehind(e);
                                 });
                         } else {
-                            headerOverlay = $("<div></div>").insertAfter(Selector.PAGE).fadeOut();
+                            headerOverlay = $("<div></div>").addClass(ClassNames.HEADER_OVERLAY)
+                                .attr("id", ClassNames.HEADER_OVERLAY).insertAfter(Selector.PAGE).fadeOut();
                         }
 
                         // When user clicks to close a section using cross at top right in section.
