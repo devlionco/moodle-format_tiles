@@ -40,7 +40,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         launchModuleModal: '[data-action="launch-tiles-module-modal"]',
         pageContent: "#page-content",
         resourceModule: '.activity.resource',
-        autoComplete: ".autocomplete",
+        completeonview: ".completeonview",
         activity: "li.activity",
         section: "li.section.main"
     };
@@ -248,8 +248,8 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                         var parent = completionIcon.closest(".completioncheckbox");
                         markAsAutoComplete(completionIcon, parent);
                     });
-                $(Selector.pageContent).on("click", Selector.autoComplete, function (e) {
-                    // For items which are auto complete but don't launch in a modal e.g. Quiz.
+                $(Selector.pageContent).on("click", Selector.completeonview, function (e) {
+                    // For items which are auto complete on view, but don't launch in a modal e.g. Quiz.
                     var clickedItem = $(e.currentTarget);
                     if (
                         clickedItem.attr("data-action") === undefined
