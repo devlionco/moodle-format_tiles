@@ -757,7 +757,11 @@ class course_output implements \renderable, \templatable
                 $moduleobject['extraclasses'] .= ' dimmed';
             }
             if ($mod->completionview == COMPLETION_VIEW_REQUIRED) {
+                // Auto completion with a view required.
                 $moduleobject['extraclasses'] .= " completeonview";
+            } else if ($mod->completion == COMPLETION_TRACKING_AUTOMATIC) {
+                // Auto completion with no view required (e.g. grade required).
+                $moduleobject['extraclasses'] .= " completeonevent";
             }
             if ($PAGE->user_is_editing()) {
                 $moduleobject['cmmove'] = course_get_cm_move($mod, $section->section);

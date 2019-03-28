@@ -41,8 +41,10 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         pageContent: "#page-content",
         resourceModule: '.activity.resource',
         completeonview: ".completeonview",
+        completeonevent: ".completeonevent",
         activity: "li.activity",
-        section: "li.section.main"
+        section: "li.section.main",
+        togglecompletion: "form.togglecompletion"
     };
 
     var Icon = {
@@ -215,7 +217,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      */
     var markAsAutoComplete = function(completionIcon, parent) {
         if (parent.attr('data-ismanual') === "0" && parent.attr('data-completionstate') === "0") {
-            var sectionNum = completionIcon.closest('li.section.main').attr('data-section');
+            var sectionNum = completionIcon.closest(Selector.togglecompletion).attr('data-section');
             require(["format_tiles/browser_storage"], function(storage) {
                 storage.storeCourseContent(courseId, sectionNum, "");
             });
@@ -235,7 +237,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                 strings.completeauto = strCompleteAuto;
                 // Trigger toggle completion event if check box is clicked.
                 // Included like this so that later dynamically added boxes are covered.
-                $("body").on("click", ".togglecompletion", function (e) {
+                $("body").on("click", Selector.togglecompletion, function (e) {
                     // Send the toggle to the database and change the displayed icon.
                     e.preventDefault();
                     toggleCompletionTiles($(e.currentTarget));
@@ -248,17 +250,29 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                         var parent = completionIcon.closest(".completioncheckbox");
                         markAsAutoComplete(completionIcon, parent);
                     });
-                $(Selector.pageContent).on("click", Selector.completeonview, function (e) {
-                    // For items which are auto complete on view, but don't launch in a modal e.g. Quiz.
-                    var clickedItem = $(e.currentTarget);
-                    if (
-                        clickedItem.attr("data-action") === undefined
-                        || clickedItem.attr("data-action") !== "launch-tiles-module-modal"
-                    ) {
-                        var parent = clickedItem.find(".completioncheckbox");
-                        markAsAutoComplete(parent.find(".completion-icon"), parent);
-                    }
-                });
+                $(Selector.pageContent)
+                    .on("click", Selector.completeonview + ", " + Selector.completeonevent, function (e) {
+                        // For items which are auto complete on view, but don't launch in a modal e.g. Quiz.
+                        var clickedItem = $(e.currentTarget);
+                        if (
+                            clickedItem.attr("data-action") === undefined
+                            || clickedItem.attr("data-action") !== "launch-tiles-module-modal"
+                        ) {
+                            var parent = clickedItem.find(".completioncheckbox");
+                            if (clickedItem.hasClass(Selector.completeonview)) {
+                                markAsAutoComplete(parent.find(".completion-icon"), parent);
+                            } else {
+                                // Just clear section storage so that, if user gets a grade, content is refreshed when they return.
+                                require(["format_tiles/browser_storage"], function(storage) {
+                                    storage.storeCourseContent(
+                                        courseId,
+                                        clickedItem.closest(Selector.section).attr('data-section'),
+                                        ""
+                                    );
+                                });
+                            }
+                        }
+                    });
             });
         }
     };
