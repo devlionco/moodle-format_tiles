@@ -41,7 +41,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         var modalStore = {};
         var loadingIconHtml;
         var win = $(window);
-        var storedModalWidth = 0;
 
         var Selector = {
             launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
@@ -55,18 +54,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         };
 
         var modalWidth = function () {
-            if (storedModalWidth !== 0) {
-                return storedModalWidth;
-            }
-            // Not already stored to work it out.
-            var winWidth = win.width();
-            // Cap width at 900 even if screen bigger.
-            if (winWidth >= 900) {
-                return 900;
-            } else {
-                // Big as we can.
-                return winWidth;
-            }
+            return Math.min(win.width(), 900);
         };
 
         /**
@@ -203,11 +191,16 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                     modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
 
-                    // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is wide enough.
+                    // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
                     modalRoot.find("iframe").each(function (index, iframe) {
                         var iframeWidth = Math.min($(iframe).width(), win.width());
+                        var iframeHeight = Math.min($(iframe).width(), win.height());
                         if (iframeWidth > modalWidth()) {
                             modalRoot.find(Selector.modal).animate({"max-width": iframeWidth + 70}, "fast");
+                        }
+                        var modalBody = modalRoot.find(Selector.modalBody);
+                        if (iframeHeight > modalBody.height()) {
+                           modalBody.animate({"min-height": Math.min(iframeHeight + 70, win.width())}, "fast");
                         }
                     });
                     return true;
