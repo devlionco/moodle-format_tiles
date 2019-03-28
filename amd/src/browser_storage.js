@@ -153,6 +153,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             }
             return false;
         } catch (err) {
+            require(["core/log"], function(log) {
+                log.debug(err);
+            });
             return false;
         }
     };
@@ -169,16 +172,23 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         if (sectionId === undefined || courseId === undefined) {
             throw "Missing section id";
         }
-        if (html && html !== "" && storageEnabled.session) {
-            sessionStorage.setItem(encodeContentKeyName(sectionId), html);
-            sessionStorage.setItem(
-                encodeContentLastUpdatedKeyName(sectionId),
-                Math.round(Date.now() / 1000).toString()
-            );
-        } else {
-            // HTML is empty so remove from store if present.
-            sessionStorage.removeItem(encodeContentKeyName(sectionId));
-            sessionStorage.removeItem(encodeContentLastUpdatedKeyName(sectionId));
+        try {
+            if (html !== undefined && html !== ""
+                && storageEnabled.session && storageUserConsent.userChoice === storageUserConsent.GIVEN) {
+                sessionStorage.setItem(encodeContentKeyName(sectionId), html);
+                sessionStorage.setItem(
+                    encodeContentLastUpdatedKeyName(sectionId),
+                    Math.round(Date.now() / 1000).toString()
+                );
+            } else {
+                // HTML is empty so remove from store if present.
+                sessionStorage.removeItem(encodeContentKeyName(sectionId));
+                sessionStorage.removeItem(encodeContentLastUpdatedKeyName(sectionId));
+            }
+        } catch (err) {
+            require(["core/log"], function(log) {
+                log.debug(err);
+            });
         }
     };
 
@@ -463,9 +473,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
         storeCourseContent: function (courseId, sectionId, html) {
             // Return object ("public") access to the "private" method above.
-            if (html === undefined || html === "" || storageUserConsent.userChoice === storageUserConsent.GIVEN) {
-                storeCourseContent(courseId, sectionId, html);
-            }
+            storeCourseContent(courseId, sectionId, html);
         },
 
         cleanUpStorage: function () {
