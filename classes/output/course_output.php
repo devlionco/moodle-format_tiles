@@ -412,10 +412,13 @@ class course_output implements \renderable, \templatable
                 }
             }
         }
-        $data['all_tiles_expanded'] = optional_param('expanded', 0, PARAM_INT) == 1
-            || (
-                isset($SESSION->editing_all_sections_expanded_course)
-                && $SESSION->editing_all_sections_expanded_course == $this->course->id
+        $data['all_tiles_expanded'] = $data['isediting'] &&
+            (
+                optional_param('expanded', 0, PARAM_INT) == 1
+                || (
+                    isset($SESSION->editing_all_sections_expanded_course)
+                    && $SESSION->editing_all_sections_expanded_course == $this->course->id
+                )
             );
         // Now the filter buttons (if used).
         $data['has_filter_buttons'] = false;

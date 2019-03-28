@@ -72,9 +72,9 @@ if (optional_param('canceljssession', false, PARAM_BOOL)) {
     unset($SESSION->format_tiles_jssuccessfullyused);
 }
 
-if (optional_param('expanded', 0, PARAM_INT) == 1) {
+if ($isediting && optional_param('expanded', 0, PARAM_INT) == 1) {
     $SESSION->editing_all_sections_expanded_course = $course->id;
-} else if (optional_param('expanded', 0, PARAM_INT) == -1 || optional_param('expand', 0, PARAM_INT)) {
+} else if ($isediting && optional_param('expanded', 0, PARAM_INT) == -1 || optional_param('expand', 0, PARAM_INT)) {
     // Cancel if user cancels it or expands one section.
     unset($SESSION->editing_all_sections_expanded_course);
 }
