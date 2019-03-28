@@ -45,7 +45,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         section: "li.section.main"
     };
 
-    var Icon =  {
+    var Icon = {
         completionYes: 'completion-icon-y',
         completionNo: 'completion-icon-n'
     };
@@ -247,9 +247,9 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                         var completionIcon = $(e.currentTarget).closest(Selector.activity).find('.completion-icon');
                         var parent = completionIcon.closest(".completioncheckbox");
                         markAsAutoComplete(completionIcon, parent);
-                });
+                    });
                 $(Selector.pageContent).on("click", Selector.autoComplete, function (e) {
-                    // For items which are auto complete but don't launch in a modal e.g. Quiz
+                    // For items which are auto complete but don't launch in a modal e.g. Quiz.
                     var clickedItem = $(e.currentTarget);
                     if (
                         clickedItem.attr("data-action") === undefined

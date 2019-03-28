@@ -277,7 +277,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                     return sessionStorage[key] < cutOffTime;
                 }).forEach(function (expiredKey) {
                     params = decodeLastUpdatedKey(expiredKey);
-                    storeCourseContent(params.courseId, params.sectionId, ""); // "" will remove item.
+                    storeCourseContent(params.courseId, params.sectionId, ""); // Empty "" will remove item.
                 });
             }
         }
