@@ -67,7 +67,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             HIDE_SEC0_BTN: "#buttonhidesec0",
             SECTION_ZERO: "#section-0",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
-            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar"]
+            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap"]
             // We try several different selectors for header bar as it varies between theme.
             // (Boost based, clean based, essential etc).
         };
@@ -98,6 +98,24 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             TAB: 9,
             RETURN: 13
         };
+
+        /**
+         * Becausse headeroverlay may not exist, we want to avoid trying to fade if not there.
+         * @param fadeIn
+         * @returns {boolean}
+         */
+        var headerOverlayFadeInOut = function(fadeIn) {
+            if (headerOverlay === undefined) {
+                return false;
+            } else {
+                if (fadeIn === true) {
+                    headerOverlay.fadeIn(300);
+                } else {
+                    headerOverlay.fadeOut(300);
+                }
+            }
+        };
+
         /**
          * When JS navigation is being used, when a user un-selects a tile, we have to move the tile's z-index back so that it is
          * no longer on top of the overlay, as well as removing its "selected" class, and hiding the overlay
@@ -107,7 +125,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             $(Selector.TILE).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "").css(CSS.BG_COLOUR, "");
             $(".section " + ClassNames.SELECTED).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "");
             windowOverlay.fadeOut(300);
-            headerOverlay.fadeOut(0);
+            headerOverlayFadeInOut(false);
             $(Selector.MOVEABLE_SECTION).slideUp().removeClass(ClassNames.STATE_VISIBLE); // Excludes section 0.
             if (sectionToFocus !== undefined && sectionToFocus !== 0) {
                 $("#tile-" + sectionToFocus).focus();
@@ -326,14 +344,14 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 // We have scrolled down and content bottom has gone out of the top of window.
                                 if (windowOverlay.css(CSS.DISPLAY) === "block") {
                                     windowOverlay.fadeOut(300);
-                                    headerOverlay.fadeOut(300);
+                                    headerOverlayFadeInOut(false);
                                 }
                                 buttons.css("top", 0);
                             } else if (contentArea.offset().top > windowTop + $(window).outerHeight()) {
                                 // We have scrolled up and  content bottom has gone out of the bottom of window.
                                 if (windowOverlay.css(CSS.DISPLAY) === "block") {
                                     windowOverlay.fadeOut(300);
-                                    headerOverlay.fadeOut(300);
+                                    headerOverlayFadeInOut(false);
                                 }
                                 buttons.css("top", 0);
                             } else if (windowOverlay.css(CSS.DISPLAY) === "none") {
@@ -439,7 +457,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             backDropZIndex = parseInt(windowOverlay.css(CSS.Z_INDEX));
             var tile = $("#tile-" + secNumOnTop);
             tile.css(CSS.Z_INDEX, (backDropZIndex + 1));
-            headerOverlay.fadeIn(300);
+            headerOverlayFadeInOut(true);
             $(Selector.SECTION_ID + secNumOnTop).css(CSS.Z_INDEX, (backDropZIndex + 1));
             if (tile.css(CSS.BG_COLOUR) && tile.css(CSS.BG_COLOUR).substr(0, 4) === "rgba") {
                 // Tile may have transparent background from theme - needs to be solid otherwise modal shows through.
@@ -778,29 +796,27 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         var headerBar = $(Selector.HEADER_BAR.find(function(selector) {
                             return $(selector).length > 0;
                         }));
-                        if (headerBar !== undefined) {
+                        if (headerBar !== undefined && headerBar.length !== 0) {
                             headerBar.css(CSS.Z_INDEX, overlayZindex + 2);
-                        }
-
-                        // The header bar has a separate mini overlay of its own - find and hide this.
-                        // If it is clicked, cancel tile selections and click the item behind where clicked.
-                        // Do not include for Moodle 3.5 or higher as not needed.
-
-                        if (headerBar.height() !== undefined) {
-                            // Height must always be 50 minimum (Firefox and Moodle 3.3 will return 34 if we let them).
-                            HEADER_BAR_HEIGHT = Math.max(headerBar.height(), 50);
-                            headerOverlay = $("<div></div>")
-                                .addClass(ClassNames.HEADER_OVERLAY).attr("id", ClassNames.HEADER_OVERLAY)
-                                .css(CSS.DISPLAY, "none");
-                            headerOverlay.insertAfter(Selector.PAGE)
-                                .css(CSS.Z_INDEX, (overlayZindex) + 3).css(CSS.HEIGHT, HEADER_BAR_HEIGHT)
-                                .click(function (e) {
-                                    cancelTileSelections(0);
-                                    clickItemBehind(e);
-                                });
-                        } else {
-                            headerOverlay = $("<div></div>").addClass(ClassNames.HEADER_OVERLAY)
-                                .attr("id", ClassNames.HEADER_OVERLAY).insertAfter(Selector.PAGE).fadeOut();
+                            if (headerBar.attr("id") !== "navwrap") {
+                                // ID navwrap suggests theme is Adaptable based. We don't bother with header overlay if so.
+                                // Otherise the header bar has a separate mini overlay of its own - find and hide this.
+                                // If it is clicked, cancel tile selections and click the item behind where clicked.
+                                // Do not include for Moodle 3.5 or higher as not needed.
+                                if (headerBar.height() !== undefined) {
+                                    // Height must always be 50 minimum (Firefox and Moodle 3.3 will return 34 if we let them).
+                                    HEADER_BAR_HEIGHT = Math.max(headerBar.height(), 50);
+                                    headerOverlay = $("<div></div>")
+                                        .addClass(ClassNames.HEADER_OVERLAY).attr("id", ClassNames.HEADER_OVERLAY)
+                                        .css(CSS.DISPLAY, "none");
+                                    headerOverlay.insertAfter(Selector.PAGE)
+                                        .css(CSS.Z_INDEX, (overlayZindex) + 3).css(CSS.HEIGHT, HEADER_BAR_HEIGHT)
+                                        .click(function (e) {
+                                            cancelTileSelections(0);
+                                            clickItemBehind(e);
+                                        });
+                                }
+                            }
                         }
 
                         // When user clicks to close a section using cross at top right in section.
