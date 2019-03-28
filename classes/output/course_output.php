@@ -293,6 +293,7 @@ class course_output implements \renderable, \templatable
      * @throws \moodle_exception
      */
     private function append_multi_section_page_data($output, $data, $modinfo, $completioninfo) {
+        global $SESSION;
         $data['is_multi_section'] = true;
 
         // If using completion tracking, get the data.
@@ -369,9 +370,14 @@ class course_output implements \renderable, \templatable
                     $newtile['tileoutcomeid'] = $section->tileoutcomeid;
                 }
 
-                if ($data['isediting']
+                if (
+                    $data['isediting']
                     && (optional_param('expand', 0, PARAM_INT) == $section->section) // One section expanded.
-                    || optional_param('expanded', 0, PARAM_INT) // All sections expanded.
+                    || (
+                        // All sections expanded.
+                        optional_param('expanded', 0, PARAM_INT) == 1
+                        || (isset($SESSION->editing_all_sections_expanded_course) && $SESSION->editing_all_sections_expanded_course == $this->course->id)
+                    )
                 ) {
                     // The list of activities on the page (HTML).
                     $sectioncontent = $this->section_content($section, $modinfo, $completioninfo, $data['canviewhidden']);
@@ -403,7 +409,8 @@ class course_output implements \renderable, \templatable
                 }
             }
         }
-        $data['all_tiles_expanded'] = optional_param('expanded', 0, PARAM_INT);
+        $data['all_tiles_expanded'] = optional_param('expanded', 0, PARAM_INT) == 1
+            || (isset($SESSION->editing_all_sections_expanded_course) && $SESSION->editing_all_sections_expanded_course == $this->course->id);
         // Now the filter buttons (if used).
         $data['has_filter_buttons'] = false;
         if ($this->course->displayfilterbar) {
