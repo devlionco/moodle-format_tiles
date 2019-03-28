@@ -386,7 +386,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                     // Clear storage in case they just changed something.
                     cleanUp(0, 1, 0);
                     if (storageEnabled.session) {
-                        storeCourseContent(courseId, sectionNum, null);
+                        storeCourseContent(courseId, sectionNum, "");
                     }
                 }
                 $("#page-content").on("click", ".tile", function () {
