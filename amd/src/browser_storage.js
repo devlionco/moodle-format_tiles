@@ -166,6 +166,9 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      * @param {String} html
      */
     var storeCourseContent = function (courseId, sectionId, html) {
+        if (sectionId === undefined || courseId === undefined) {
+            throw "Missing section id";
+        }
         if (html && html !== "" && storageEnabled.session) {
             sessionStorage.setItem(encodeContentKeyName(sectionId), html);
             sessionStorage.setItem(
@@ -232,7 +235,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 if (isContentLastUpdatedKeyName(itemKey)) {
                     var params = decodeLastUpdatedKey(itemKey);
                     // Remove *all* items for this plugin regardless of age.
-                    storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion.
+                    storeCourseContent(params.courseId, params.sectionId, ""); // Empty last arg will mean deletion.
                 }
             });
         } else {
@@ -248,7 +251,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                         || contentDeleteMins === 0) {
                         // Item is stale - older than contentDeleteMins settings.
                         // this key represents an item with a last update date older than the delete threshold.
-                        storeCourseContent(params.courseId, params.sectionId, null); // Empty last arg will mean deletion.
+                        storeCourseContent(params.courseId, params.sectionId, ""); // Empty last arg will mean deletion.
                     }
                 }
             });
@@ -274,7 +277,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                     return sessionStorage[key] < cutOffTime;
                 }).forEach(function (expiredKey) {
                     params = decodeLastUpdatedKey(expiredKey);
-                    storeCourseContent(params.courseId, params.sectionId, null); // Null will remove item.
+                    storeCourseContent(params.courseId, params.sectionId, ""); // "" will remove item.
                 });
             }
         }
@@ -365,25 +368,6 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                 $('a[href*="datapref"]').click(function (e) {
                     e.preventDefault();
                     launchUserPreferenceWindow();
-                });
-
-                 // See format_tiles/completion.js for most of the actions related to togglecomoletion.
-                $("#page").on("click", ".togglecompletion", function (e) {
-                    if (storageEnabled.local) {
-                        // Replace/remove related stored content.
-                        // (Now inaccurate as show box incorrect box ticks and completion %).
-                        storeCourseContent(courseId, 0, null);
-                        var secId = $(e.currentTarget).attr("data-section");
-                        setTimeout(function () {
-                            // Wait to ensure that the new check box image is displayed.
-                            // Then store the sec content including that change.
-                            storeCourseContent(
-                                courseId,
-                                secId,
-                                $("#section-" + secId).html()
-                            );
-                        }, 1000);
-                    }
                 });
 
                 if (isEditing) {
@@ -479,7 +463,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
         storeCourseContent: function (courseId, sectionId, html) {
             // Return object ("public") access to the "private" method above.
-            if (storageUserConsent.userChoice === storageUserConsent.GIVEN) {
+            if (html === undefined || html === "" || storageUserConsent.userChoice === storageUserConsent.GIVEN) {
                 storeCourseContent(courseId, sectionId, html);
             }
         },

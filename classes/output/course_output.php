@@ -740,6 +740,9 @@ class course_output implements \renderable, \templatable
             ) {
                 $moduleobject['extraclasses'] .= ' dimmed';
             }
+            if ($mod->completion == COMPLETION_TRACKING_AUTOMATIC) {
+                $moduleobject['extraclasses'] .= " autocomplete";
+            }
             if ($PAGE->user_is_editing()) {
                 $moduleobject['cmmove'] = course_get_cm_move($mod, $section->section);
                 $editactions = $this->tiles_get_cm_edit_actions($mod, $section->section);

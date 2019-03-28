@@ -28,6 +28,7 @@
 define(["jquery", "core/templates", "core/config", "format_tiles/completion"], function ($, Templates, config) {
     "use strict";
 
+    var courseId;
     var strings = {};
     var dataKeys = {
         cmid: "data-cmid",
@@ -38,7 +39,10 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     var Selector = {
         launchModuleModal: '[data-action="launch-tiles-module-modal"]',
         pageContent: "#page-content",
-        resourceModule: '.activity.resource'
+        resourceModule: '.activity.resource',
+        autoComplete: ".autocomplete",
+        activity: "li.activity",
+        section: "li.section.main"
     };
 
     var Icon =  {
@@ -176,7 +180,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     $(".complete-n-" + cmid).fadeIn(200).fadeOut(1000);
                     completionImage.addClass(Icon.completionNo).removeClass(Icon.completionYes);
                 }
-                if (!completionState.closest("li.activity").is(
+                if (!completionState.closest(Selector.activity).is(
                     // If the activity is not one of the mods we ignore for completion tracking e.g. label.
                     noCompletionTrackingMods.map(function(cls) {
                         return "." + cls;
@@ -188,6 +192,9 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                         $("#tileprogress-" + form.attr(dataKeys.section)),
                         progressChange
                     );
+                    require(["format_tiles/browser_storage"], function(storage) {
+                        storage.storeCourseContent(courseId, form.attr("data-section"), "");
+                    });
                 }
             }
         })
@@ -202,23 +209,27 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      * - recalculate the % complete for this tile and overall.
      * We do not need to notify the server that the item is complete.
      * This is because that is already covered when course_mod_modal calls log_mod_view().
-     * @param {object} e the event when the launch modal click happened.
-     */
-    var markAsAutoComplete = function(e) {
-        var completionIcon = $(e.currentTarget).closest("li.activity").find('.completion-icon');
-        if (completionIcon.attr('data-ismanual') === "0" && completionIcon.attr('data-completionstate') === "0") {
-            completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
-            completionIcon.attr('data-completionstate', 1);
-            completionIcon.attr('data-original-title', strings.completeauto);
-            completionIcon.tooltip();
 
+     * @param {object} completionIcon the icon
+     * @param {object} parent the icon's parent
+     */
+    var markAsAutoComplete = function(completionIcon, parent) {
+        if (parent.attr('data-ismanual') === "0" && parent.attr('data-completionstate') === "0") {
             var sectionNum = completionIcon.closest('li.section.main').attr('data-section');
+            require(["format_tiles/browser_storage"], function(storage) {
+                storage.storeCourseContent(courseId, sectionNum, "");
+            });
+            completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
+            parent.attr('data-completionstate', 1);
+            parent.attr('data-original-title', strings.completeauto);
+            parent.tooltip();
             changeProgressIndicators(sectionNum, $("#tileprogress-" + sectionNum), 1);
         }
     };
 
     return {
-        init: function (strCompleteAuto, labelLikeCourseMods) {
+        init: function (courseIdInit, strCompleteAuto, labelLikeCourseMods) {
+            courseId = courseIdInit;
             $(document).ready(function () {
                 noCompletionTrackingMods = JSON.parse(labelLikeCourseMods);
                 strings.completeauto = strCompleteAuto;
@@ -230,13 +241,23 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     toggleCompletionTiles($(e.currentTarget));
                 });
 
-                $(Selector.pageContent).on("click", Selector.resourceModule, function (e) {
-                    // We do this for all resources e.g. Word docs, PDFs as soon as the user clicks them.
-                    markAsAutoComplete(e);
+                $(Selector.pageContent)
+                    .on("click", Selector.launchModuleModal, function (e) {
+                        // We do this for all resources e.g. Word docs, PDFs as soon as the user clicks them.
+                        var completionIcon = $(e.currentTarget).closest(Selector.activity).find('.completion-icon');
+                        var parent = completionIcon.closest(".completioncheckbox");
+                        markAsAutoComplete(completionIcon, parent);
                 });
-
-                $(Selector.pageContent).on("click", Selector.launchModuleModal, function (e) {
-                    markAsAutoComplete(e);
+                $(Selector.pageContent).on("click", Selector.autoComplete, function (e) {
+                    // For items which are auto complete but don't launch in a modal e.g. Quiz
+                    var clickedItem = $(e.currentTarget);
+                    if (
+                        clickedItem.attr("data-action") === undefined
+                        || clickedItem.attr("data-action") !== "launch-tiles-module-modal"
+                    ) {
+                        var parent = clickedItem.find(".completioncheckbox");
+                        markAsAutoComplete(parent.find(".completion-icon"), parent);
+                    }
                 });
             });
         }

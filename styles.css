@@ -1371,8 +1371,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 30px;
     padding-top: 3px;
 }
-.format-tiles .subtiles .completioncheckbox.completion-auto .icon {
-    padding-top: 4px;
+.format-tiles .subtiles .completioncheckbox.completion-auto .completion-icon {
+    margin-top: 2px;
 }
 .format-tiles .togglecompletion button.btn {
     border: 0;

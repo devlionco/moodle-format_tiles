@@ -149,6 +149,7 @@ if ($isediting) {
 if ($course->enablecompletion) {
     $PAGE->requires->js_call_amd('format_tiles/completion', 'init',
         array(
+            $course->id,
             get_string('complete-y-auto', 'format_tiles'),
             json_encode($courseformat->labellikecoursemods)
         )
