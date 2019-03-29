@@ -51,7 +51,13 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             modalBody: ".modal-body",
             sectionMain: ".section.main",
             pageContent: "#page-content",
-            completionState: "#completionstate_"
+            completionState: "#completionstate_",
+            cmModalClose: ".embed_cm_modal .close",
+            cmModal: ".embed_cm_modal"
+        };
+
+        var Class = {
+            modalClearOnDismiss: "clear-on-dismiss"
         };
 
         var modalMinWidth = function () {
@@ -75,6 +81,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 modal.show();
                 var modalRoot = $(modal.root);
                 modalRoot.attr("id", "embed_mod_modal_" + cmid);
+                modalRoot.attr("data-cmid", cmid);
                 modalRoot.addClass("embed_cm_modal");
 
                 // Render the modal body and set it to the page.
@@ -109,7 +116,9 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     if (clickedCmObject.attr('data-modtype') === "resource_html") {
                         // HTML files only - set widths to 100% since they may contain embedded videos etc.
                         modalRoot.find(Selector.modal).animate({"max-width": "100%"}, "fast");
+                        modalRoot.find(Selector.modalDialog).animate({"max-width": "100%"}, "fast");
                         modalRoot.find(Selector.modalBody).animate({"max-width": "100%"}, "fast");
+                        modalRoot.addClass(Class.modalClearOnDismiss);
                     } else {
                         // Otherwise (e.g for PDF) we don't need 100% width.
                         modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
@@ -158,6 +167,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 modal.setLarge();
                 modal.show();
                 var modalRoot = $(modal.root);
+                modalRoot.attr("data-cmid", cmid);
                 modalRoot.attr("id", "embed_mod_modal_" + cmid);
                 modalRoot.addClass("embed_cm_modal");
                 modalRoot.addClass(clickedCmObject.attr("data-modtype"));
@@ -229,6 +239,11 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                         // Align the iframe in the centre of the modal.
                         modalBody.css("text-align", "center");
+
+                        // Add this class so we know to clear the modal on dismiss, not just hide.
+                        // This is because it may contain a video which needs to be stopped.
+                        // See also event below for what happens when this class is clicked.
+                        modalRoot.addClass(Class.modalClearOnDismiss);
                     });
                     return true;
                 }).fail(function(ex) {
@@ -286,6 +301,14 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         }
                         return false;
                     });
+
+                    // Some modals need to be emptied when dismissed (e.g. contain a video which needs to be stopped).
+                    $("body").on("click", "." + Class.modalClearOnDismiss, function (e) {
+                        var modalClosingId = $(e.currentTarget).attr("data-cmid");
+                        $(e.currentTarget).closest(Selector.cmModal).find(Selector.modalBody).empty();
+                        modalStore[modalClosingId] = undefined;
+                    });
+
                      // Render the loading icon and append it to body so that we can use it later.
                     Templates.render("format_tiles/loading", {})
                         .catch(Notification.exception)
