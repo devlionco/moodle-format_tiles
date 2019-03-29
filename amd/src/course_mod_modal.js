@@ -54,10 +54,11 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             completionState: "#completionstate_",
             cmModalClose: ".embed_cm_modal .close",
             cmModal: ".embed_cm_modal",
-            modalClearOnDismissButton: ".clear-on-dismiss button.close"
+            modalClearOnDismissButton: ".clear-on-dismiss button.close",
+            moodleMediaPlayer: ".mediaplugin_videojs"
         };
 
-        var Class = {
+        var ClassNames = {
             modalClearOnDismiss: "clear-on-dismiss"
         };
 
@@ -120,7 +121,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modalRoot.find(Selector.modal).animate({"max-width": "100%"}, "fast");
                         modalRoot.find(Selector.modalDialog).animate({"max-width": "100%"}, "fast");
                         modalRoot.find(Selector.modalBody).animate({"max-width": "100%"}, "fast");
-                        modalRoot.addClass(Class.modalClearOnDismiss);
+                        modalRoot.addClass(ClassNames.modalClearOnDismiss);
                     } else {
                         // Otherwise (e.g for PDF) we don't need 100% width.
                         modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
@@ -206,6 +207,16 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
 
                     var MODAL_MARGIN = 70;
+
+                    // If the modal contains a Moodle mediaplayer div, remove the max width css rule which Moodle applies.
+                    // Otherwise video will be 400px max wide.
+                    var mediaPlayer = $(Selector.moodleMediaPlayer);
+                    mediaPlayer.find("div").each (function(index, child) {
+                        $(child).css("max-width", "");
+                    });
+                    mediaPlayer.closest(Selector.cmModal).addClass(ClassNames.modalClearOnDismiss);
+
+
                     // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
                     // Do this for every iframe in the course module.
                     modalRoot.find("iframe").each(function (index, iframe) {
@@ -246,8 +257,9 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         // Add this class so we know to clear the modal on dismiss, not just hide.
                         // This is because it may contain a video which needs to be stopped.
                         // See also event below for what happens when this class is clicked.
-                        modalRoot.addClass(Class.modalClearOnDismiss);
+                        modalRoot.addClass(ClassNames.modalClearOnDismiss);
                     });
+
                     return true;
                 }).fail(function(ex) {
                     if (config.developerdebug !== true) {
@@ -306,7 +318,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     });
 
                     // Some modals need to be emptied when dismissed (e.g. contain a video which needs to be stopped).
-                    $("body").on("click", Selector.modalClearOnDismissButton, function (e) {
+                    $("body")
+                        .on("click", Selector.modalClearOnDismissButton, function (e) {
                         var modalClosingId = $(e.currentTarget).closest(Selector.cmModal).attr("data-cmid");
                         $(e.currentTarget).closest(Selector.cmModal).find(Selector.modalBody).empty();
                         modalStore[modalClosingId] = undefined;
