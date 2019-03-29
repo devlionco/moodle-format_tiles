@@ -54,7 +54,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             completionState: "#completionstate_"
         };
 
-        var modalWidth = function () {
+        var modalMinWidth = function () {
             return Math.min(win.width(), 900);
         };
 
@@ -112,7 +112,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modalRoot.find(Selector.modalBody).animate({"max-width": "100%"}, "fast");
                     } else {
                         // Otherwise (e.g for PDF) we don't need 100% width.
-                        modalRoot.find(Selector.modal).animate({"max-width": modalWidth()}, "fast");
+                        modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
                     }
 
                 }).fail(Notification.exception);
@@ -190,32 +190,41 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modal.setTitle(html);
                     }).fail(Notification.exception);
 
-                    modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() + 70)}, "fast");
+                    modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
 
+                    var MODAL_MARGIN = 70;
                     // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
                     // Do this for every iframe in the course module.
                     modalRoot.find("iframe").each(function (index, iframe) {
 
-                        // First check the width of the modal.
+                        // Get the modal.
+                        var modal;
+                        // Boost calls the modal "modal dialog" so try this first.
+                        modal = modalRoot.find(Selector.modalDialog);
+
+                        // If no luck, try what Clean and Adaptable do instead.
+                        if (modal.length == 0) {
+                            modal = modalRoot.find(Selector.modal);
+                        }
+
+                        // Now check and adjust the width of the modal.
                         var iframeWidth = Math.min($(iframe).width(), win.width());
-                        if (iframeWidth > modalWidth()) {
-
-                            var modal;
-                            // Boost calls the modal "modal dialog" so try this first.
-                            modal = modalRoot.find(Selector.modalDialog);
-
-                            // If no luck, try what Clean and Adaptable do instead.
-                            if (modal.length == 0) {
-                                modal = modalRoot.find(Selector.modal);
-                            }
-                            modal.animate({"max-width": iframeWidth + 70}, "fast");
+                        if (iframeWidth > modal.width() - MODAL_MARGIN) {
+                            modal.animate(
+                                {"max-width": Math.max(iframeWidth + MODAL_MARGIN, modalMinWidth())},
+                                "fast"
+                            );
+                            modalRoot.find(Selector.modal).animate(
+                                {"max-width": Math.max(iframeWidth + MODAL_MARGIN, modalMinWidth())},
+                                "fast"
+                            );
                         }
 
                         // Then the height of the modal body.
                         var iframeHeight = Math.min($(iframe).height(), win.height());
                         var modalBody = modalRoot.find(Selector.modalBody);
-                        if (iframeHeight > modalBody.height()) {
-                            modalBody.animate({"min-height": Math.min(iframeHeight + 70, win.height())}, "fast");
+                        if (iframeHeight > modalBody.height() - MODAL_MARGIN) {
+                            modalBody.animate({"min-height": Math.min(iframeHeight + MODAL_MARGIN, win.height())}, "fast");
                         }
 
                         // Align the iframe in the centre of the modal.
