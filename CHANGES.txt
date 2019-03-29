@@ -137,3 +137,20 @@
 - PDF modal - ensure nav bar is visible on right of PDF, correct height in chrome (was too short)
 - Iframe e.g. Youtube video embedded in page - ensure width no larger than window width
 - Correct header overlay height
+
+3.3.6 (tba)
+==================
+- Adaptable theme - Improve navbar handling
+- Completion icons - fix issue #9 completion icons and strings to be displayed when quiz is set to complete depending on grade (pass/fail)
+- Expanding all tiles - remember user choice for this session
+- Indentation improved for labels / files
+- Internet Explorer- disable JS navigation and modals if user is using Internet Explorer.  Do not show animated nav controls.
+- Loading tile icon appears when content loading
+- Local storage - clear when teacher edits course settings, or  if item with auto complete on grade is viewed
+- Minimise height of grid spacer tiles
+- Modals - display manual check control for Pages in modal when launched
+- Modals - improve alignment of course module modal control buttons
+- Modals - labels with iframes in modals - adapt modal height and width to iframe
+- Modals - Moodle 3.3 modal header colour
+- Modals - resize modal for showing embedded HTML files uploaded by teacher
+- Navbar overlay height - improvements including account for difference between firefox and chrome
