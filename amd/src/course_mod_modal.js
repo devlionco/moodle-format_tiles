@@ -53,7 +53,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             pageContent: "#page-content",
             completionState: "#completionstate_",
             cmModalClose: ".embed_cm_modal .close",
-            cmModal: ".embed_cm_modal"
+            cmModal: ".embed_cm_modal",
+            modalClearOnDismissButton: ".clear-on-dismiss button.close"
         };
 
         var Class = {
@@ -303,8 +304,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     });
 
                     // Some modals need to be emptied when dismissed (e.g. contain a video which needs to be stopped).
-                    $("body").on("click", "." + Class.modalClearOnDismiss, function (e) {
-                        var modalClosingId = $(e.currentTarget).attr("data-cmid");
+                    $("body").on("click", Selector.modalClearOnDismissButton, function (e) {
+                        var modalClosingId = $(e.currentTarget).closest(Selector.cmModal).attr("data-cmid");
                         $(e.currentTarget).closest(Selector.cmModal).find(Selector.modalBody).empty();
                         modalStore[modalClosingId] = undefined;
                     });
