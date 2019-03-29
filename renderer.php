@@ -151,7 +151,11 @@ class format_tiles_renderer extends format_section_renderer_base
                     && $SESSION->editing_all_sections_expanded_course == $course->id)
             ) {
                 // This section is already expanded, so display a collapse link.
-                $url = new moodle_url('/course/view.php', array('id' => $course->id, 'expand' => '-1'), 'section-' . $section->section);
+                $url = new moodle_url(
+                    '/course/view.php',
+                    array('id' => $course->id, 'expand' => '-1'),
+                    'section-' . $section->section
+                );
                 $controls['collapseactivities'] = array('url' => $url, "icon" => 'i/up',
                     'name' => get_string('collapse', 'format_tiles'),
                     'attr' => array('class' => 'editing_activities', 'title' => get_string('collapse', 'format_tiles')));

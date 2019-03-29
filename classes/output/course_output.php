@@ -1102,20 +1102,20 @@ class course_output implements \renderable, \templatable
         if (!$isediting) {
             return false;
         }
-       if (isset($SESSION->editing_last_edited_section)
+        if (isset($SESSION->editing_last_edited_section)
            && $SESSION->editing_last_edited_section == $this->course->id . "-" . $sectionid) {
-           return true;
-       } else if (optional_param('expand', 0, PARAM_INT) == $sectionid) {
-           // User is clicking to expand one section.
-           return true;
-       } else if (optional_param('expanded', 0, PARAM_INT) == 1) {
-           // User is clicking to expand all sections.
-           return true;
-       } else if (isset($SESSION->editing_all_sections_expanded_course)
+            return true;
+        } else if (optional_param('expand', 0, PARAM_INT) == $sectionid) {
+            // User is clicking to expand one section.
+            return true;
+        } else if (optional_param('expanded', 0, PARAM_INT) == 1) {
+            // User is clicking to expand all sections.
+            return true;
+        } else if (isset($SESSION->editing_all_sections_expanded_course)
             && $SESSION->editing_all_sections_expanded_course == $this->course->id) {
-           // User has previously expanded all sections for this course and we are remembering for this session.
-           return true;
-       }
-       return false;
+            // User has previously expanded all sections for this course and we are remembering for this session.
+            return true;
+        }
+        return false;
     }
 }
