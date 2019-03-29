@@ -385,7 +385,7 @@ class format_tiles_external extends external_api
         $allowedmodalmodules  = format_tiles_allowed_modal_modules();
         if (array_search($cm->modname, $allowedmodalmodules['modules']) === false
             && count($allowedmodalmodules['resources']) == 0) {
-            throw new invalid_parameter_exception('Not allowed to log views of this mod type - disabled by site admin');
+            throw new invalid_parameter_exception('Not allowed to log views of this mod type - disabled by site admin or incorrect device type.  If you are testing this may be because you have not refreshed since switching device types');
         }
         $modobject = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
 
