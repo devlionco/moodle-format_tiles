@@ -1131,9 +1131,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .embed_cm_modal .modal-footer {
     display: none;
 }
-.format-tiles .embed_cm_modal .close {
-    font-size: 2em;
-}
 .format-tiles .embed_cm_modal i {
     width: 20px;
     height: 20px;
@@ -1384,7 +1381,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .embed_cm_modal #embed_module_buttons {
     text-align: center;
 }
-.format-tiles .embed_cm_modal .embed_file_button {
+.format-tiles .embed_cm_modal .embed_file_button,
+.format-tiles .modal-container .modal .modal-header button.close {
     display: inline-block;
     width: 28px;
     height: 28px;
@@ -1399,15 +1397,22 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     box-shadow: none;
     margin-right: 9px;
 }
+.format-tiles .modal-container .modal .modal-header button.close {
+    font-size: 1.8em;
+    background-repeat: no-repeat;
+    background-image: url([[pix:format_tiles|close-white]]);
+    background-size: 17px 17px;
+    margin-top: 3px;
+}
 .format-tiles #embed_module_buttons {
     display: inline-block;
-    right: 40px;
+    right: 50px;
     position: absolute;
     top: 0;
 }
 .format-tiles #embed_module_buttons img.icon {
-    width: 25px;
-    height: 25px;
+    width: 23px;
+    height: 23px;
     padding-right: 10px;
     padding-bottom: 10px;
     margin: 2px 0 0;
@@ -1422,6 +1427,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles #embed_module_buttons .btn {
     box-shadow: none;
+    margin-top: 2px;
 }
 .format-tiles #embed_module_buttons a .icon {
     color: #fff;
