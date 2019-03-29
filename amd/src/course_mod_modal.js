@@ -46,7 +46,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
             launchModuleModal: '[data-action="launch-tiles-module-modal"]',
             toggleCompletion: ".togglecompletion",
-            modal: ".modal-dialog",
+            modal: ".modal",
+            modalDialog: ".modal-dialog",
             modalBody: ".modal-body",
             sectionMain: ".section.main",
             pageContent: "#page-content",
@@ -189,19 +190,36 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modal.setTitle(html);
                     }).fail(Notification.exception);
 
-                    modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() * 1.1)}, "fast");
+                    modalRoot.find(Selector.modal).animate({"max-width": Math.round(modalWidth() + 70)}, "fast");
 
                     // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
+                    // Do this for every iframe in the course module.
                     modalRoot.find("iframe").each(function (index, iframe) {
+
+                        // First check the width of the modal.
                         var iframeWidth = Math.min($(iframe).width(), win.width());
-                        var iframeHeight = Math.min($(iframe).height(), win.height());
                         if (iframeWidth > modalWidth()) {
-                            modalRoot.find(Selector.modal).animate({"max-width": iframeWidth + 70}, "fast");
+
+                            var modal;
+                            // Boost calls the modal "modal dialog" so try this first.
+                            modal = modalRoot.find(Selector.modalDialog);
+
+                            // If no luck, try what Clean and Adaptable do instead.
+                            if (modal.length == 0) {
+                                modal = modalRoot.find(Selector.modal);
+                            }
+                            modal.animate({"max-width": iframeWidth + 70}, "fast");
                         }
+
+                        // Then the height of the modal body.
+                        var iframeHeight = Math.min($(iframe).height(), win.height());
                         var modalBody = modalRoot.find(Selector.modalBody);
                         if (iframeHeight > modalBody.height()) {
                             modalBody.animate({"min-height": Math.min(iframeHeight + 70, win.height())}, "fast");
                         }
+
+                        // Align the iframe in the centre of the modal.
+                        modalBody.css("text-align", "center");
                     });
                     return true;
                 }).fail(function(ex) {
