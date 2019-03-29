@@ -216,7 +216,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     });
                     mediaPlayer.closest(Selector.cmModal).addClass(ClassNames.modalClearOnDismiss);
 
-
                     // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
                     // Do this for every iframe in the course module.
                     modalRoot.find("iframe").each(function (index, iframe) {
@@ -318,8 +317,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     });
 
                     // Some modals need to be emptied when dismissed (e.g. contain a video which needs to be stopped).
-                    $("body")
-                        .on("click", Selector.modalClearOnDismissButton, function (e) {
+                    $("body").on("click", Selector.modalClearOnDismissButton, function (e) {
                         var modalClosingId = $(e.currentTarget).closest(Selector.cmModal).attr("data-cmid");
                         $(e.currentTarget).closest(Selector.cmModal).find(Selector.modalBody).empty();
                         modalStore[modalClosingId] = undefined;
