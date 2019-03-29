@@ -762,7 +762,7 @@ class course_output implements \renderable, \templatable
             } else if ($mod->completion == COMPLETION_TRACKING_AUTOMATIC) {
                 // Auto completion with no view required (e.g. grade required).
                 $moduleobject['extraclasses'] .= " completeonevent";
-            } else if($mod->completion == COMPLETION_TRACKING_MANUAL) {
+            } else if ($mod->completion == COMPLETION_TRACKING_MANUAL) {
                 $moduleobject['extraclasses'] .= " completeonmanual";
             }
             if ($PAGE->user_is_editing()) {
