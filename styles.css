@@ -949,7 +949,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
         /* stylelint-disable-next-line declaration-no-important */
         min-width: 160px !important;
     }
-    .format-tiles .section .activity .activityinstance {
+    .format-tiles .section .activity.subtile .activityinstance {
         display: block;
     }
 }
