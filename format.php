@@ -53,10 +53,30 @@ $templateable = new \format_tiles\output\inline_css_output($course);
 $data = $templateable->export_for_template($renderer);
 echo $renderer->render_from_template('format_tiles/inline-css', $data);
 
-if ($isediting && $cmid = optional_param('labelconvert', 0, PARAM_INT)) {
-    require_sesskey();
-    require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
-    format_tiles_convert_label_to_page($cmid, $course);
+if ($isediting) {
+    if ($cmid = optional_param('labelconvert', 0, PARAM_INT)) {
+        require_sesskey();
+        require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
+        format_tiles_convert_label_to_page($cmid, $course);
+    }
+
+    // Check and change any session params for teachers expanded section preferences.
+    if (optional_param('expanded', 0, PARAM_INT) == 1) {
+        // User is expanding all sections in course on command.
+        $SESSION->editing_all_sections_expanded_course = $course->id;
+        unset($SESSION->editing_last_edited_section);
+    } else if (optional_param('expanded', 0, PARAM_INT) == -1) {
+        // Cancel all epxanded if user cancels it.
+        unset($SESSION->editing_all_sections_expanded_course);
+    } else if ($secnum = optional_param('expand', 0, PARAM_INT)) {
+        // User is expanding one section.
+        unset($SESSION->editing_all_sections_expanded_course);
+        if ($secnum == -1) {
+            unset($SESSION->editing_last_edited_section);
+        } else {
+            $SESSION->editing_last_edited_section = $course->id . "-" . $secnum;
+        }
+    }
 }
 
 // JS navigation and modals in Internet Explorer are not supported by this plugin so we disable JS nav here.
@@ -72,12 +92,6 @@ if (optional_param('canceljssession', false, PARAM_BOOL)) {
     unset($SESSION->format_tiles_jssuccessfullyused);
 }
 
-if ($isediting && optional_param('expanded', 0, PARAM_INT) == 1) {
-    $SESSION->editing_all_sections_expanded_course = $course->id;
-} else if ($isediting && optional_param('expanded', 0, PARAM_INT) == -1 || optional_param('expand', 0, PARAM_INT)) {
-    // Cancel if user cancels it or expands one section.
-    unset($SESSION->editing_all_sections_expanded_course);
-}
 
 if (empty($displaysection) || (
     $usejsnav
@@ -88,6 +102,7 @@ if (empty($displaysection) || (
 ) {
     $renderer->print_multiple_section_page($course, null, null, null, null);
 } else {
+    $SESSION->editing_last_edited_section = $course->id . "-" . $displaysection;
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 }
 

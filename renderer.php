@@ -99,7 +99,7 @@ class format_tiles_renderer extends format_section_renderer_base
      * @throws moodle_exception
      */
     public function section_edit_control_items($course, $section, $onsectionpage = false) {
-        global $PAGE;
+        global $PAGE, $SESSION;
 
         if (!$PAGE->user_is_editing()) {
             return array();
@@ -144,9 +144,14 @@ class format_tiles_renderer extends format_section_renderer_base
                 'name' => get_string('entersection', 'format_tiles'),
                 'attr' => array('class' => 'editing_activities', 'title' => get_string('entersection', 'format_tiles')));
 
-            if (optional_param('expand', 0, PARAM_INT) == $section->section) {
+            if (optional_param('expand', 0, PARAM_INT) == $section->section ||
+                (isset($SESSION->editing_last_edited_section)
+                    && $SESSION->editing_last_edited_section == $course->id . "-" . $section->section) ||
+                (isset($SESSION->editing_all_sections_expanded_course)
+                    && $SESSION->editing_all_sections_expanded_course == $course->id)
+            ) {
                 // This section is already expanded, so display a collapse link.
-                $url = new moodle_url('/course/view.php', array('id' => $course->id), 'section-' . $section->section);
+                $url = new moodle_url('/course/view.php', array('id' => $course->id, 'expand' => '-1'), 'section-' . $section->section);
                 $controls['collapseactivities'] = array('url' => $url, "icon" => 'i/up',
                     'name' => get_string('collapse', 'format_tiles'),
                     'attr' => array('class' => 'editing_activities', 'title' => get_string('collapse', 'format_tiles')));

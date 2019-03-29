@@ -370,18 +370,7 @@ class course_output implements \renderable, \templatable
                     $newtile['tileoutcomeid'] = $section->tileoutcomeid;
                 }
 
-                if (
-                    $data['isediting']
-                    && (optional_param('expand', 0, PARAM_INT) == $section->section) // One section expanded.
-                    || (
-                        // All sections expanded.
-                        optional_param('expanded', 0, PARAM_INT) == 1
-                        || (
-                            isset($SESSION->editing_all_sections_expanded_course)
-                            && $SESSION->editing_all_sections_expanded_course == $this->course->id
-                        )
-                    )
-                ) {
+                if ($this->is_section_editing_expanded($section->section, $data['isediting'])) {
                     // The list of activities on the page (HTML).
                     $sectioncontent = $this->section_content($section, $modinfo, $completioninfo, $data['canviewhidden']);
                     $newtile['course_modules'] = $sectioncontent['course_modules'];
@@ -1099,5 +1088,34 @@ class course_output implements \renderable, \templatable
      */
     private function treat_as_label($mod) {
         return array_search($mod->modname, $this->labellikecoursemods) !== false;
+    }
+
+    /**
+     * Should a given section be shown as expanded or not?
+     * Only editors see sections expanded like this - students use AJAX expanding.
+     * @param int $sectionid the id of the section (id not section number)
+     * @return bool whether it should be shown as expanded.
+     * @throws \coding_exception
+     */
+    private function is_section_editing_expanded($sectionid, $isediting) {
+        global $SESSION;
+        if (!$isediting) {
+            return false;
+        }
+       if (isset($SESSION->editing_last_edited_section)
+           && $SESSION->editing_last_edited_section == $this->course->id . "-" . $sectionid) {
+           return true;
+       } else if (optional_param('expand', 0, PARAM_INT) == $sectionid) {
+           // User is clicking to expand one section.
+           return true;
+       } else if (optional_param('expanded', 0, PARAM_INT) == 1) {
+           // User is clicking to expand all sections.
+           return true;
+       } else if (isset($SESSION->editing_all_sections_expanded_course)
+            && $SESSION->editing_all_sections_expanded_course == $this->course->id) {
+           // User has previously expanded all sections for this course and we are remembering for this session.
+           return true;
+       }
+       return false;
     }
 }
