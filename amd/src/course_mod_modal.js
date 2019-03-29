@@ -86,6 +86,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 modalRoot.addClass("embed_cm_modal");
 
                 // Render the modal body and set it to the page.
+                // First a blank template data object.
                 var templateData = {
                     id: cmid,
                     pluginfileUrl: clickedCmObject.attr("data-url"),
@@ -193,6 +194,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         templateData.completionstateInverse = inverseCompletionState;
                         templateData.completionIsManual = clickedCmObject
                             .find(Selector.toggleCompletion).attr("data-ismanual");
+                        templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
                     } else {
                         templateData.completionInUseForCm = 0;
                     }
