@@ -107,8 +107,13 @@
     data-modinstance="{{modinstance}}"{{#pluginfileUrl}}
     data-url="{{{pluginfileUrl}}}"{{/pluginfileUrl}}
     data-title="{{{modtitle}}}">
-    <div{{#useSubtiles}}{{^is_label}} class="subtile_inner"{{/is_label}}{{/useSubtiles}}>
-        <div class="{{#useSubtiles}}{{^is_label}}activityinstance{{/is_label}}{{/useSubtiles}}{{^useSubtiles}}{{#isediting}} mod-indent-outer{{/isediting}}{{/useSubtiles}}">
+    <div{{#useSubtiles}}{{^is_label}} class="subtile_inner"{{/is_label}}{{/useSubtiles}} {{^useSubtiles}} class="mod-indent-outer"{{/useSubtiles}}>
+        {{^useSubtiles}}
+            {{#indentlevel}}
+                <div class="mod-indent mod-indent-{{indentlevel}}"></div>
+            {{/indentlevel}}
+        {{/useSubtiles}}
+        <div class="{{^is_label}}activityinstance{{/is_label}}{{^useSubtiles}}{{#isediting}} mod-indent-outer{{/isediting}}{{/useSubtiles}}">
             {{#is_label}}
                 {{#clickable}}
                     {{! clickable really means user is allowed to see content - }}
