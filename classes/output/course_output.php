@@ -683,6 +683,9 @@ class course_output implements \renderable, \templatable
             $moduleobject['visible'] = $mod->visible;
             $moduleobject['launchtype'] = 'standard';
             $moduleobject['content'] = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
+            if (!$this->courseusesubtiles && $mod->indent) {
+                $moduleobject['indentlevel'] = $mod->indent;
+            }
 
             // We set this here, with the value from the last loop, before updating it in the next block.
             // So that we can use it again on the next loop.
@@ -1011,7 +1014,10 @@ class course_output implements \renderable, \templatable
      */
     private function tiles_get_cm_edit_actions($mod, $sectionnum) {
         // First get the standard list of actions from course/lib.
-        $actions = course_get_cm_edit_actions($mod, -1, $sectionnum);
+        // Only use the indent action if course is not using subtiles.
+        $indent = ! $this->courseusesubtiles ? $mod->indent : -1;
+        $actions = course_get_cm_edit_actions($mod, $indent, $sectionnum);
+
         if ($mod->modname === "label") {
             $coursecontext = \context_course::instance($mod->course);
             if (get_config('format_tiles', 'allowlabelconversion' )
