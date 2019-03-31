@@ -411,6 +411,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     expandSection(contentArea, sectionNum);
                 }, 500);
             }
+            require(["core/log"], function(log) {
+                log.debug(failResult);
+            });
             throw new Error("Not successful retrieving tile content by AJAX for section " + sectionNum);
         };
 

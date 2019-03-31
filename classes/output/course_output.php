@@ -26,6 +26,7 @@ namespace format_tiles\output;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot .'/course/format/lib.php');
+require_once("$CFG->libdir/resourcelib.php");  // To import RESOURCELIB_DISPLAY_POPUP.
 
 /**
  * Tiles course format, main course output class to prepare data for mustache templates
@@ -641,7 +642,7 @@ class course_output implements \renderable, \templatable
      * @throws \moodle_exception
      */
     private function section_content($section, $modinfo, $completioninfo, $canviewhidden = false) {
-        global $PAGE, $DB;
+        global $CFG, $PAGE, $DB;
         $sectioncontent = array('course_modules' => []);
 
         if (!isset($modinfo->sections[$section->section]) || !$cmids = $modinfo->sections[$section->section]) {
@@ -812,7 +813,6 @@ class course_output implements \renderable, \templatable
                 if ($url->display == RESOURCELIB_DISPLAY_POPUP) {
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
                 } else if ($url->display == RESOURCELIB_DISPLAY_AUTO) {
-                    global $CFG;
                     require_once("$CFG->dirroot/mod/url/locallib.php");
                     // TODO modify this later to treat embed as launch modal.
                     $treataspopup = [
