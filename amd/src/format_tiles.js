@@ -67,7 +67,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             HIDE_SEC0_BTN: "#buttonhidesec0",
             SECTION_ZERO: "#section-0",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
-            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap"]
+            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap"],
+            URLACTIVITYLINK: ".activity.modtype_url a"
             // We try several different selectors for header bar as it varies between theme.
             // (Boost based, clean based, essential etc).
         };
@@ -837,6 +838,16 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 window.location = clickedLk.find('a').attr("href");
                             }
                         });
+
+                        // If a URL activity is clicked and it's been set to open in "Pop up" then launch a browser pop up.
+                        pageContent.on(Event.CLICK, Selector.URLACTIVITYLINK, function(e) {
+                            var newUrl = $(e.currentTarget).closest(Selector.ACTIVITY).attr("data-url");
+                            if (newUrl !== undefined) {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                window.open(newUrl);
+                            }
+                        });
                     }
 
                     // When the user presses the button to collapse or expand Section zero (section at the top of the course).
@@ -933,6 +944,15 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                         + '&section=' + $(e.currentTarget).parent().attr("data-section");
                                 }
                             });
+
+                            // TODO in editing mode we can collapse sections using AJAX and populate content in same way.
+                            // $(".collapse-section").click( function (e){
+                            //     e.preventDefault();
+                            //     var clickedIcon = $(e.currentTarget);
+                            //     $("#section-" + clickedIcon.attr("data-section") + "-content").slideUp(500);
+                            //     clickedIcon.fadeOut(500);
+                            // });
+
                         }
 
                         // Move focus to the first tile in the course (not sec zero contents if present).
@@ -950,6 +970,19 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             }
                         }
                     });
+
+
+                    // TODO fix experimental code to allow retrieval of siungle sections by teacher in editing mode.
+                    // Needs more work to make drag and drop work.
+                    // Assume need to run M.course.init_resource_dragdrop or similar.
+                    // Create an event here and in format.js pick it up and handle it?
+                    // var sectionToExpand = 3;
+                    // getSectionContentFromServer(courseId, sectionToExpand).then(function(response){
+                    //     $("#section-" + sectionToExpand + "-content").find("ul.section").html(response.html);
+                    //     require("core_course/actions", function(courseactions) {
+                    //         courseactions.initCoursePage('format_tiles');
+                    //     });
+                    // });
                 });
             }
         };
