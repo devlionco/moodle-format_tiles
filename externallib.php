@@ -399,8 +399,11 @@ class format_tiles_external extends external_api
             case 'resource':
                 resource_view($modobject, $course, $cm, $context);
                 break;
+            case 'url':
+                url_view($modobject, $course, $cm, $context);
+                break;
             default:
-                throw new invalid_parameter_exception('No logging method provided for type ' . $cm->modname);
+                throw new invalid_parameter_exception('No logging method provided for type |' . $cm->modname . '|');
             // TODO add more to these if more modules added.
         }
 

@@ -841,11 +841,18 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                         // If a URL activity is clicked and it's been set to open in "Pop up" then launch a browser pop up.
                         pageContent.on(Event.CLICK, Selector.URLACTIVITYLINK, function(e) {
-                            var newUrl = $(e.currentTarget).closest(Selector.ACTIVITY).attr("data-url");
-                            if (newUrl !== undefined) {
+                            var clickedActivity = $(e.currentTarget).closest(Selector.ACTIVITY);
+                            if (clickedActivity.attr("data-url") !== undefined) {
                                 e.stopPropagation();
                                 e.preventDefault();
-                                window.open(newUrl);
+                                // Log the fact we viewed it.
+                                ajax.call([{
+                                    methodname: "format_tiles_log_mod_view", args: {
+                                        courseid: courseId,
+                                        cmid: clickedActivity.attr("data-cmid")
+                                    }
+                                }])[0].fail(Notification.exception);
+                                window.open(clickedActivity.attr("data-url"));
                             }
                         });
                     }
