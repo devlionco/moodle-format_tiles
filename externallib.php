@@ -94,7 +94,7 @@ class format_tiles_external extends external_api
                 'course_format_options',
                 ['format' => 'tiles', 'name' => 'defaulttileicon', 'courseid' => $data['courseid'], 'sectionid' => 0]
             )->value;
-            if ($params['icon'] == $defaulticonthiscourse) {
+            if ($data['icon'] == $defaulticonthiscourse) {
                 // Using default icon for a tile do don't store anything in database = default.
                 $result = $DB->delete_records(
                     'course_format_options',
