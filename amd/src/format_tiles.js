@@ -944,15 +944,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                         + '&section=' + $(e.currentTarget).parent().attr("data-section");
                                 }
                             });
-
-                            // TODO in editing mode we can collapse sections using AJAX and populate content in same way.
-                            // $(".collapse-section").click( function (e){
-                            //     e.preventDefault();
-                            //     var clickedIcon = $(e.currentTarget);
-                            //     $("#section-" + clickedIcon.attr("data-section") + "-content").slideUp(500);
-                            //     clickedIcon.fadeOut(500);
-                            // });
-
                         }
 
                         // Move focus to the first tile in the course (not sec zero contents if present).
@@ -970,19 +961,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             }
                         }
                     });
-
-
-                    // TODO fix experimental code to allow retrieval of siungle sections by teacher in editing mode.
-                    // Needs more work to make drag and drop work.
-                    // Assume need to run M.course.init_resource_dragdrop or similar.
-                    // Create an event here and in format.js pick it up and handle it?
-                    // var sectionToExpand = 3;
-                    // getSectionContentFromServer(courseId, sectionToExpand).then(function(response){
-                    //     $("#section-" + sectionToExpand + "-content").find("ul.section").html(response.html);
-                    //     require("core_course/actions", function(courseactions) {
-                    //         courseactions.initCoursePage('format_tiles');
-                    //     });
-                    // });
                 });
             }
         };

@@ -139,10 +139,20 @@ class format_tiles_renderer extends format_section_renderer_base
 
         if (!$onsectionpage && $section->section && has_capability('moodle/course:update', $coursecontext)) {
             // Add controls to drop down menu on each editing tile for teacher to enter section, expand section etc.
-            $url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $section->section));
-            $controls['entersection'] = array('url' => $url, "icon" => 'a/view_list_active',
+            $url = new moodle_url('/course/view.php', array(
+                'id' => $course->id,
+                'section' => $section->section
+                )
+            );
+            $controls['entersection'] = array(
+                'url' => $url,
+                "icon" => 'a/view_list_active',
                 'name' => get_string('entersection', 'format_tiles'),
-                'attr' => array('class' => 'editing_activities', 'title' => get_string('entersection', 'format_tiles')));
+                'attr' => array(
+                    'class' => 'editing_activities',
+                    'title' => get_string('entersection', 'format_tiles')
+                )
+            );
 
             if (optional_param('expand', 0, PARAM_INT) == $section->section ||
                 (isset($SESSION->editing_last_edited_section)
@@ -156,9 +166,15 @@ class format_tiles_renderer extends format_section_renderer_base
                     array('id' => $course->id, 'expand' => '-1'),
                     'section-' . $section->section
                 );
-                $controls['collapseactivities'] = array('url' => $url, "icon" => 'i/up',
+                $controls['collapseactivities'] = array(
+                    'url' => $url,
+                    "icon" => 'i/up',
                     'name' => get_string('collapse', 'format_tiles'),
-                    'attr' => array('class' => 'editing_activities', 'title' => get_string('collapse', 'format_tiles')));
+                    'attr' => array(
+                        'class' => 'editing_activities',
+                        'title' => get_string('collapse', 'format_tiles')
+                    )
+                );
             } else {
                 // This section is collapsed, so display an expand link.
                 $url = new moodle_url(
@@ -166,9 +182,14 @@ class format_tiles_renderer extends format_section_renderer_base
                     array('id' => $course->id, 'expand' => $section->section),
                     'section-' . $section->section
                 );
-                $controls['expandactivities'] = array('url' => $url, "icon" => 'e/resize',
+                $controls['expandactivities'] = array(
+                    'url' => $url, "icon" => 'e/resize',
                     'name' => get_string('revealcontents', 'format_tiles'),
-                    'attr' => array('class' => 'editing_activities', 'title' => get_string('revealcontents', 'format_tiles')));
+                    'attr' => array(
+                        'class' => 'editing_activities',
+                        'title' => get_string('revealcontents', 'format_tiles')
+                    )
+                );
             }
 
         }

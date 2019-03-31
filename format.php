@@ -60,7 +60,7 @@ if ($isediting) {
         format_tiles_convert_label_to_page($cmid, $course);
     }
 
-    // Check and change any session params for teachers expanded section preferences.
+    // Check if we need to change any session params for teachers expanded section preferences.
     if (optional_param('expanded', 0, PARAM_INT) == 1) {
         // User is expanding all sections in course on command.
         $SESSION->editing_all_sections_expanded_course = $course->id;

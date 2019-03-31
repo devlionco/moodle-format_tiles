@@ -104,8 +104,8 @@
     id="module-{{cmid}}" data-modtype="{{modname}}{{#modResourceType}}_{{{modResourceType}}}{{/modResourceType}}"
     tabindex="3"
     data-cmid="{{cmid}}"
-    data-modinstance="{{modinstance}}"{{#pluginfileUrl}}
-    data-url="{{{pluginfileUrl}}}"{{/pluginfileUrl}}
+    data-modinstance="{{modinstance}}"
+    {{#pluginfileUrl}}data-url="{{{pluginfileUrl}}}"{{/pluginfileUrl}}
     data-title="{{{modtitle}}}">
     <div{{#useSubtiles}}{{^is_label}} class="subtile_inner"{{/is_label}}{{/useSubtiles}} {{^useSubtiles}} class="mod-indent-outer"{{/useSubtiles}}>
         {{^useSubtiles}}
@@ -113,7 +113,7 @@
                 <div class="mod-indent mod-indent-{{indentlevel}}"></div>
             {{/indentlevel}}
         {{/useSubtiles}}
-        <div class="{{^is_label}}activityinstance{{/is_label}}{{^useSubtiles}}{{#isediting}} mod-indent-outer{{/isediting}}{{/useSubtiles}}">
+        <div class="{{^is_label}}activityinstance{{/is_label}}">
             {{#is_label}}
                 {{#clickable}}
                     {{! clickable really means user is allowed to see content - }}

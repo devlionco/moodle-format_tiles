@@ -249,7 +249,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
                     }
 
                     // If user clicks show/hide on a course module.
-                    $(Selector.CM_EDIT_ACTION).click(function (e) {
+                    page.on("click", Selector.CM_EDIT_ACTION, function (e) {
                         toggleHideCourseMod(e);
                     });
                     // PHP handles duplicate and separate groups at present.

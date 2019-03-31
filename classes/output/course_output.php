@@ -808,10 +808,10 @@ class course_output implements \renderable, \templatable
             }
 
             if ($mod->modname == 'url') {
-                $url = $DB->get_record('url', array('id'=>$mod->instance), '*', MUST_EXIST);
+                $url = $DB->get_record('url', array('id' => $mod->instance), '*', MUST_EXIST);
                 if ($url->display == RESOURCELIB_DISPLAY_POPUP) {
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
-                } else  if ($url->display == RESOURCELIB_DISPLAY_AUTO) {
+                } else if ($url->display == RESOURCELIB_DISPLAY_AUTO) {
                     global $CFG;
                     require_once("$CFG->dirroot/mod/url/locallib.php");
                     // TODO modify this later to treat embed as launch modal.
@@ -830,7 +830,6 @@ class course_output implements \renderable, \templatable
                 // This produces lots of unnecessary code for URL.
                 $moduleobject['onclick'] = $mod->onclick;
             }
-
 
             // Now completion information for the individual course module.
             $completion = $mod->completion && $completioninfo && $completioninfo->is_enabled($mod) && $mod->available;
