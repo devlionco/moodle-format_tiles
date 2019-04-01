@@ -65,7 +65,6 @@ Feature: Teacher can hide course modules when subtiles being used in a visible s
     And "Test URL NV" activity should be hidden
 
     And I click on close button for tile "1"
-    And I wait "1" seconds
     And I log out
 
   @javascript

@@ -78,7 +78,6 @@ Feature:  In a section for Teacher, hidden activities are dimmed where subtiles 
     And activity in format tiles is dimmed "Test URL NV"
 
     And I click on close button for tile "1"
-    And I wait "1" seconds
     And I log out
 
   @javascript

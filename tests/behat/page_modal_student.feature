@@ -43,7 +43,6 @@ Feature: Student can open a page
     And I wait "1" seconds
 
     And I click on close button for tile "3"
-    And I wait "1" seconds
     And "Test page content" "text" should not be visible
     And I log out
 
@@ -61,8 +60,7 @@ Feature: Student can open a page
     And "Close" "button" should exist in the "Test page name" "dialogue"
     And I click on "Close" "button"
     And I wait until the page is ready
-
-    And I click on close button for tile "3"
     And I wait "1" seconds
+    And I click on close button for tile "3"
     And "Test page content" "text" should not be visible
     And I log out

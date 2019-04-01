@@ -63,7 +63,6 @@ Feature: Teacher can add a page to a course and open it with subtiles off
 #    Close tile etc
     And I wait "1" seconds
     And I click on close button for tile "1"
-    And I wait "1" seconds
     And "Test page 1" "text" should not be visible
     And "Test page 2" "text" should not be visible
     And I wait "1" seconds

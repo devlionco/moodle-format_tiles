@@ -69,7 +69,6 @@ Feature: Show/hide course sections in format_tiles
     And I am on "Course 1" course homepage
     And I expand section "3" for edit
     And I wait until the page is ready
-    And I wait "1" seconds
     And I add a "Forum" to section "3" and I fill the form with:
       | Forum name   | Test hidden forum 31 name        |
       | Description  | Test hidden forum 31 description |

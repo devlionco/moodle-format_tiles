@@ -113,7 +113,6 @@ Feature: PDFs can be set to open in modal windows
     And "Test PDF" "dialogue" should not be visible
     And I click on close button for tile "1"
     And I wait until the page is ready
-    And I wait "1" seconds
     And I log out
 
   # Now the same again for teacher with subtiles on

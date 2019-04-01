@@ -37,6 +37,7 @@ Feature: Teacher can allocate icons to tiles
     And I am on "Business Law" course homepage with editing mode on
     And I click on "#tileicon_1" "css_element"
     And I wait until the page is ready
+    And I wait "1" seconds
     And "Pick a new icon" "dialogue" should be visible
     And I click on ".tile-icon[data-original-title=\"Map\"]" "css_element" in the "#icon_picker_modal" "css_element"
     And I wait until the page is ready
@@ -85,5 +86,4 @@ Feature: Teacher can allocate icons to tiles
     And I click on tile "1"
     And I wait "1" seconds
     And I click on close button for tile "1"
-    And I wait "1" seconds
     And I log out
