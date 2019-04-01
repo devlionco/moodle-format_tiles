@@ -149,6 +149,63 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             return false;
         };
 
+        var resizeModal = function(modalRoot) {
+            modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
+
+            var MODAL_MARGIN = 70;
+
+            // If the modal contains a Moodle mediaplayer div, remove the max width css rule which Moodle applies.
+            // Otherwise video will be 400px max wide.
+            var mediaPlayer = $(Selector.moodleMediaPlayer);
+            mediaPlayer.find("div").each (function(index, child) {
+                $(child).css("max-width", "");
+            });
+            mediaPlayer.closest(Selector.cmModal).addClass(ClassNames.modalClearOnDismiss);
+
+            // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
+            // Do this for every iframe in the course module.
+            modalRoot.find("iframe").each(function (index, iframe) {
+
+                // Get the modal.
+                var modal;
+                // Boost calls the modal "modal dialog" so try this first.
+                modal = modalRoot.find(Selector.modalDialog);
+
+                // If no luck, try what Clean and Adaptable do instead.
+                if (modal.length == 0) {
+                    modal = modalRoot.find(Selector.modal);
+                }
+
+                // Now check and adjust the width of the modal.
+                var iframeWidth = Math.min($(iframe).width(), win.width());
+                if (iframeWidth > modal.width() - MODAL_MARGIN) {
+                    modal.animate(
+                        {"max-width": Math.max(iframeWidth + MODAL_MARGIN, modalMinWidth())},
+                        "fast"
+                    );
+                    modalRoot.find(Selector.modal).animate(
+                        {"max-width": Math.max(iframeWidth + MODAL_MARGIN, modalMinWidth())},
+                        "fast"
+                    );
+                }
+
+                // Then the height of the modal body.
+                var iframeHeight = Math.min($(iframe).height(), win.height());
+                var modalBody = modalRoot.find(Selector.modalBody);
+                if (iframeHeight > modalBody.height() - MODAL_MARGIN) {
+                    modalBody.animate({"min-height": Math.min(iframeHeight + MODAL_MARGIN, win.height())}, "fast");
+                }
+
+                // Align the iframe in the centre of the modal.
+                modalBody.css("text-align", "center");
+
+                // Add this class so we know to clear the modal on dismiss, not just hide.
+                // This is because it may contain a video which needs to be stopped.
+                // See also event below for what happens when this class is clicked.
+                modalRoot.addClass(ClassNames.modalClearOnDismiss);
+            });
+        };
+
         // TODO refactor these to avoid repetition?
         /**
          * Launch a Course activity Modal if we have it already, or make one and launch e.g. for "Page"
@@ -204,60 +261,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modal.setTitle(html);
                     }).fail(Notification.exception);
 
-                    modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
-
-                    var MODAL_MARGIN = 70;
-
-                    // If the modal contains a Moodle mediaplayer div, remove the max width css rule which Moodle applies.
-                    // Otherwise video will be 400px max wide.
-                    var mediaPlayer = $(Selector.moodleMediaPlayer);
-                    mediaPlayer.find("div").each (function(index, child) {
-                        $(child).css("max-width", "");
-                    });
-                    mediaPlayer.closest(Selector.cmModal).addClass(ClassNames.modalClearOnDismiss);
-
-                    // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
-                    // Do this for every iframe in the course module.
-                    modalRoot.find("iframe").each(function (index, iframe) {
-
-                        // Get the modal.
-                        var modal;
-                        // Boost calls the modal "modal dialog" so try this first.
-                        modal = modalRoot.find(Selector.modalDialog);
-
-                        // If no luck, try what Clean and Adaptable do instead.
-                        if (modal.length == 0) {
-                            modal = modalRoot.find(Selector.modal);
-                        }
-
-                        // Now check and adjust the width of the modal.
-                        var iframeWidth = Math.min($(iframe).width(), win.width());
-                        if (iframeWidth > modal.width() - MODAL_MARGIN) {
-                            modal.animate(
-                                {"max-width": Math.max(iframeWidth + MODAL_MARGIN, modalMinWidth())},
-                                "fast"
-                            );
-                            modalRoot.find(Selector.modal).animate(
-                                {"max-width": Math.max(iframeWidth + MODAL_MARGIN, modalMinWidth())},
-                                "fast"
-                            );
-                        }
-
-                        // Then the height of the modal body.
-                        var iframeHeight = Math.min($(iframe).height(), win.height());
-                        var modalBody = modalRoot.find(Selector.modalBody);
-                        if (iframeHeight > modalBody.height() - MODAL_MARGIN) {
-                            modalBody.animate({"min-height": Math.min(iframeHeight + MODAL_MARGIN, win.height())}, "fast");
-                        }
-
-                        // Align the iframe in the centre of the modal.
-                        modalBody.css("text-align", "center");
-
-                        // Add this class so we know to clear the modal on dismiss, not just hide.
-                        // This is because it may contain a video which needs to be stopped.
-                        // See also event below for what happens when this class is clicked.
-                        modalRoot.addClass(ClassNames.modalClearOnDismiss);
-                    });
+                    resizeModal(modalRoot);
 
                     return true;
                 }).fail(function(ex) {
