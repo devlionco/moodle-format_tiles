@@ -256,8 +256,8 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                         }
                     });
                 $(Selector.pageContent)
-                    .on("click", Selector.completeonevent + ", " + Selector.completeonevent, function (e) {
-                        // For items which are auto complete on view, but don't launch in a modal e.g. Quiz.
+                    .on("click", Selector.completeonevent + ", " + Selector.completeonview, function (e) {
+                        // For items which are auto complete on view or event, but don't launch in a modal e.g. Quiz.
                         // We just clear the UI storage so that when user returns to this page, new completion state shows.
                         var sectionNum = $(e.currentTarget).closest(Selector.section).attr('data-section');
                         require(["format_tiles/browser_storage"], function(storage) {
