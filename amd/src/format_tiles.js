@@ -858,9 +858,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                                     // Because we intecepted the normal event for the click, process auto completion.
                                     require(["format_tiles/completion"], function (completion) {
-                                        completion.markAsAutoCompleteInUI(clickedActivity);
+                                        completion.markAsAutoCompleteInUI(courseId, clickedActivity);
                                     });
-
                                     // Then open the pop up.
                                     var newWin = window.open(clickedActivity.attr("data-url"));
                                     try {
@@ -874,11 +873,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                         Notification.alert(
                                             stringStore.blockedpopuptitle,
                                             stringStore.blockedpopup + popUpLink,
-                                            stringStore.cancel,
-                                            function () {
-                                                window.location.reload();
-                                            },
-                                            null
+                                            stringStore.cancel
                                         );
                                     }
                                 }).fail(Notification.exception);

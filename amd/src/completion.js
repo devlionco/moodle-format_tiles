@@ -216,10 +216,10 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      * @param {object} activity the activity which contains the completion icon
      */
     var markAsAutoCompleteInUI = function(activity) {
+        var sectionNum = activity.closest(Selector.section).attr('data-section');
         if (activity.hasClass("completeonview")) {
             var completionIcon = activity.find('.completion-icon');
             var parent = completionIcon.closest(".completioncheckbox");
-            var sectionNum = activity.closest(Selector.section).attr('data-section');
             if (parent.attr('data-ismanual') === "0" && parent.attr('data-completionstate') === "0") {
                 completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
                 parent.attr('data-completionstate', 1);
@@ -267,7 +267,8 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
             });
         },
         // Allow this to be accessed from elsewhere e.g. format_tiles module
-        markAsAutoCompleteInUI: function(activity) {
+        markAsAutoCompleteInUI: function(courseIdInit, activity) {
+            courseId = courseIdInit;
             markAsAutoCompleteInUI(activity);
         }
     };
