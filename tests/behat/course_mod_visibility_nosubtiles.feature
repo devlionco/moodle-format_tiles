@@ -70,6 +70,7 @@ Feature: In a section for Teacher, hidden activities are dimmed
 
     And I click on close button for tile "1"
     And I wait until the page is ready
+    And I wait "1" seconds
     And I log out
 
   @javascript

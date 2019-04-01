@@ -46,7 +46,7 @@ Feature: Teacher can restrict course modules to groups
 
     And I am on "Course 1" course homepage with editing mode on
     And I wait until the page is ready
-    And I click on "#expand1" "css_element"
+    And I expand section "1" for edit
     And I wait until activity "Restricted page" exists in "subtiles" format
     And I follow "Restricted page"
     And I navigate to "Edit settings" in current page administration
@@ -61,7 +61,7 @@ Feature: Teacher can restrict course modules to groups
     And I wait until the page is ready
     And I press "Save and return to course"
     And I wait until the page is ready
-    And I click on "#expand1" "css_element"
+#    And I expand section "1" for edit
     And I add a "Label" to section "1"
     And I set the following fields to these values:
       | Label text | I am a restricted label |
@@ -94,6 +94,7 @@ Feature: Teacher can restrict course modules to groups
 
     And I click on close button for tile "1"
     And I wait until the page is ready
+    And I wait "1" seconds
     And I log out
     And the following "group members" exist:
       | user     | group |

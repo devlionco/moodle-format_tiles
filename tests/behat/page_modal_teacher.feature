@@ -34,9 +34,10 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     When I am on "Course 1" course homepage with editing mode on
     And format_tiles subtiles are off for course "Course 1"
     And I wait until the page is ready
-    And I click on "#expand1" "css_element"
+    And I expand section "1" for edit
     And I add a "page" to section "1"
     And I wait until the page is ready
+    And I wait "1" seconds
     And I set the following fields to these values:
       | Name                | Test page 2                                          |
       | Page content        | Test page 2 content                                  |
@@ -60,7 +61,9 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And I wait until the page is ready
 
 #    Close tile etc
+    And I wait "1" seconds
     And I click on close button for tile "1"
+    And I wait "1" seconds
     And "Test page 1" "text" should not be visible
     And "Test page 2" "text" should not be visible
     And I wait "1" seconds
@@ -72,7 +75,7 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     When I am on "Course 1" course homepage with editing mode on
     And format_tiles subtiles are on for course "Course 1"
     And I wait until the page is ready
-    And I click on "#expand1" "css_element"
+    And I expand section "1" for edit
     And I add a "page" to section "1"
     And I wait until the page is ready
     And I wait "2" seconds
@@ -95,5 +98,5 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And I click on "Close" "button"
     And I wait until the page is ready
 
-    And I click on close button for tile "1"
     And I wait "1" seconds
+    And I click on close button for tile "1"

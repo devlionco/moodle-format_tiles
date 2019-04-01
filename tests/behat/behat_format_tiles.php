@@ -188,7 +188,22 @@ class behat_format_tiles extends behat_base {
 
         // Click the tile.
         $this->execute("behat_general::i_click_on", array("//li[@id=" . $tileid . "]", "xpath_element"));
-        $this->getSession()->wait(1000); // Important to wait here as page is scrolling and might click wrong thing after.
+        $this->getSession()->wait(1500); // Important to wait here as page is scrolling and might click wrong thing after.
+    }
+
+    /**
+     * I expand section for edit
+     *
+     * @Given /^I expand section "(?P<tilenumber>\d+)" for edit$/
+     * @param string $tileumber
+     * @throws Exception
+     */
+    public function i_expand_section_for_edit($tileumber) {
+        $tileid = behat_context_helper::escape("expand" . $tileumber);
+
+        // Click the tile.
+        $this->execute("behat_general::i_click_on", array("//a[@id=" . $tileid . "]", "xpath_element"));
+        $this->getSession()->wait(1500); // Important to wait here as section is expanding with transition.
     }
 
     /**
@@ -204,6 +219,7 @@ class behat_format_tiles extends behat_base {
         // Click the button.
         $this->execute("behat_general::i_click_on", array("//span[@id=" . $tileid . "]", "xpath_element"));
         $this->execute('behat_general::wait_until_the_page_is_ready');
+        $this->getSession()->wait(1000);
     }
     // @codingStandardsIgnoreStart.
     /**

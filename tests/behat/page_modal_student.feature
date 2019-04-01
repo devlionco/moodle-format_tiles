@@ -40,6 +40,7 @@ Feature: Student can open a page
     And "Close" "button" should exist in the "Test page name" "dialogue"
     And I click on "Close" "button"
     And I wait until the page is ready
+    And I wait "1" seconds
 
     And I click on close button for tile "3"
     And I wait "1" seconds

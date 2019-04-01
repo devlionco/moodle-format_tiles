@@ -34,7 +34,8 @@ Feature: Show/hide course sections in format_tiles
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I wait until the page is ready
-    And I click on "#expand1" "css_element"
+    And I expand section "1" for edit
+    And I wait until the page is ready
     And I add a "Forum" to section "1" and I fill the form with:
       | Forum name   | Test hidden forum 11 name        |
       | Description  | Test hidden forum 11 description |
@@ -49,7 +50,8 @@ Feature: Show/hide course sections in format_tiles
 
     And I am on "Course 1" course homepage
     And I wait until the page is ready
-    And I click on "#expand2" "css_element"
+    And I expand section "2" for edit
+    And I wait until the page is ready
     And I add a "Forum" to section "2" and I fill the form with:
       | Forum name   | Test hidden forum 21 name        |
       | Description  | Test hidden forum 21 description |
@@ -65,12 +67,15 @@ Feature: Show/hide course sections in format_tiles
     And activity in format tiles is dimmed "Test hidden forum 22 name"
 
     And I am on "Course 1" course homepage
-    And I click on "#expand3" "css_element"
+    And I expand section "3" for edit
+    And I wait until the page is ready
+    And I wait "1" seconds
     And I add a "Forum" to section "3" and I fill the form with:
       | Forum name   | Test hidden forum 31 name        |
       | Description  | Test hidden forum 31 description |
       | Availability | Hide from students               |
     And I wait until the page is ready
+    And I wait "1" seconds
     And activity in format tiles is dimmed "Test hidden forum 31 name"
 
     And I add a "Forum" to section "3" and I fill the form with:
@@ -78,6 +83,7 @@ Feature: Show/hide course sections in format_tiles
       | Description  | Test visible forum 32 description |
       | Availability | Show on course page              |
     And I wait until the page is ready
+    And I wait "1" seconds
     And activity in format tiles is not dimmed "Test hidden forum 31 name"
 
     And I am on "Course 1" course homepage

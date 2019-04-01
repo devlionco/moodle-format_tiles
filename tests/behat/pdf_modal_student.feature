@@ -34,7 +34,7 @@ Feature: PDFs can be set to open in modal windows
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I wait until the page is ready
-    And I click on "#expand1" "css_element"
+    And I expand section "1" for edit
     And I add a "File" to section "1"
     And I wait until the page is ready
     And I wait "2" seconds
@@ -113,6 +113,7 @@ Feature: PDFs can be set to open in modal windows
     And "Test PDF" "dialogue" should not be visible
     And I click on close button for tile "1"
     And I wait until the page is ready
+    And I wait "1" seconds
     And I log out
 
   # Now the same again for teacher with subtiles on
