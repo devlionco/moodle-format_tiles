@@ -266,7 +266,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     });
             });
         },
-        // Allow this to be accessed from elsewhere e.g. format_tiles module
+        // Allow this to be accessed from elsewhere e.g. format_tiles module.
         markAsAutoCompleteInUI: function(courseIdInit, activity) {
             courseId = courseIdInit;
             markAsAutoCompleteInUI(activity);
