@@ -1317,6 +1317,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles.editing .subtiles li.activity.label {
     border: 1px solid rgb(231, 231, 231);
+    position: relative;
 }
 
 .format-tiles li.activity.subtile .activitytitle {
@@ -1370,6 +1371,11 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .subtiles .completioncheckbox {
     padding: 3px;
     display: inline-block;
+}
+.format-tiles.editing .subtiles .completioncheckbox {
+    position: absolute;
+    right: 1px;
+    top: 8px;
 }
 .format-tiles .nosubtiles .completioncheckbox {
     width: 30px;
@@ -1454,12 +1460,14 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .section.subtiles .activity .editing_move {
     position: relative;
 }
-.format-tiles .section.subtiles .activity .actions.editactions {
+.format-tiles .section.subtiles .activity .actions {
     position: absolute;
     top: 1px;
+}
+.format-tiles.editing .section.subtiles .activity .actions {
     left: 35px;
 }
-.format-tiles .section.subtiles .activity.label .actions.editactions {
+.format-tiles .section.subtiles .activity.label .actions {
     top: 0;
     right: 0;
     left: inherit;
@@ -1543,6 +1551,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .course-content ul.section.nosubtiles,
 .format-tiles .course-content ul.section.nosubtiles .activity {
     position: relative;
+}
+.format-tiles .course-content ul.section.nosubtiles li.activity {
+    width: 100%;
 }
 .format-tiles .course-content ul.section.nosubtiles .actions {
     right: 1.5em;

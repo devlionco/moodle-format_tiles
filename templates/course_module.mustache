@@ -213,13 +213,12 @@
                 </span>
             {{/isediting}}
         </div>
-
-        {{#isediting}}
-            <span class="actions editactions">{{{cmeditmenu}}}</span>
-        {{/isediting}}
     </div>
 
     <span class="actions">
+         {{#isediting}}
+             {{{cmeditmenu}}}
+         {{/isediting}}
         {{#completionInUseForCm}}
         {{! completion is enabled for this course module}}
         {{! we only want to display a completion icon if we are using subtiles but this item is not a label,}}

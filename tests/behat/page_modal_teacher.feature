@@ -37,7 +37,7 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And I expand section "1" for edit
     And I add a "page" to section "1"
     And I wait until the page is ready
-    And I wait "1" seconds
+    And I wait "2" seconds
     And I set the following fields to these values:
       | Name                | Test page 2                                          |
       | Page content        | Test page 2 content                                  |

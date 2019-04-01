@@ -125,6 +125,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     } else {
                         // Otherwise (e.g for PDF) we don't need 100% width.
                         modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
+                        // We do modal-dialog too since Moove theme uses it.
+                        modalRoot.find(Selector.modalDialog).animate({"max-width": modalMinWidth()}, "fast");
                     }
 
                 }).fail(Notification.exception);
