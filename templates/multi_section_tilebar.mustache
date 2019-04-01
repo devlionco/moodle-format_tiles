@@ -64,18 +64,16 @@
                 </span>
                 <div class="icon20 pull-right" id="hiddeneye{{tileid}}" title="{{#str}}hidden, format_tiles{{/str}}"></div>
                 {{#is_expanded}}
-                    <a class="expand-section pull-right"
-                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand=-1#section-{{tileid}}">
-                       <i class="collapse-section icon fa fa-compress fa-fw" title="{{#str}}collapse, format_tiles{{/str}}" data-section="{{tileid}}" id="collapse{{tileid}}"></i>
+                    <a class="expand-section pull-right" data-toggle="tooltip" data-placement="right" data-original-title="{{#str}}collapse, format_tiles{{/str}}"
+                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand=-1#section-{{tileid}}" id="collapse{{tileid}}">
+                        {{#pix}}collapse, format_tiles, {{#str}}collapse, format_tiles{{/str}}{{/pix}}
                       </span>
                     </a>
                 {{/is_expanded}}
                 {{^is_expanded}}
-                    <a class="expand-section pull-right"
-                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand={{tileid}}#section-{{tileid}}">
-                      <span class="icon20" id="expand{{tileid}}">
-                          {{#pix}}e/resize, core, {{#str}}expand, format_tiles{{/str}}{{/pix}}
-                      </span>
+                    <a class="expand-section pull-right" data-toggle="tooltip" data-placement="right" data-original-title="{{#str}}expand, format_tiles{{/str}}"
+                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand={{tileid}}#section-{{tileid}}" id="expand{{tileid}}">
+                      {{#pix}}expand, format_tiles, {{#str}}expand, format_tiles{{/str}}{{/pix}}
                     </a>
                 {{/is_expanded}}
             {{/isediting}}
