@@ -143,8 +143,10 @@
 - Adaptable theme - Improve navbar handling
 - Completion icons - fix issue #9 icons and strings to be displayed re quiz completion depending on grade (pass/fail)
 - Editing - expanding all tiles - remember user choice for this session and keep last edited section expanded
-- Indentation improved for labels / files
 - Internet Explorer- disable JS navigation and modals if user is using Internet Explorer.  Do not show animated nav controls.
+- Layout - Indentation improved for labels / files
+- Layout - Support indented activities (move left/right) in non subtiles mode
+- Layout - Two sub-tiles per row not one on devices with width < 680px (was 600px)
 - Loading tile icon appears when content loading
 - Local storage - clear when teacher edits course settings, or  if item with auto complete on grade is viewed
 - Minimise height of grid spacer tiles
@@ -152,5 +154,7 @@
 - Modals - improve alignment of course module modal control buttons
 - Modals - labels with iframes in modals - adapt modal height and width to iframe
 - Modals - Moodle 3.3 modal header colour
-- Modals - resize modal for showing embedded HTML files uploaded by teacher
+- Modals - resize modal improvements (embedded HTML file resources / Page embedded iframes (e.g. YouTube)/ Moodle video filter)
+- Modals - when dismiss modal, video stops playing automatically
 - Navbar overlay height - improvements including account for difference between firefox and chrome
+- URL activity - remove intermediate screen on launch by student (go directly to URL but log click with AJAX)
