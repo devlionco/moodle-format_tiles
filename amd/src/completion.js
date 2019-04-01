@@ -103,7 +103,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     var changeProgressIndicators = function(sectionNum, tileProgressIndicator, progressChange) {
         // TODO create a web service to get current value from server so we know it's correct.
         // This can also handle updating the competion status instead of core below.
-        if (tileProgressIndicator.attr(dataKeys.numberComplete) == 0 && progressChange < 0) {
+        if (tileProgressIndicator.attr(dataKeys.numberComplete) === 0 && progressChange < 0) {
             // If we are already at zero, do not reduce.  May happen rarely if user presses repeatedly.
             // Will not cause a long term issue as will be resolved when user refreshes page.
             return;

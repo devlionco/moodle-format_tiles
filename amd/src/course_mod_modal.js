@@ -172,7 +172,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 modal = modalRoot.find(Selector.modalDialog);
 
                 // If no luck, try what Clean and Adaptable do instead.
-                if (modal.length == 0) {
+                if (modal.length === 0) {
                     modal = modalRoot.find(Selector.modal);
                 }
 
