@@ -151,10 +151,9 @@ li#section-0.section.main.clearfix {
     /*z-index needs to be on top of pagesechead*/
 }
 
-.format-tiles .course-content .current {
+.format-tiles #page .course-content  ul li.section.main.current {
     background-color: inherit;
 }
-
 .format-tiles ul.tiles .tile_bar {
     width: 100%;
     min-height: 65px;
@@ -1370,6 +1369,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 
 .format-tiles .subtiles .completioncheckbox {
     padding: 3px;
+    display: inline-block;
 }
 .format-tiles .nosubtiles .completioncheckbox {
     width: 30px;
@@ -1642,4 +1642,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .loading-subtile {
     width: 200px;
     padding: 90px;
+}
+/*Adaptable theme buttons*/
+.format-tiles .btn:hover,
+.format-tiles .btn:active,
+.format-tiles .btn.progresshelp {
+    background: inherit;
 }
