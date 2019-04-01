@@ -100,7 +100,7 @@
         <li class="subtile spacer" aria-hidden="true"></li>
     {{/isediting}}
 {{/hasSpacersBefore}}
-<li class="activity{{#useSubtiles}}{{^is_label}} subtile{{/is_label}}{{/useSubtiles}} {{#is_label}}fullwidth{{/is_label}} {{modname}} modtype_{{modname}} {{modResourceType}}{{^clickable}} unclickable {{/clickable}} {{extraclasses}}"
+<li class="activity{{#useSubtiles}}{{^is_label}} subtile{{/is_label}}{{/useSubtiles}} {{#is_label}}fullwidth{{/is_label}} {{modname}} modtype_{{modname}} {{modResourceType}}{{^clickable}} unclickable {{/clickable}} launch-type-{{launchtype}} {{extraclasses}}"
     id="module-{{cmid}}" data-modtype="{{modname}}{{#modResourceType}}_{{{modResourceType}}}{{/modResourceType}}"
     tabindex="3"
     data-cmid="{{cmid}}"

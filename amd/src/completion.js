@@ -38,10 +38,11 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
     };
     var Selector = {
         launchModuleModal: '[data-action="launch-tiles-module-modal"]',
+        launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
         pageContent: "#page-content",
         resourceModule: '.activity.resource',
-        completeonview: ".completeonview",
         completeonevent: ".completeonevent",
+        completeonview: ".completeonview",
         activity: "li.activity",
         section: "li.section.main",
         togglecompletion: "form.togglecompletion"
@@ -211,22 +212,26 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
      * - recalculate the % complete for this tile and overall.
      * We do not need to notify the server that the item is complete.
      * This is because that is already covered when course_mod_modal calls log_mod_view().
-
-     * @param {object} completionIcon the icon
-     * @param {object} parent the icon's parent
+     * I.e. we just update the UI here because the data is handled elsewhere.
+     * @param {object} activity the activity which contains the completion icon
      */
-    var markAsAutoComplete = function(completionIcon, parent) {
-        if (parent.attr('data-ismanual') === "0" && parent.attr('data-completionstate') === "0") {
-            var sectionNum = completionIcon.closest(Selector.togglecompletion).attr('data-section');
-            require(["format_tiles/browser_storage"], function(storage) {
-                storage.storeCourseContent(courseId, sectionNum, "");
-            });
-            completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
-            parent.attr('data-completionstate', 1);
-            parent.attr('data-original-title', strings.completeauto);
-            parent.tooltip();
-            changeProgressIndicators(sectionNum, $("#tileprogress-" + sectionNum), 1);
+    var markAsAutoCompleteInUI = function(activity) {
+        if (activity.hasClass("completeonview")) {
+            var completionIcon = activity.find('.completion-icon');
+            var parent = completionIcon.closest(".completioncheckbox");
+            var sectionNum = activity.closest(Selector.section).attr('data-section');
+            if (parent.attr('data-ismanual') === "0" && parent.attr('data-completionstate') === "0") {
+                completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
+                parent.attr('data-completionstate', 1);
+                parent.attr('data-original-title', strings.completeauto);
+                parent.tooltip();
+                changeProgressIndicators(sectionNum, $("#tileprogress-" + sectionNum), 1);
+            }
         }
+        // Even if it is not a "complete on view" activity, clear UI storage so that when user returns it is correct.
+        require(["format_tiles/browser_storage"], function (storage) {
+            storage.storeCourseContent(courseId, sectionNum, "");
+        });
     };
 
     return {
@@ -244,36 +249,26 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                 });
 
                 $(Selector.pageContent)
-                    .on("click", Selector.launchModuleModal, function (e) {
-                        // We do this for all resources e.g. Word docs, PDFs as soon as the user clicks them.
-                        var completionIcon = $(e.currentTarget).closest(Selector.activity).find('.completion-icon');
-                        var parent = completionIcon.closest(".completioncheckbox");
-                        markAsAutoComplete(completionIcon, parent);
-                    });
-                $(Selector.pageContent)
-                    .on("click", Selector.completeonview + ", " + Selector.completeonevent, function (e) {
-                        // For items which are auto complete on view, but don't launch in a modal e.g. Quiz.
-                        var clickedItem = $(e.currentTarget);
-                        if (
-                            clickedItem.attr("data-action") === undefined
-                            || clickedItem.attr("data-action") !== "launch-tiles-module-modal"
-                        ) {
-                            var parent = clickedItem.find(".completioncheckbox");
-                            if (clickedItem.hasClass(Selector.completeonview)) {
-                                markAsAutoComplete(parent.find(".completion-icon"), parent);
-                            } else {
-                                // Just clear section storage so that, if user gets a grade, content is refreshed when they return.
-                                require(["format_tiles/browser_storage"], function(storage) {
-                                    storage.storeCourseContent(
-                                        courseId,
-                                        clickedItem.closest(Selector.section).attr('data-section'),
-                                        ""
-                                    );
-                                });
-                            }
+                    .on("click", Selector.launchModuleModal + ", " + Selector.launchResourceModal, function (e) {
+                        var clickedActivity = $(e.currentTarget).closest(Selector.activity);
+                        if (clickedActivity.hasClass("completeonview")) {
+                            markAsAutoCompleteInUI(clickedActivity);
                         }
                     });
+                $(Selector.pageContent)
+                    .on("click", Selector.completeonevent + ", " + Selector.completeonevent, function (e) {
+                        // For items which are auto complete on view, but don't launch in a modal e.g. Quiz.
+                        // We just clear the UI storage so that when user returns to this page, new completion state shows.
+                        var sectionNum = $(e.currentTarget).closest(Selector.section).attr('data-section');
+                        require(["format_tiles/browser_storage"], function(storage) {
+                            storage.storeCourseContent(courseId, sectionNum, "");
+                        });
+                    });
             });
+        },
+        // Allow this to be accessed from elsewhere e.g. format_tiles module
+        markAsAutoCompleteInUI: function(activity) {
+            markAsAutoCompleteInUI(activity);
         }
     };
 });

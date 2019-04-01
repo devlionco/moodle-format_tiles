@@ -68,7 +68,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             SECTION_ZERO: "#section-0",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
             HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap"],
-            URLACTIVITYLINK: ".activity.modtype_url a"
+            URLACTIVITYPOPUPLINK: ".activity.modtype_url.urlpopup a"
             // We try several different selectors for header bar as it varies between theme.
             // (Boost based, clean based, essential etc).
         };
@@ -843,7 +843,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         });
 
                         // If a URL activity is clicked and it's been set to open in "Pop up" then launch a browser pop up.
-                        pageContent.on(Event.CLICK, Selector.URLACTIVITYLINK, function(e) {
+                        pageContent.on(Event.CLICK, Selector.URLACTIVITYPOPUPLINK, function(e) {
                             var clickedActivity = $(e.currentTarget).closest(Selector.ACTIVITY);
                             if (clickedActivity.attr("data-url") !== undefined) {
                                 e.stopPropagation();
@@ -854,8 +854,34 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                         courseid: courseId,
                                         cmid: clickedActivity.attr("data-cmid")
                                     }
-                                }])[0].fail(Notification.exception);
-                                window.open(clickedActivity.attr("data-url"));
+                                }])[0].done(function () {
+
+                                    // Because we intecepted the normal event for the click, process auto completion.
+                                    require(["format_tiles/completion"], function (completion) {
+                                        completion.markAsAutoCompleteInUI(clickedActivity);
+                                    });
+
+                                    // Then open the pop up.
+                                    var newWin = window.open(clickedActivity.attr("data-url"));
+                                    try {
+                                        newWin.focus();
+                                    } catch (e) {
+                                        // Blocked pop-up?
+                                        var popUpLink = '<div>'
+                                            + '<a href="' + clickedActivity.attr("data-url") + '">'
+                                            + clickedActivity.attr("data-url")
+                                            + '</a></div>';
+                                        Notification.alert(
+                                            stringStore.blockedpopuptitle,
+                                            stringStore.blockedpopup + popUpLink,
+                                            stringStore.cancel,
+                                            function () {
+                                                window.location.reload();
+                                            },
+                                            null
+                                        );
+                                    }
+                                }).fail(Notification.exception);
                             }
                         });
                     }
@@ -921,7 +947,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         {key: "noconnectionerror", component: "format_tiles"},
                         {key: "show"},
                         {key: "hide"},
-                        {key: "other", component: "format_tiles"}
+                        {key: "other", component: "format_tiles"},
+                        {key: "blockedpopuptitle", component: "format_tiles"},
+                        {key: "blockedpopup", component: "format_tiles"}
                     ]).done(function (s) {
                         stringStore = {
                             "sectionerrortitle": s[0],
@@ -931,7 +959,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             "noconnectionerror": s[4],
                             "show": s[5],
                             "hide": s[6],
-                            "other": s[7]
+                            "other": s[7],
+                            "blockedpopuptitle": s[8],
+                            "blockedpopup": s[9]
                         };
                     });
 
