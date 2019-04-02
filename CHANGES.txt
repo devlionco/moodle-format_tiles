@@ -138,7 +138,7 @@
 - Iframe e.g. Youtube video embedded in page - ensure width no larger than window width
 - Correct header overlay height
 
-3.3.6 (tba)
+3.3.6 (2019040200)
 ==================
 - Adaptable theme - Improve navbar handling and completion icon appearance
 - Completion icons - fix issue #9 icons and strings to be displayed re quiz completion depending on grade (pass/fail)
