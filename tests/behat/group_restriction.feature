@@ -64,6 +64,7 @@ Feature: Teacher can restrict course modules to groups
     And I wait until the page is ready
 #    And I expand section "1" for edit
     And I add a "Label" to section "1"
+    And I wait "2" seconds
     And I set the following fields to these values:
       | Label text | I am a restricted label |
     And I expand all fieldsets

@@ -38,7 +38,7 @@ Feature: HTML file can be set to open in modal windows with subtiles off
     And I expand section "1" for edit
     And I add a "File" to section "1"
     And I wait until the page is ready
-    And I wait "1" seconds
+    And I wait "2" seconds
     And I set the following fields to these values:
       | Name        | Test HTML file         |
       | Description | File description       |

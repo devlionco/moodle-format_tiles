@@ -204,7 +204,7 @@ class behat_format_tiles extends behat_base {
 
         // Click the tile.
         $this->execute("behat_general::i_click_on", array("//a[@id=" . $tileid . "]", "xpath_element"));
-        $this->getSession()->wait(1500); // Important to wait here as section is expanding with transition.
+        $this->getSession()->wait(2000); // Important to wait here as section is expanding with transition.
         $this->wait_for_pending_js(); // Wait for AJAX request to complete.
     }
 
