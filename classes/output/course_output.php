@@ -1125,6 +1125,7 @@ class course_output implements \renderable, \templatable
      * Should a given section be shown as expanded or not?
      * Only editors see sections expanded like this - students use AJAX expanding.
      * @param int $sectionid the id of the section (id not section number)
+     * @param bool $isediting whether the user is editing.
      * @return bool whether it should be shown as expanded.
      * @throws \coding_exception
      */
