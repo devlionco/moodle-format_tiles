@@ -54,10 +54,10 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
     // Modal windows for course modules.
-    $allowedmodtypes = ['page'];
+    $allowedmodtypes = ['page' => 1]; // Number is default to on or off.
     $allmodtypes = get_module_types_names();
     $options = [];
-    foreach ($allowedmodtypes as $modtype) {
+    foreach (array_keys($allowedmodtypes) as $modtype) {
         if (isset($allmodtypes[$modtype])) {
             $options[$modtype] = $allmodtypes[$modtype];
         }
@@ -69,13 +69,17 @@ if ($ADMIN->fulltree) {
         $name,
         $title,
         $description,
-        array('page' => 1),
+        $allowedmodtypes,
         $options
     );
     $settings->add($setting);
 
     // Modal windows for resources.
-    $allowedresourcetypes = array('pdf' => 'PDF', 'html' => 'HTML');
+    $allowedresourcetypes = array(
+        'pdf' => get_string('displaytitle_mod_pdf', 'format_tiles') . " (pdf)",
+        'url' => get_string('url'),
+        'html' => get_string('displaytitle_mod_html', 'format_tiles') . " (HTML " . get_string('file') . ")"
+    );
     $name = 'format_tiles/modalresources';
     $title = get_string('modalresources', 'format_tiles');
     $description = get_string('modalresources_desc', 'format_tiles');
@@ -83,7 +87,7 @@ if ($ADMIN->fulltree) {
         $name,
         $title,
         $description,
-        array('pdf' => 1, 'html' => 1),
+        array('pdf' => 1, 'url' => 1, 'html' => 1),
         $allowedresourcetypes
     );
     $settings->add($setting);

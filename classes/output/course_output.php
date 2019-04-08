@@ -813,6 +813,10 @@ class course_output implements \renderable, \templatable
                 if ($url->display == RESOURCELIB_DISPLAY_POPUP) {
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
                     $moduleobject['extraclasses'] .= ' urlpopup';
+                } else if ($url->display == RESOURCELIB_DISPLAY_EMBED
+                    && array_search('url', $this->usemodalsforcoursemodules['resources']) > -1) {
+                    $moduleobject['pluginfileUrl'] = $url->externalurl;
+                    $moduleobject['launchtype'] = 'url-modal';
                 } else if ($url->display == RESOURCELIB_DISPLAY_AUTO) {
                     require_once("$CFG->dirroot/mod/url/locallib.php");
                     // TODO modify this later to treat embed as launch modal.

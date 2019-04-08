@@ -43,8 +43,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         var win = $(window);
 
         var Selector = {
-            launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
-            launchModuleModal: '[data-action="launch-tiles-module-modal"]',
             toggleCompletion: ".togglecompletion",
             modal: ".modal",
             modalDialog: ".modal-dialog",
@@ -55,7 +53,14 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             cmModalClose: ".embed_cm_modal .close",
             cmModal: ".embed_cm_modal",
             modalClearOnDismissButton: ".clear-on-dismiss button.close",
-            moodleMediaPlayer: ".mediaplugin_videojs"
+            moodleMediaPlayer: ".mediaplugin_videojs",
+            urlModalLoadWarning: "#embed-url-error-msg-"
+        };
+
+        var DataActions = {
+            launchResourceModal: "launch-tiles-resource-modal",
+            launchModuleModal: "launch-tiles-module-modal",
+            launchUrlModal: "launch-tiles-url-modal"
         };
 
         var ClassNames = {
@@ -129,6 +134,80 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modalRoot.find(Selector.modalDialog).animate({"max-width": modalMinWidth()}, "fast");
                     }
 
+                }).fail(Notification.exception);
+                // Render the modal header / title and set it to the page.
+                if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
+                    var inverseCompletionState = parseInt(
+                        $(Selector.completionState + cmid).attr("value")
+                    );
+                    templateData.completionInUseForCm = 1;
+                    templateData.completionstate = 1 - inverseCompletionState;
+                    templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
+                    templateData.completionstateInverse = inverseCompletionState;
+                    templateData.completionIsManual = clickedCmObject
+                        .find(Selector.toggleCompletion).attr("data-ismanual");
+                }
+                Templates.render("format_tiles/embed_module_modal_header", templateData).done(function (html) {
+                    modal.setTitle(html);
+                }).fail(Notification.exception);
+
+                return true;
+            });
+            return false;
+        };
+
+        /**
+         * Launch an embedded URL Modal (URL displays in iframe) if we have it already, or make one and launch.
+         * This is only used if the URL activity is set to Display: embed.  The reason is that most websites disallow iframes.
+         * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options.
+         * @param {object} clickedCmObject the course module object which was clicked
+         * @returns {boolean} if successful or not
+         */
+        var launchEmbeddedUrlModal = function (clickedCmObject) {
+            var cmid = clickedCmObject.attr("data-cmid");
+            modalFactory.create({
+                type: modalFactory.types.DEFAULT,
+                title: clickedCmObject.attr("data-title"),
+                body: loadingIconHtml
+            }).done(function (modal) {
+                modalStore[cmid] = modal;
+                modal.setLarge();
+                modal.show();
+                var modalRoot = $(modal.root);
+                modalRoot.attr("id", "embed_mod_modal_" + cmid);
+                modalRoot.attr("data-cmid", cmid);
+                modalRoot.addClass("embed_cm_modal");
+
+                // Render the modal body and set it to the page.
+                // First a blank template data object.
+
+                var modalWidth = Math.round(win.width() * 0.9);
+                var modalHeight = Math.round(win.height() * 0.9);
+                var templateData = {
+                    id: cmid,
+                    pluginfileUrl: clickedCmObject.attr("data-url"),
+                    objectType: "text/html",
+                    width: modalWidth - 30,
+                    height: modalHeight - 30,
+                    cmid: cmid,
+                    tileid: clickedCmObject.closest(Selector.sectionMain).attr("data-section"),
+                    isediting: 0,
+                    sesskey: config.sesskey,
+                    modtitle: clickedCmObject.attr("data-title"),
+                    config: {wwwroot: config.wwwroot},
+                    showDownload: 0,
+                    showNewWindow: 1,
+                    completionInUseForCm: 0
+                };
+
+                Templates.render("format_tiles/embed_url_modal_body", templateData).done(function (html) {
+                    modal.setBody(html);
+                    modalRoot.find(Selector.modalBody).animate({"min-height": modalHeight}, "fast");
+                    modalRoot.find(Selector.modal).animate({"max-width": modalWidth}, "fast");
+                    modalRoot.find(Selector.modalDialog).animate({"max-width": modalWidth}, "fast");
+                    modalRoot.find(Selector.modalBody).animate({"max-width": modalWidth}, "fast");
+                    modalRoot.addClass(ClassNames.modalClearOnDismiss);
+                    modalRoot.find(Selector.modalBody).addClass("text-center");
                 }).fail(Notification.exception);
                 // Render the modal header / title and set it to the page.
                 if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
@@ -281,9 +360,14 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         return {
             init: function (courseId) {
                 $(document).ready(function () {
-                    $(Selector.pageContent).on("click", Selector.launchResourceModal, function (e) {
+
+                    var modalSelectors = Object.keys(DataActions).reduce(function (str, key) {
+                        return str + ', [data-action="' + DataActions[key] + '"]';
+                    });
+                    $(Selector.pageContent).on("click", modalSelectors, function (e) {
                         e.preventDefault();
-                        var clickedCmObject = $(e.currentTarget).closest("li.activity");
+                        var tgt = $(e.currentTarget);
+                        var clickedCmObject = tgt.closest("li.activity");
 
                         // If we already have this modal on the page, launch it.
                         var existingModal = modalStore[clickedCmObject.attr("data-cmid")];
@@ -291,7 +375,19 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                             existingModal.show();
                         } else {
                             // We don't already have it, so make it.
-                            launchCourseResourceModal(clickedCmObject);
+                            switch (tgt.attr("data-action")) {
+                                case DataActions.launchModuleModal:
+                                    launchCourseActivityModal(clickedCmObject, courseId);
+                                    break;
+                                case DataActions.launchResourceModal:
+                                    launchCourseResourceModal(clickedCmObject, courseId);
+                                    break;
+                                case DataActions.launchUrlModal:
+                                    launchEmbeddedUrlModal(clickedCmObject, courseId);
+                                    break;
+                                default:
+                                    throw new Error("Unknown modal type " + tgt.attr("data-action"));
+                            }
                             // Log the fact we viewed it (only do this once not every time the modal launches).
                             ajax.call([{
                                 methodname: "format_tiles_log_mod_view", args: {
@@ -300,26 +396,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                                 }
                                 }])[0].fail(Notification.exception);
                         }
-                    });
-
-                    $(Selector.pageContent).on("click", Selector.launchModuleModal, function (e) {
-                        e.preventDefault();
-                        var clickedCmObject = $(e.currentTarget).closest("li.activity");
-                        // If we already have this modal on the page, launch it.
-                        var existingModal = modalStore[clickedCmObject.attr("data-cmid")];
-                        if (typeof existingModal === "object") {
-                            existingModal.show();
-                        } else {
-                            // We don't already have it, so make it.
-                            launchCourseActivityModal(clickedCmObject, courseId);
-                            ajax.call([{
-                                methodname: "format_tiles_log_mod_view", args: {
-                                    courseid: courseId,
-                                    cmid: clickedCmObject.attr("data-cmid")
-                                }
-                                }])[0].fail(Notification.exception);
-                        }
-                        return false;
                     });
 
                     // Some modals need to be emptied when dismissed (e.g. contain a video which needs to be stopped).
