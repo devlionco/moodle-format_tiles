@@ -159,7 +159,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             // If the modal contains a Moodle mediaplayer div, remove the max width css rule which Moodle applies.
             // Otherwise video will be 400px max wide.
             var mediaPlayer = $(Selector.moodleMediaPlayer);
-            mediaPlayer.find("div").each (function(index, child) {
+            mediaPlayer.find("div").each(function(index, child) {
                 $(child).css("max-width", "");
             });
             mediaPlayer.closest(Selector.cmModal).addClass(ClassNames.modalClearOnDismiss);

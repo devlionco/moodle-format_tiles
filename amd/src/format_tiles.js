@@ -101,8 +101,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         };
 
         /**
-         * Becausse headeroverlay may not exist, we want to avoid trying to fade if not there.
-         * @param fadeIn
+         * Because headeroverlay may not exist, we want to avoid trying to fade if not there.
+         * @param {boolean} fadeIn whether to fade in (fade out otherwise).
          * @returns {boolean}
          */
         var headerOverlayFadeInOut = function(fadeIn) {
@@ -114,6 +114,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 } else {
                     headerOverlay.fadeOut(300);
                 }
+                return true;
             }
         };
 

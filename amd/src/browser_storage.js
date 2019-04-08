@@ -170,7 +170,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      */
     var storeCourseContent = function (courseId, sectionId, html) {
         if (sectionId === undefined || courseId === undefined) {
-            throw "Missing section id";
+            throw new Error("Missing section id");
         }
         try {
             if (html !== undefined && html !== ""
