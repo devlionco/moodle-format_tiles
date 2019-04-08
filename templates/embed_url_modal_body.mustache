@@ -16,15 +16,12 @@
 }}
 
 {{!
-    @template format_tiles/embed_file_modal_body
+    @template format_tiles/embed_url_modal_body
 
     Icon picker single icon template.
 
-    The purpose of this template is to render a modal window which can be used
-    to display an embedded file (i.e. a PDF)
-
-    The modal is rendered without the <object> (PDF) in its body, as this will be added
-    by JS when the user clicks to view the item (whn the embed_file_object template is used)
+    The purpose of this template is to render a modal window body containing an iframe which can be used
+    to display an embedded website for a URL activity.
 
     Classes required for JS:
     * none
@@ -33,19 +30,17 @@
     * none
 
     Context variables required for this template:
-        * id - id of the course module
-        * objectType - the object type for the <object> tag's type field e.g. 'text/html'
-        * pluginfileUrl - the url to get the resource directly e.g. "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF"
+        * cmid - id of the course module
+        * pluginfileUrl - the url to get the resource directly"
         * width - width of the item
         * height - height of the item
 
     Example context (json):
     {
-        "id": 123,
-        "objectType": "application/pdf",
-        "pluginfileUrl": "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF",
-        "width": 800,
-        "height": 600
+        "cmid": 123,
+        "pluginfileUrl": "https://www.moodle.org",
+        "width": 1360,
+        "height": 765
     }
 }}
 <div class="embed-url-warn" id="embed-url-warn-{{cmid}}">{{#str}}embeddedurlerror, format_tiles{{/str}}</div>
