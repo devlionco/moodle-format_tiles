@@ -66,7 +66,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             HIDE_SEC0_BTN: "#buttonhidesec0",
             SECTION_ZERO: "#section-0",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
-            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap"],
+            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap",
+                "nav.navbar-fixed-top"],
             URLACTIVITYPOPUPLINK: ".activity.modtype_url.urlpopup a"
             // We try several different selectors for header bar as it varies between theme.
             // (Boost based, clean based, essential etc).

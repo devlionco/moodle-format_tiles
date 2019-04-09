@@ -36,7 +36,9 @@ define(["jquery"], function ($) {
         TILE: ".tile",
         COLLAPSING: ".tile-collapsing",
         COLLAPSED: ".tile-collapsed",
-        SPACER: ".spacer"
+        SPACER: ".spacer",
+        PAGE_CONTENT: "#page-content",
+        REGION_MAIN: "#region-main"
     };
 
     var ClassNames = {
@@ -124,9 +126,14 @@ define(["jquery"], function ($) {
                     Module.setPressedFilterButton(courseId, buttonAlreadyPressed, storageEnabledLocal);
                 }
 
+                var pageContent = $(Selector.PAGE_CONTENT);
+                if (pageContent.length === 0) {
+                    // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
+                    pageContent = $(Selector.REGION_MAIN);
+                }
                  // When a filter button is pressed, mark it as selected and hide/unhide the related tiles.
                  // See @param buttonId {integer|string} the ID of the button pressed.
-                $("#page-content").on("click", Selector.FILTER_BUTTON, function (e) {
+                pageContent.on("click", Selector.FILTER_BUTTON, function (e) {
                     var button = $(e.target);
                     var buttonId = button.attr("data-buttonid");
                     if (buttonId === "all" || Module.getPressedFilterButton(courseId, storageEnabledLocal) === buttonId) {
