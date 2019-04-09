@@ -49,6 +49,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             modalBody: ".modal-body",
             sectionMain: ".section.main",
             pageContent: "#page-content",
+            regionMain: "#region-main",
             completionState: "#completionstate_",
             cmModalClose: ".embed_cm_modal .close",
             cmModal: ".embed_cm_modal",
@@ -57,7 +58,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             urlModalLoadWarning: "#embed-url-error-msg-"
         };
 
-        var DataActions = {
+        var LaunchModalDataActions = {
             launchResourceModal: "launch-tiles-resource-modal",
             launchModuleModal: "launch-tiles-module-modal",
             launchUrlModal: "launch-tiles-url-modal"
@@ -360,11 +361,16 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         return {
             init: function (courseId) {
                 $(document).ready(function () {
+                    var modalSelectors = Object.keys(LaunchModalDataActions).map(function (key) {
+                        return '[data-action="' + LaunchModalDataActions[key] + '"]';
+                    }).join(", ");
 
-                    var modalSelectors = Object.keys(DataActions).reduce(function (str, key) {
-                        return str + ', [data-action="' + DataActions[key] + '"]';
-                    });
-                    $(Selector.pageContent).on("click", modalSelectors, function (e) {
+                    var pageContent = $(Selector.pageContent);
+                    if (pageContent.length === 0) {
+                        // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
+                        pageContent = $(Selector.regionMain);
+                    }
+                    pageContent.on("click", modalSelectors, function (e) {
                         e.preventDefault();
                         var tgt = $(e.currentTarget);
                         var clickedCmObject = tgt.closest("li.activity");
@@ -376,13 +382,13 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         } else {
                             // We don't already have it, so make it.
                             switch (tgt.attr("data-action")) {
-                                case DataActions.launchModuleModal:
+                                case LaunchModalDataActions.launchModuleModal:
                                     launchCourseActivityModal(clickedCmObject, courseId);
                                     break;
-                                case DataActions.launchResourceModal:
+                                case LaunchModalDataActions.launchResourceModal:
                                     launchCourseResourceModal(clickedCmObject, courseId);
                                     break;
-                                case DataActions.launchUrlModal:
+                                case LaunchModalDataActions.launchUrlModal:
                                     launchEmbeddedUrlModal(clickedCmObject, courseId);
                                     break;
                                 default:

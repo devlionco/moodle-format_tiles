@@ -692,6 +692,11 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                 $(document).ready(function () {
                     var pageContent = $("#page-content");
+                    if (pageContent.length === 0) {
+                        // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
+                        pageContent = $("#region-main");
+                    }
+
                     var windowWidth = $(window).outerWidth();
 
                     if (useJavascriptNav && !isEditing) {

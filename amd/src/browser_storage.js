@@ -389,7 +389,13 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
                         storeCourseContent(courseId, sectionNum, "");
                     }
                 }
-                $("#page-content").on("click", ".tile", function () {
+
+                var pageContent = $("#page-content");
+                if (pageContent.length === 0) {
+                    // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
+                    pageContent = $("#region-main");
+                }
+                pageContent.on("click", ".tile", function () {
                     // Evict unused HTML content from session storage to reduce footprint (after a delay).
                     setTimeout(function () {
                         cleanUp(parseInt(storedContentDeleteMins), 0, MAX_SECTIONS_TO_STORE);

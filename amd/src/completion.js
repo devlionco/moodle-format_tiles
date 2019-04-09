@@ -40,6 +40,7 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         launchModuleModal: '[data-action="launch-tiles-module-modal"]',
         launchResourceModal: '[data-action="launch-tiles-resource-modal"]',
         pageContent: "#page-content",
+        regionMain: "#region-main",
         resourceModule: '.activity.resource',
         completeonevent: ".completeonevent",
         completeonview: ".completeonview",
@@ -248,7 +249,12 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                     toggleCompletionTiles($(e.currentTarget));
                 });
 
-                $(Selector.pageContent)
+                var pageContent = $("#page-content");
+                if (pageContent.length === 0) {
+                    // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
+                    pageContent = $("#region-main");
+                }
+                pageContent
                     .on("click", Selector.launchModuleModal + ", " + Selector.launchResourceModal, function (e) {
                         var clickedActivity = $(e.currentTarget).closest(Selector.activity);
                         if (clickedActivity.hasClass("completeonview")) {
