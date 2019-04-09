@@ -34,7 +34,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         "use strict";
 
         var body = $("body");
-        var page = $("#page");
         var bodyHtml = $("body, html");
         var isMobile;
         var isEditing;
@@ -704,7 +703,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                         // When a tile is clicked we add an overlay to grey out the rest of the tiles on the page, so prepare it.
                         windowOverlay = $("<div></div>").addClass("modal-backdrop fade in").hide()
-                            .attr("id", "window-overlay").appendTo(page);
+                            .attr("id", "window-overlay").appendTo(body);
 
                         // If user clicks the window overlay behind the visible tile content, deselect tile.
                         // (They want to remove the overlay).
