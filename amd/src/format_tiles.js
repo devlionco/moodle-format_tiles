@@ -65,6 +65,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             CLOSE_SEC_BTN: ".closesectionbtn",
             HIDE_SEC0_BTN: "#buttonhidesec0",
             SECTION_ZERO: "#section-0",
+            MOODLE_VIDEO: ".mediaplugin.mediaplugin_videojs",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
             HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap",
                 "nav.navbar-fixed-top"],
@@ -128,7 +129,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             $(".section " + ClassNames.SELECTED).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "");
             windowOverlay.fadeOut(300);
             headerOverlayFadeInOut(false);
-            $(Selector.MOVEABLE_SECTION).slideUp().removeClass(ClassNames.STATE_VISIBLE); // Excludes section 0.
+            var moveableSection = $(Selector.MOVEABLE_SECTION);
+            moveableSection.slideUp().removeClass(ClassNames.STATE_VISIBLE); // Excludes section 0.
             if (sectionToFocus !== undefined && sectionToFocus !== 0) {
                 $("#tile-" + sectionToFocus).focus();
             }
@@ -136,6 +138,13 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 $(Selector.TILE_LOADING_ICON).html("");
             });
             sectionIsOpen = false;
+            // If the section contains any iframes, these may contain video, so stop the video playing.
+            if (moveableSection.find("iframe, " + Selector.MOODLE_VIDEO).length !== 0) {
+                setTimeout( function () {
+                    var removedHTML = moveableSection.html();
+                    moveableSection.html("").delay(500).html(removedHTML);
+                }, 500);
+            }
         };
 
         /**
@@ -275,7 +284,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     }, 500);
                 }
                 // As we have just loaded new content, ensure that we initialise videoJS media player if required.
-                if (contentArea.find(".mediaplugin.mediaplugin_videojs").length !== 0) {
+                if (contentArea.find(Selector.MOODLE_VIDEO).length !== 0) {
                     require(["media_videojs/loader"], function(videoJS) {
                         videoJS.setUp();
                     });
