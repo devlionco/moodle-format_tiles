@@ -141,11 +141,12 @@ class icon_set {
      * As to the display name, for an icon in the pix directory (e.g. book.svg) then lang string 'icontitle-book" is sought.
      * Likewise for a font awesome icon called 'fa-tasks', a lang string 'icontitle-tasks' is sought.
      * If the language string is not found (e.g. it is a custom icon added to pix with no lang string), filename is used.
+     * @param int $courseid the id of the course we are in (so we can mark the default icon for this course).
      * @return array of tile icons
      * @throws \coding_exception
      */
-    public function available_tile_icons() {
-        global $CFG, $PAGE;
+    public function available_tile_icons($courseid = 0) {
+        global $CFG, $PAGE, $DB;
         $stringmanager = get_string_manager();
         $availableicons = [];
         // First if the theme supports font awesome, use the available font awesome tile icons.
@@ -184,8 +185,23 @@ class icon_set {
                 $availableicons[$filename] = $displayname;
             }
         }
-        asort($availableicons);
-        return $availableicons;
+        if (!$courseid) {
+            return $availableicons;
+        } else {
+            // Put the default course icon in first place.
+            $defaulticon = $DB->get_field('course_format_options', 'value', array(
+                'courseid' => $courseid,
+                'format' => 'tiles',
+                'sectionid' => 0,
+                'name' => 'defaulttileicon'
+            ));
+            if ($defaulticon) {
+                $removedicondescription =  $availableicons[$defaulticon] . ' (' . get_string('default') . ')';
+                unset($availableicons[$defaulticon]);
+                $availableicons = array_merge(array($defaulticon => $removedicondescription), $availableicons);
+            }
+            return $availableicons;
+        }
     }
 
     /**

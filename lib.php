@@ -435,7 +435,7 @@ class format_tiles extends format_base {
 
         if ($foreditform && !isset($courseformatoptions['coursedisplay']['label'])) {
             $tilespalette = $this->format_tiles_get_tiles_palette();
-            $tileicons = (new \format_tiles\icon_set)->available_tile_icons();
+            $tileicons = (new \format_tiles\icon_set)->available_tile_icons($this->get_courseid());
             $courseconfig = get_config('moodlecourse');
             $max = $courseconfig->maxsections;
             if (!isset($max) || !is_numeric($max)) {
@@ -595,7 +595,7 @@ class format_tiles extends format_base {
             $defaulticonarray = array(
                 '' => get_string('defaultthiscourse', 'format_tiles') . ' (' . $defaultcoursetile . ')'
             );
-            $tileicons = (new \format_tiles\icon_set)->available_tile_icons();
+            $tileicons = (new \format_tiles\icon_set)->available_tile_icons($course->id);
             $tileicons = array_merge($defaulticonarray, $tileicons);
             $sectionformatoptionsedit = array();
 

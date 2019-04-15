@@ -64,7 +64,7 @@ class format_tiles_external extends external_api
         self::validate_context($context);
         require_capability('moodle/course:update', $context);
 
-        $availableicons = (new \format_tiles\icon_set)->available_tile_icons();
+        $availableicons = (new \format_tiles\icon_set)->available_tile_icons($data['courseid']);
         if (!isset($availableicons[$data['icon']])) {
             throw new invalid_parameter_exception('Icon is invalid');
         }
@@ -498,7 +498,7 @@ class format_tiles_external extends external_api
         return array(
             'status' => true,
             'warnings' => [],
-            'icons' => json_encode((new \format_tiles\icon_set)->available_tile_icons())
+            'icons' => json_encode((new \format_tiles\icon_set)->available_tile_icons($courseid))
         );
     }
 
