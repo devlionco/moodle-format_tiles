@@ -120,17 +120,35 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         };
 
         /**
+         * If we have embedded video in section, stop it.
+         * Runs when section is closed.
+         * @param {number} section where the video is.
+         */
+        var stopVideoPlaying = function(section) {
+            var contentSection = $(Selector.SECTION_ID + section);
+            contentSection.find("iframe").each(function (index, iframe) {
+                iframe = $(iframe);
+                iframe.attr('src', iframe.attr("src"));
+            });
+        };
+
+        /**
          * When JS navigation is being used, when a user un-selects a tile, we have to move the tile's z-index back so that it is
          * no longer on top of the overlay, as well as removing its "selected" class, and hiding the overlay
          * @param {number} sectionToFocus if we want to focus a tile after closing, which one
          */
         var cancelTileSelections = function (sectionToFocus) {
+            $(Selector.MOVEABLE_SECTION).each(function (index, sec) {
+                sec = $(sec);
+                if (sec.is(":visible")) {
+                    stopVideoPlaying(sec.attr("data-section"));
+                    sec.slideUp().removeClass(ClassNames.STATE_VISIBLE); // Excludes section 0.
+                }
+            });
             $(Selector.TILE).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "").css(CSS.BG_COLOUR, "");
             $(".section " + ClassNames.SELECTED).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "");
             windowOverlay.fadeOut(300);
             headerOverlayFadeInOut(false);
-            var moveableSection = $(Selector.MOVEABLE_SECTION);
-            moveableSection.slideUp().removeClass(ClassNames.STATE_VISIBLE); // Excludes section 0.
             if (sectionToFocus !== undefined && sectionToFocus !== 0) {
                 $("#tile-" + sectionToFocus).focus();
             }
@@ -138,13 +156,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 $(Selector.TILE_LOADING_ICON).html("");
             });
             sectionIsOpen = false;
-            // If the section contains any iframes, these may contain video, so stop the video playing.
-            if (moveableSection.find("iframe, " + Selector.MOODLE_VIDEO).length !== 0) {
-                setTimeout( function () {
-                    var removedHTML = moveableSection.html();
-                    moveableSection.html("").delay(500).html(removedHTML);
-                }, 500);
-            }
         };
 
         /**
@@ -602,7 +613,13 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             thisTile.addClass(ClassNames.SELECTED);
             // Then close all open secs.
             // Timed to finish in 200 so that it completes well before the opening next.
-            $(Selector.MOVEABLE_SECTION).slideUp(200);
+            $(Selector.MOVEABLE_SECTION).each(function (index, sec) {
+                sec = $(sec);
+                if (sec.is(":visible")) {
+                    stopVideoPlaying(sec.attr("data-section"));
+                    sec.slideUp(200).removeClass(ClassNames.STATE_VISIBLE); // Excludes section 0.
+                }
+            });
             // Log the fact we viewed the section.
             ajax.call([{
                 methodname: "format_tiles_log_tile_click", args: {
