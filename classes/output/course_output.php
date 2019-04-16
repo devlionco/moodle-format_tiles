@@ -817,6 +817,14 @@ class course_output implements \renderable, \templatable
                     && array_search('url', $this->usemodalsforcoursemodules['resources']) > -1) {
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
                     $moduleobject['launchtype'] = 'url-modal';
+
+                    // If the URL is a YouTube URL, adjust it if necessary as teacher probably used watch URL.
+                    $toreplace = '.youtube.com/watch?v=';
+                    $replacewith = '.youtube.com/embed/';
+                    if (strpos($moduleobject['pluginfileUrl'], $toreplace) !== false){
+                        $moduleobject['pluginfileUrl'] = str_replace($toreplace, $replacewith, $moduleobject['pluginfileUrl']);
+                    }
+
                 } else if ($url->display == RESOURCELIB_DISPLAY_AUTO) {
                     require_once("$CFG->dirroot/mod/url/locallib.php");
                     // TODO modify this later to treat embed as launch modal.
