@@ -50,11 +50,14 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         var Selector = {
             PAGE: "#page",
             TILE: ".tile",
+            TILEID: "#tile-",
             MOVEABLE_SECTION: ".moveablesection",
             FILTER_BUTTON: ".filterbutton",
             TILE_LOADING_ICON: ".tile-loading-icon",
+            TILE_LOADING_ICON_ID: "#loading-icon-",
             TILE_COLLAPSED: ".tile-collapsed",
             TILE_CLICKABLE: ".tile-clickable",
+            TILES: "ul.tiles",
             ACTIVITY: ".activity",
             SPACER: ".spacer",
             SECTION_MOVEABLE: ".moveablesection",
@@ -150,7 +153,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             windowOverlay.fadeOut(300);
             headerOverlayFadeInOut(false);
             if (sectionToFocus !== undefined && sectionToFocus !== 0) {
-                $("#tile-" + sectionToFocus).focus();
+                $(Selector.TILEID + sectionToFocus).focus();
             }
             $(Selector.TILE_LOADING_ICON).fadeOut(300, function () {
                 $(Selector.TILE_LOADING_ICON).html("");
@@ -169,7 +172,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             var rows = [];
             var currentSectionId;
             var previousTile;
-            $("ul.tiles").children(Selector.TILE).not($(Selector.TILE_COLLAPSED)).each(function (index, tile) {
+            $(Selector.TILES).children(Selector.TILE).not($(Selector.TILE_COLLAPSED)).each(function (index, tile) {
                 currentSectionId = $(tile).attr("data-section");
                 var maxVerticalPositionDifference = 100;
                 if (currentSectionId) {
@@ -244,7 +247,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             // Close open tile, and return focus to closed tile, for screen reader user.
                             browserStorage.setLastVisitedSection(0);
                             cancelTileSelections(0);
-                            $('#tile-' + contentArea.attr('data-section')).focus();
+                            $(Selector.TILEID + contentArea.attr('data-section')).focus();
                         }
                     });
                     activities.on(Event.KEYDOWN, function (e) {
@@ -393,7 +396,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             contentArea.addClass(ClassNames.STATE_VISIBLE);
             contentArea.slideDown(350, function () {
                 // Wait until we have finished sliding down before we work out where the top is for scroll.
-                if (Math.abs(contentArea.position().top - $("#tile-" + tileId).position().top) > 300) {
+                if (Math.abs(contentArea.position().top - $(Selector.TILEID + tileId).position().top) > 300) {
                     // If content area is within 300 px of the related tile, sections need re-arranging.
                     // We need to complete re-org then do expand and scroll as a callback.
                     moveContentSectionsToPlaces(
@@ -480,7 +483,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         var setOverlay = function (secNumOnTop) {
             windowOverlay.fadeIn(300);
             backDropZIndex = parseInt(windowOverlay.css(CSS.Z_INDEX));
-            var tile = $("#tile-" + secNumOnTop);
+            var tile = $(Selector.TILEID + secNumOnTop);
             tile.css(CSS.Z_INDEX, (backDropZIndex + 1));
             headerOverlayFadeInOut(true);
             $(Selector.SECTION_ID + secNumOnTop).css(CSS.Z_INDEX, (backDropZIndex + 1));
@@ -584,10 +587,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 }
                             }
                             if (tileToClick !== null) {
-                                $("#tile-" + tileToClick).click();
+                                $(Selector.TILEID + tileToClick).click();
                             } else {
                                 // Set focus to the first tile (not section zero).
-                                $("#tile-1").focus();
+                                $(Selector.TILEID + "1").focus();
                             }
                         }
                         reOrgLocked = false;
@@ -653,7 +656,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     if (!contentAge || contentAge > storedContentExpirySecs) {
                         // Content in local storage may not exist or have expired.
                         // If so, get it again from server and display new content on receipt.
-                        var loadingIcon = $("#loading-icon-" + dataSection);
+                        var loadingIcon = $(Selector.TILE_LOADING_ICON_ID + dataSection);
                         if (loadingIcon !== undefined) {
                             loadingIcon.html(loadingIconHtml).fadeIn(200);
                         } else {
@@ -797,7 +800,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         $(window).on("resize", function () {
                             // On iOS resize events are triggered often on scroll because the address bar hides itself.
                             // Avoid this.
-                            if (windowWidth !== $(window).outerWidth()) {
+                            if (!isEditing && windowWidth !== $(window).outerWidth()) {
                                 // Real so set new value for later comparison.
                                 windowWidth = $(window).outerWidth();
                                 reOrgSections(courseId, 1000, 0);
@@ -931,7 +934,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                     setSectionZeroFromUserPref();
 
-                    // Render the loading icon and append it to body so that we can move it to a tile as needed later.
+                    // Render the loading icon and store its HTML globally so that we can use it where needed later.
                     Templates.render("format_tiles/loading", {}).done(function (html) {
                         loadingIconHtml = html;
                     });
@@ -939,7 +942,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     if (!isMobile) {
                         // Initialise tooltips shown for example when hover over tile icon "Click to change icon".
                         // But not on mobile as they make clicks harder.
-                        $("[data-toggle=tooltip]").tooltip();
+                        var toolTips = $("[data-toggle=tooltip]");
+                        if (toolTips.length !== 0) {
+                            toolTips.tooltip();
+                        }
                     }
 
                     // Most filter button related JS is in filter_buttons.js module which is required below.
