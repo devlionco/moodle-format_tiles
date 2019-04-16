@@ -129,10 +129,18 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
          */
         var stopVideoPlaying = function(section) {
             var contentSection = $(Selector.SECTION_ID + section);
+
+            // First iframes (e.g. embedded YouTube).
             contentSection.find("iframe").each(function (index, iframe) {
                 iframe = $(iframe);
                 iframe.attr('src', iframe.attr("src"));
             });
+
+            // Then Moodle media player.
+            var mediaPlayers = contentSection.find(Selector.MOODLE_VIDEO);
+            if (mediaPlayers.length > 0) {
+                contentSection.html("");
+            }
         };
 
         /**

@@ -94,6 +94,15 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     modalStore[modal.attr("data-cmid")] = undefined;
                 });
             }
+
+            var moodleMediaPlayer = modal.find(Selector.moodleMediaPlayer);
+            if (moodleMediaPlayer.length > 0) {
+                modal.find(Selector.closeBtn).click(function() {
+                    modal.find(Selector.moodleMediaPlayer).html("");
+                });
+                // Ensure we create a new modal next time.
+                modalStore[modal.attr("data-cmid")] = undefined;
+            }
         };
 
         /**
