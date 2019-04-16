@@ -180,7 +180,7 @@
                         {{#clickable}}
                             <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}}
                                data-action="launch-tiles-module-modal"{{/isEmbeddedModule}}{{/clickable}}{{/clickable}}
-                               data-title="{{{modtitle}}}" class="instancename {{{extraclasses}}}">
+                               data-title="{{{modtitle}}}" class="instancename {{{extraclasses}}}"  data-action="launch-tiles-{{launchtype}}">
                                 <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
                                      role="presentation">
                                 <span class="activitytitle">{{{modtitle}}}</span>

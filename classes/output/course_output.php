@@ -810,6 +810,9 @@ class course_output implements \renderable, \templatable
 
             if ($mod->modname == 'url') {
                 $url = $DB->get_record('url', array('id' => $mod->instance), '*', MUST_EXIST);
+                $isyoutubeurl = strpos($url->externalurl, 'http://www.youtube.') !== false
+                    || strpos($url->externalurl, 'https://www.youtube.') !== false;
+
                 if ($url->display == RESOURCELIB_DISPLAY_POPUP) {
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
                     $moduleobject['extraclasses'] .= ' urlpopup';
@@ -818,11 +821,14 @@ class course_output implements \renderable, \templatable
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
                     $moduleobject['launchtype'] = 'url-modal';
 
-                    // If the URL is a YouTube URL, adjust it if necessary as teacher probably used watch URL.
-                    $toreplace = '.youtube.com/watch?v=';
-                    $replacewith = '.youtube.com/embed/';
-                    if (strpos($moduleobject['pluginfileUrl'], $toreplace) !== false){
-                        $moduleobject['pluginfileUrl'] = str_replace($toreplace, $replacewith, $moduleobject['pluginfileUrl']);
+                    // If the URL is a YouTube URL, make some adjustments.
+                    if ($isyoutubeurl) {
+                        //  Teacher probably used watch URL so fix it.
+                        $toreplace = '/watch?v=';
+                        $replacewith = '/embed/';
+                        if (strpos($moduleobject['pluginfileUrl'], $toreplace) !== false) {
+                            $moduleobject['pluginfileUrl'] = str_replace($toreplace, $replacewith, $moduleobject['pluginfileUrl']);
+                        }
                     }
 
                 } else if ($url->display == RESOURCELIB_DISPLAY_AUTO) {
@@ -839,6 +845,12 @@ class course_output implements \renderable, \templatable
                         $moduleobject['pluginfileUrl'] = $url->externalurl;
                         $moduleobject['extraclasses'] .= ' urlpopup';
                     }
+                }
+
+                if ($isyoutubeurl && $this->courseusesubtiles) {
+                    // Even though it's a URL activity, display it as "video" subtile.
+                    $moduleobject['extraclasses'] .= ' video';
+                    $moduleobject['modnameDisplay'] = get_string('displaytitle_mod_mp4', 'format_tiles');
                 }
             } else {
                 // This produces lots of unnecessary code for URL.

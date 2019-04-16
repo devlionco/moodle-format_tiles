@@ -1247,7 +1247,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     background-image: url([[pix:format_tiles|subtile/lti]]);
 }
 .format-tiles li.activity.subtile.modsecurestreaming,
-.format-tiles li.activity.subtile.resource.mp4 {
+.format-tiles li.activity.subtile.resource.mp4,
+.format-tiles li.activity.subtile.url.video {
     border-top-color: #6bc34a;
     background-image: url([[pix:format_tiles|subtile/film]]);
 }
