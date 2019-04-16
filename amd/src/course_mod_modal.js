@@ -53,9 +53,9 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             completionState: "#completionstate_",
             cmModalClose: ".embed_cm_modal .close",
             cmModal: ".embed_cm_modal",
-            modalClearOnDismissButton: ".clear-on-dismiss button.close",
             moodleMediaPlayer: ".mediaplugin_videojs",
-            urlModalLoadWarning: "#embed-url-error-msg-"
+            urlModalLoadWarning: "#embed-url-error-msg-",
+            closeBtn: "button.close"
         };
 
         var LaunchModalDataActions = {
@@ -64,12 +64,36 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             launchUrlModal: "launch-tiles-url-modal"
         };
 
-        var ClassNames = {
-            modalClearOnDismiss: "clear-on-dismiss"
-        };
-
         var modalMinWidth = function () {
             return Math.min(win.width(), 900);
+        };
+
+        /**
+         * Some modals contain videos in iframes or objects, which need to stop playing when dismissed.
+         * @param {object} modal the modal which contains the video.
+         */
+        var stopAllVideosOnDismiss = function(modal) {
+            var iframes = modal.find("iframe");
+            if (iframes.length > 0) {
+                modal.find(Selector.closeBtn).click(function(e) {
+                    $(e.currentTarget).closest(Selector.cmModal).find("iframe").each(function (index, iframe) {
+                        iframe = $(iframe);
+                        iframe.attr('src', iframe.attr("src"));
+                    });
+                });
+            }
+            var objects = modal.find("object");
+            if (objects.length > 0) {
+                // In this case resetting the URL does not seem to work so we clear it and clear modal from storage.
+                modal.find(Selector.closeBtn).click(function(e) {
+                    var modal = $(e.currentTarget).closest(Selector.cmModal);
+                    modal.find("object").each(function (index, object) {
+                        object = $(object);
+                        object.attr('data', "");
+                    });
+                    modalStore[modal.attr("data-cmid")] = undefined;
+                });
+            }
         };
 
         /**
@@ -127,7 +151,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modalRoot.find(Selector.modal).animate({"max-width": "100%"}, "fast");
                         modalRoot.find(Selector.modalDialog).animate({"max-width": "100%"}, "fast");
                         modalRoot.find(Selector.modalBody).animate({"max-width": "100%"}, "fast");
-                        modalRoot.addClass(ClassNames.modalClearOnDismiss);
+                        stopAllVideosOnDismiss(modalRoot);
                     } else {
                         // Otherwise (e.g for PDF) we don't need 100% width.
                         modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
@@ -207,7 +231,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     modalRoot.find(Selector.modal).animate({"max-width": modalWidth}, "fast");
                     modalRoot.find(Selector.modalDialog).animate({"max-width": modalWidth}, "fast");
                     modalRoot.find(Selector.modalBody).animate({"max-width": modalWidth}, "fast");
-                    modalRoot.addClass(ClassNames.modalClearOnDismiss);
+                    stopAllVideosOnDismiss(modalRoot);
                     modalRoot.find(Selector.modalBody).addClass("text-center");
                 }).fail(Notification.exception);
                 // Render the modal header / title and set it to the page.
@@ -242,7 +266,9 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             mediaPlayer.find("div").each(function(index, child) {
                 $(child).css("max-width", "");
             });
-            mediaPlayer.closest(Selector.cmModal).addClass(ClassNames.modalClearOnDismiss);
+            if (mediaPlayer.length > 0) {
+                stopAllVideosOnDismiss(modalRoot);
+            }
 
             // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
             // Do this for every iframe in the course module.
@@ -281,10 +307,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 // Align the iframe in the centre of the modal.
                 modalBody.css("text-align", "center");
 
-                // Add this class so we know to clear the modal on dismiss, not just hide.
-                // This is because it may contain a video which needs to be stopped.
-                // See also event below for what happens when this class is clicked.
-                modalRoot.addClass(ClassNames.modalClearOnDismiss);
+                stopAllVideosOnDismiss(modalRoot);
             });
         };
 
@@ -313,6 +336,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 modalRoot.attr("id", "embed_mod_modal_" + cmid);
                 modalRoot.addClass("embed_cm_modal");
                 modalRoot.addClass(clickedCmObject.attr("data-modtype"));
+                stopAllVideosOnDismiss(modalRoot);
                 ajax.call([{
                     methodname: methodName,
                     args: {
@@ -402,13 +426,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                                 }
                                 }])[0].fail(Notification.exception);
                         }
-                    });
-
-                    // Some modals need to be emptied when dismissed (e.g. contain a video which needs to be stopped).
-                    $("body").on("click", Selector.modalClearOnDismissButton, function (e) {
-                        var modalClosingId = $(e.currentTarget).closest(Selector.cmModal).attr("data-cmid");
-                        $(e.currentTarget).closest(Selector.cmModal).find(Selector.modalBody).empty();
-                        modalStore[modalClosingId] = undefined;
                     });
 
                      // Render the loading icon and append it to body so that we can use it later.
