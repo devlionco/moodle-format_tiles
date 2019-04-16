@@ -136,7 +136,7 @@ $jsparams = array(
 $PAGE->requires->js_call_amd(
     'format_tiles/format_tiles', 'init', $jsparams
 );
-if (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0) {
+if ($usejsnav && (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0)) {
     $PAGE->requires->js_call_amd(
         'format_tiles/course_mod_modal', 'init', array($course->id)
     );

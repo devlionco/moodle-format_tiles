@@ -710,7 +710,7 @@ class course_output implements \renderable, \templatable
 
             // Specific handling for embedded resource items (e.g. PDFs)  as allowed by site admin.
             if ($mod->modname == 'resource') {
-                if (array_search($moduleobject['modResourceType'], $this->usemodalsforcoursemodules['resources']) > -1) {
+                if (array_search($moduleobject['modResourceType'], $this->usemodalsforcoursemodules['resources']) !== false) {
                     $moduleobject['isEmbeddedResource'] = 1;
                     $moduleobject['launchtype'] = 'resource-modal';
                     $moduleobject['pluginfileUrl'] = $this->plugin_file_url($mod);
@@ -726,7 +726,7 @@ class course_output implements \renderable, \templatable
                 }
             }
             // Specific handling for embedded course module items (e.g. page) as allowed by site admin.
-            if (array_search($mod->modname, $this->usemodalsforcoursemodules['modules']) > -1) {
+            if (array_search($mod->modname, $this->usemodalsforcoursemodules['modules']) !== false) {
                 $moduleobject['isEmbeddedModule'] = 1;
                 $moduleobject['launchtype'] = 'module-modal';
             }
@@ -835,7 +835,7 @@ class course_output implements \renderable, \templatable
                         RESOURCELIB_DISPLAY_DOWNLOAD,
                         RESOURCELIB_DISPLAY_POPUP
                     ];
-                    if (array_search(url_get_final_display_type($url), $treataspopup) !== -1) {
+                    if (array_search(url_get_final_display_type($url), $treataspopup) !== false) {
                         $moduleobject['pluginfileUrl'] = $url->externalurl;
                         $moduleobject['extraclasses'] .= ' urlpopup';
                     }
@@ -1087,7 +1087,7 @@ class course_output implements \renderable, \templatable
         // Otherwise proceed to adapt the standard items to this format.
         foreach ($actions as $actionname => $action) {
             $actionstomodify = ['hide', 'show', 'duplicate', 'groupsseparate', 'groupsvisible', 'groupsnone', 'stealth'];
-            if (!$this->treat_as_label($mod) && array_search($actionname, $actionstomodify) > -1) {
+            if (!$this->treat_as_label($mod) && array_search($actionname, $actionstomodify) !== false) {
                 // For non labels, we don't want core JS to be used to hide/show etc when these menu items are used.
                 // Core converts the cm HTML to the standard activity display format (not subtile).
                 // Instead we want to use our own JS to render the new cm adding 'tiles-' to the start of data-action.
