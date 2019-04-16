@@ -817,13 +817,13 @@ class course_output implements \renderable, \templatable
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
                     $moduleobject['extraclasses'] .= ' urlpopup';
                 } else if ($url->display == RESOURCELIB_DISPLAY_EMBED
-                    && array_search('url', $this->usemodalsforcoursemodules['resources']) > -1) {
+                    && array_search('url', $this->usemodalsforcoursemodules['resources']) !== false) {
                     $moduleobject['pluginfileUrl'] = $url->externalurl;
                     $moduleobject['launchtype'] = 'url-modal';
 
                     // If the URL is a YouTube URL, make some adjustments.
                     if ($isyoutubeurl) {
-                        //  Teacher probably used watch URL so fix it.
+                        // Teacher probably used watch URL so fix it.
                         $toreplace = '/watch?v=';
                         $replacewith = '/embed/';
                         if (strpos($moduleobject['pluginfileUrl'], $toreplace) !== false) {

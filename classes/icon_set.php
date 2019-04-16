@@ -185,6 +185,8 @@ class icon_set {
                 $availableicons[$filename] = $displayname;
             }
         }
+        asort($availableicons);
+
         if (!$courseid) {
             return $availableicons;
         } else {
@@ -196,7 +198,7 @@ class icon_set {
                 'name' => 'defaulttileicon'
             ));
             if ($defaulticon) {
-                $removedicondescription =  $availableicons[$defaulticon] . ' (' . get_string('default') . ')';
+                $removedicondescription = $availableicons[$defaulticon] . ' (' . get_string('default') . ')';
                 unset($availableicons[$defaulticon]);
                 $availableicons = array_merge(array($defaulticon => $removedicondescription), $availableicons);
             }

@@ -167,6 +167,7 @@ class format_tiles_course_courselib_testcase extends advanced_testcase {
      * Call to MODULE_create_set_values and MODULE_create_run_asserts done after common set values/run asserts.
      * So if you want, you can overwrite the default values/asserts in the respective functions.
      * @param string $modulename Name of the module ('forum', 'assign', 'book'...).
+     * @return stdClass
      */
     private function create_specific_module_test($modulename) {
         global $DB, $CFG;

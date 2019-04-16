@@ -391,7 +391,6 @@ class behat_format_tiles extends behat_base {
 
         // Click on hide link.
         $fullxpath = $xpath . '/descendant::a[@title="' . get_string($showhide, 'format_tiles') .'"]';
-        echo $fullxpath;
         $exception = new \Behat\Mink\Exception\ExpectationException(
             'Hide link for tile "' . $sectionnumber . '" was not found', $this->getSession()
         );
