@@ -47,6 +47,11 @@ $courseformat = course_get_format($course);
 $course = $courseformat->get_course();
 $isediting = $PAGE->user_is_editing();
 $renderer = $PAGE->get_renderer('format_tiles');
+$ismobile = core_useragent::get_device_type() == core_useragent::DEVICETYPE_MOBILE ? 1 : 0;
+$userstopjsnav = get_user_preferences('format_tiles_stopjsnav', 0);
+
+// JS navigation and modals in Internet Explorer are not supported by this plugin so we disable JS nav here.
+$usejsnav = !$userstopjsnav && get_config('format_tiles', 'usejavascriptnav') && !core_useragent::is_ie();
 
 // Inline CSS may be requried if this course is using different tile colours to default - echo this first if so.
 $templateable = new \format_tiles\output\inline_css_output($course);
@@ -78,10 +83,6 @@ if ($isediting) {
         }
     }
 }
-
-// JS navigation and modals in Internet Explorer are not supported by this plugin so we disable JS nav here.
-$usejsnav = get_config('format_tiles', 'usejavascriptnav')
-    && !get_user_preferences('format_tiles_stopjsnav', 0) && !core_useragent::is_ie();
 
 // We display the multi section page if the user is not requesting a specific single section.
 // We also display it if user is requesting a specific section (URL &section=xx) with JS enabled.
@@ -123,7 +124,7 @@ $jsparams = array(
     $isediting,
     $usejsnav, // See also lib.php page_set_course().
     get_config('format_tiles', 'jsmaxstoreditems'),
-    core_useragent::get_device_type() == core_useragent::DEVICETYPE_MOBILE ? 1 : 0,
+    $ismobile,
     $jssectionnum,
     get_config('format_tiles', 'jsstoredcontentexpirysecs'),
     get_config('format_tiles', 'jsstoredcontentdeletemins'),
@@ -136,7 +137,7 @@ $jsparams = array(
 $PAGE->requires->js_call_amd(
     'format_tiles/format_tiles', 'init', $jsparams
 );
-if ($usejsnav && (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0)) {
+if (!$userstopjsnav && (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0)) {
     $PAGE->requires->js_call_amd(
         'format_tiles/course_mod_modal', 'init', array($course->id)
     );

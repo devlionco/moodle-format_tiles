@@ -48,7 +48,7 @@ class format_tiles_externallib_testcase extends externallib_advanced_testcase {
         'fullname' => 'A Name',
         'numsections' => 5,
         'format' => 'tiles',
-        'defaulttileicon' => 'user',
+        'defaulttileicon' => 'user-o',
         'basecolour' => '#700000',
         'courseusesubtiles' => 1,
         'courseshowtileprogress' => 0,
