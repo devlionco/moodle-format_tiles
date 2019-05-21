@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class deferred_register
- * @package format_tiles\task
+ * @package format_tiles
  * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

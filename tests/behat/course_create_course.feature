@@ -4,18 +4,18 @@ Feature: Create course in format tiles
   I need to be able to create a course in format tiles and set the options
 
   Background:
-  Given the following "users" exist:
-    | username | firstname | lastname | email |
-    | teacher1 | Teacher | 1 | teacher1@example.com |
-  And the following config values are set as admin:
-    | config                 | value    | plugin       |
-    | enablecompletion       | 1        | core         |
-    | modalmodules           | page     | format_tiles |
-    | modalresources         | pdf,html | format_tiles |
-    | assumedatastoreconsent | 1        | format_tiles |
-    | reopenlastsection      | 0        | format_tiles |
-    | usejavascriptnav       | 1        | format_tiles |
-    | jsmaxstoreditems       | 0        | format_tiles |
+    Given the following "users" exist:
+      | username | firstname | lastname | email |
+      | teacher1 | Teacher | 1 | teacher1@example.com |
+    And the following config values are set as admin:
+      | config                 | value    | plugin       |
+      | enablecompletion       | 1        | core         |
+      | modalmodules           | page     | format_tiles |
+      | modalresources         | pdf,html | format_tiles |
+      | assumedatastoreconsent | 1        | format_tiles |
+      | reopenlastsection      | 0        | format_tiles |
+      | usejavascriptnav       | 1        | format_tiles |
+      | jsmaxstoreditems       | 0        | format_tiles |
 
   @javascript
   Scenario: Latest course announcements are displayed and can be configured

@@ -31,7 +31,7 @@ require_once("{$CFG->libdir}/formslib.php");
 
 /**
  * Class upload_image_form
- * @package format_tiles\form
+ * @package format_tiles
  * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

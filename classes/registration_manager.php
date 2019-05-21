@@ -18,7 +18,7 @@
  * Tiles course format, registration manager class.
  *
  * @package format_tiles
- * @copyright 2018 David Watson {@link http://evolutioncode.uk}
+ * @copyright 2019 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,6 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class registration_manager
  * @package format_tiles
+ * @copyright 2019 David Watson {@link http://evolutioncode.uk}
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class registration_manager {
 
