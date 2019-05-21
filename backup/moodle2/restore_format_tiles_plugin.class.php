@@ -81,7 +81,10 @@ class restore_format_tiles_plugin extends restore_format_plugin {
         return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse'))];
     }
 
-
+    /**
+     * Ensure that we include photo background images in our restore structure.
+     * @return array
+     */
     public function define_section_plugin_structure() {
         $this->add_related_files('format_tiles', 'tilephoto', null);
         // Dummy path element is needed in order for after_restore_section() to be called.

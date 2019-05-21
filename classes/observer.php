@@ -42,6 +42,10 @@ class format_tiles_observer {
         $DB->delete_records("user_preferences", array("name" => 'format_tiles_stopjsnav_' . $courseid));
     }
 
+    /**
+     * When a section is deleted, delete its tile photo if it has one.
+     * @param \core\event\course_section_deleted $event
+     */
     public static function course_section_deleted(\core\event\course_section_deleted $event) {
         \format_tiles\tile_photo::delete_file_from_ids($event->courseid, $event->objectid);
     }

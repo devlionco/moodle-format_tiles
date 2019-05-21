@@ -172,6 +172,13 @@ class course_output implements \renderable, \templatable
         }
     }
 
+    /**
+     * Get the basic data required to render (required whatever we are doing).
+     * @param $output
+     * @return mixed
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     private function get_basic_data($output) {
         $data['canedit'] = has_capability('moodle/course:update', $this->coursecontext);
         $data['canviewhidden'] = $this->canviewhidden;
@@ -207,6 +214,7 @@ class course_output implements \renderable, \templatable
     /**
      * Export the course data for the mustache template.
      * @param \renderer_base $output
+     * @param array $cmids the course module ids for the cms to export.
      * @return array|\stdClass
      * @throws \coding_exception
      * @throws \dml_exception
@@ -256,6 +264,7 @@ class course_output implements \renderable, \templatable
     }
 
     /**
+     * Append the data we need to render section zero.
      * @param [] $data
      * @param \renderer_base $output
      * @return mixed
@@ -289,6 +298,11 @@ class course_output implements \renderable, \templatable
         return $data;
     }
 
+    /**
+     * Get the course format options (how depends on where we are calling from).
+     * @param $fromajax
+     * @return array
+     */
     private function get_course_format_options($fromajax) {
         // Custom course settings not in course object if called from AJAX, so make sure we get them.
         $options = [
@@ -816,11 +830,12 @@ class course_output implements \renderable, \templatable
     }
 
     /**
-     * @param $mod
-     * @param $treataslabel
-     * @param $section
-     * @param $previouswaslabel
-     * @param $isfirst
+     * Assemble and return the data to render a single course module.
+     * @param \cm_info $mod
+     * @param bool $treataslabel
+     * @param object $section
+     * @param bool $previouswaslabel
+     * @param bool $isfirst
      * @param \renderer_base $output
      * @return array
      * @throws \coding_exception
@@ -1338,7 +1353,7 @@ class course_output implements \renderable, \templatable
     /**
      * If the URL is a YouTube or Vimeo URL etc, make some adjustments for embedding.
      * Teacher probably used standard watch URL so fix it if so.
-     * @param $originalurl
+     * @param string $originalurl
      * @return string|boolean string the URL if it was en embed video URL, false if not.
      */
     private function check_modify_embedded_url($originalurl) {

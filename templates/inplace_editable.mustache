@@ -54,12 +54,13 @@
     }
 }}
 {{#component}}
-    <span class="inplaceeditable inplaceeditable-{{type}}" data-inplaceeditable="1" data-component="{{component}}" data-itemtype="{{itemtype}}" data-itemid="{{itemid}}"
-          data-value="{{value}}" data-editlabel="{{editlabel}}" data-type="{{type}}" data-options="{{options}}">
-        {{#iconurl}}<img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}" role="presentation">{{/iconurl}}
-        {{^ linkeverything }}{{{displayvalue}}}{{/ linkeverything }}
+    <span class="inplaceeditable inplaceeditable-{{type}}" data-inplaceeditable="1" data-component="{{component}}" data-itemtype="{{itemtype}}" data-itemid="{{itemid}}" data-value="{{value}}" data-editlabel="{{editlabel}}" data-type="{{type}}" data-options="{{options}}">
+        {{#iconurl}}
+            <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}" role="presentation">
+        {{/iconurl}}
+        {{^linkeverything}}{{{displayvalue}}}{{/linkeverything}}
         <a href="#" class="quickeditlink" data-inplaceeditablelink="1" title="{{edithint}}">
-            {{# linkeverything }}{{{displayvalue}}}{{/ linkeverything }}
+            {{#linkeverything}}{{{displayvalue}}}{{/linkeverything}}
             <span class="quickediticon visibleifjs">{{#pix}}t/editstring,core,{{{edithint}}}{{/pix}}</span>
         </a>
 </span>

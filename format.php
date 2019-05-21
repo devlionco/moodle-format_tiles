@@ -177,6 +177,17 @@ if ($course->enablecompletion) {
     );
 }
 
+/**
+ * Should we display a multiple section page or not?
+ * I.e. do we display all tiles on screen or just one open section?
+ * @param int $displaysection the param to say if we are displaying one sec and if so which.
+ * @param bool $usejsnav are we using JS nav or not.
+ * @param \context_course $context the context we are in
+ * @param bool $isediting are we editing or not.
+ * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
+ */
 function display_multiple_section_page($displaysection, $usejsnav, $context, $isediting) {
     global $SESSION;
     if (empty($displaysection)) {

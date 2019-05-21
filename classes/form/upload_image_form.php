@@ -14,15 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Form to upload an image to be shown as tile background.
+ *
+ * @package format_tiles
+ * @copyright  2019 David Watson {@link http://evolutioncode.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
+ **/
+
+
 namespace format_tiles\form;
 defined('MOODLE_INTERNAL') || die();
 use moodleform;
 global $CFG;
 require_once("{$CFG->libdir}/formslib.php");
 
-
+/**
+ * Class upload_image_form
+ * @package format_tiles\form
+ */
 class upload_image_form extends moodleform {
 
+    /**
+     * Define fields and form.
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     */
     public function definition() {
         $mform = $this->_form;
         $instance = $this->_customdata;

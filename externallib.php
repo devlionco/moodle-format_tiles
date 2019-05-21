@@ -45,6 +45,9 @@ class format_tiles_external extends external_api
      * @param Integer $courseid the id of this course
      * @param Integer $sectionid the number of the section in this course - zero if whole course
      * @param String $filename the icon filename or photo filename for this tile.
+     * @param string $imagetype whether it's a tile icon or a background photo.
+     * @param int $sourcecontextid the context id of the source photo or icon.
+     * @param int $sourceitemid the item id of the course photo or icon.
      * @return [] status and image URL if applicable.
      * @throws dml_exception
      * @throws invalid_parameter_exception
@@ -97,6 +100,17 @@ class format_tiles_external extends external_api
         return $result;
     }
 
+    /**
+     * Given a draft file uploaded by user, save top this plugin's file area.
+     * @param [] $data
+     * @return array
+     * @throws dml_exception
+     * @throws file_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws required_capability_exception
+     * @throws stored_file_creation_exception
+     */
     private static function set_tile_photo_from_draftfile($data) {
         if (!$data['sourcecontextid'] || !$data['sourceitemid']) {
             throw new invalid_parameter_exception("Invalid source context id or source item id");
@@ -125,6 +139,18 @@ class format_tiles_external extends external_api
         }
     }
 
+    /**
+     * Given the data describing the photo we want and the tile to apply it to, set the tile to use that photo.
+     * @param [] $data
+     * @return array
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws file_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws required_capability_exception
+     * @throws stored_file_creation_exception
+     */
     private static function set_tile_photo($data) {
         $sourcecontext = context::instance_by_id($data['sourcecontextid']);
         $issettingsampleimage =
@@ -166,6 +192,14 @@ class format_tiles_external extends external_api
         }
     }
 
+    /**
+     * Given the data describing the icon we want and the tile to apply it to, set the tile to use that icon
+     * @param [] $data
+     * @return array
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     */
     private static function set_tile_icon($data) {
         global $DB;
         $availableicons = (new \format_tiles\icon_set)->available_tile_icons($data['courseid']);

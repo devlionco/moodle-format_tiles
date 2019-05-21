@@ -29,7 +29,10 @@ global $CFG;
 // PHP image processing library.
 require_once($CFG->libdir . '/gdlib.php');
 
-
+/**
+ * Class image_processor
+ * @package format_tiles
+ */
 class image_processor
 {
 
@@ -197,6 +200,8 @@ class image_processor
 
     /**
      * When we are storing a new image as a file for this object, the data we should use for the Moodle File API.
+     * @param int $contextid the context id (course context) for the file.
+     * @param int $sectionid the section id for the file.
      * @param string $filename the filename we are storing as
      * @return array the data to use with the API.
      */

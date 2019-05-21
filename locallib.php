@@ -173,7 +173,7 @@ function format_tiles_allowed_modal_modules() {
  * If session width var has already been set (because JS already ran), we set that width initially.
  * Then we can load the page immediately at that width without hiding anything.
  * The skipcheck URL param is there in case anyone gets stuck at loading icon and clicks it - they escape it for session.
- * @param $courseid the course ID we are in.
+ * @param int $courseid the course ID we are in.
  * @see format_tiles_external::set_session_width() for where the session vars are set from JS.
  * @return array the data to add to our mustache templates.
  * @throws coding_exception

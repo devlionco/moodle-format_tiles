@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Page called by administrator from plugin settings page to register plugin.
+ *
+ * @package format_tiles
+ * @copyright  2019 David Watson {@link http://evolutioncode.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
+ **/
 
 require_once('../../../config.php');
 
@@ -94,6 +101,8 @@ echo $OUTPUT->box_end();
 echo $OUTPUT->footer();
 
 /**
+ * Take the data submitted from the form and supplement it / remove submit button.
+ * @package format_tiles
  * @param object $data
  * @param bool $forjs
  * @return array

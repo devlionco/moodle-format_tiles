@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Registration form to be completed by administrator to register plugin with developer.
+ *
+ * @package format_tiles
+ * @copyright  2019 David Watson {@link http://evolutioncode.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
+ **/
+
 namespace format_tiles\form;
 defined('MOODLE_INTERNAL') || die();
 
@@ -28,6 +36,11 @@ require_once("{$CFG->libdir}/formslib.php");
  */
 class registration_form extends moodleform {
 
+    /**
+     * Define the fields and the form.
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     */
     public function definition() {
         global $CFG, $USER;
         $mform = $this->_form;
@@ -103,6 +116,13 @@ class registration_form extends moodleform {
         $this->add_action_buttons(false, $buttonlabel);
     }
 
+    /**
+     * Validate submitted data.
+     * @param array $data
+     * @param array $files
+     * @return array
+     * @throws \coding_exception
+     */
     public function validation($data, $files) {
         $errors = [];
         if (

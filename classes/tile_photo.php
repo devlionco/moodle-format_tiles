@@ -32,11 +32,40 @@ defined('MOODLE_INTERNAL') || die();
  */
 class tile_photo {
 
+    /**
+     * Course id for this course.
+     * @var int
+     */
     private $courseid;
+
+    /**
+     * Section id we are concerned with.
+     * @var int
+     */
     private $sectionid;
+
+    /**
+     * Context we are concerned with (will be course context).
+     * @var \context_course
+     */
     private $context;
+
+    /**
+     * The course format option reflecting this tile_photo object (from course_format_options table).
+     * @var mixed
+     */
     private $courseformatoption;
+
+    /**
+     * The filename relating to this tile_photo object.
+     * @var
+     */
     private $filename;
+
+    /**
+     * The file object to which this tile_photo object relates.
+     * @var
+     */
     private $file;
 
     /**
@@ -80,6 +109,7 @@ class tile_photo {
 
     /**
      * Get the data from the course_format_options table for this tile_photo object.
+     * @param int $sectionid the section if that the format option relates to.
      * @return mixed
      * @throws \dml_exception
      */
@@ -144,9 +174,10 @@ class tile_photo {
     }
 
     /**
-     * @param $contextid
-     * @param $sectionid
-     * @param $filename
+     * Given a course context id, section id and a filename, get the related photo file.
+     * @param int $contextid the context id.
+     * @param int $sectionid the section id.
+     * @param string $filename the file name.
      * @return bool|\stored_file
      */
     public static function get_file_from_ids($contextid, $sectionid, $filename) {
@@ -342,8 +373,8 @@ class tile_photo {
      * This would happen if the course was once in tiles but was switched to something else.
      * We delete them so that we can start again.
      * Really we should run this when we switch *out* of tiles too, as a clean up exercise (later release).
-     * @param $courseid
-     * @return bool
+     * @param int $courseid the id for this course.
+     * @return bool whether successful.
      */
     public static function delete_all_tile_photos_course($courseid) {
         $fs = get_file_storage();
@@ -490,6 +521,12 @@ class tile_photo {
         return 360;
     }
 
+    /**
+     * The sample image file in the database for this Moodle instance.
+     * There is only one and it is shown to teacher as a sample if their library is empty.
+     * @return bool|\stored_file
+     * @throws \dml_exception
+     */
     public static function get_sample_image_file() {
         return self::get_file_from_ids(\context_system::instance()->id, 0, 'sample_image.jpg');
     }

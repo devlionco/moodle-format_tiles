@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Page called by administrator to carry out admin functions from plugin settings page.
+ *
+ * @package format_tiles
+ * @copyright  2019 David Watson {@link http://evolutioncode.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
+ **/
 
 require_once('../../../config.php');
 
@@ -96,6 +103,7 @@ echo $OUTPUT->footer();
 
 /**
  * Get an array of all the permitted colour hex values allowed by site admin in plugin settings.
+ * @package format_tiles
  * @return array
  * @throws dml_exception
  */

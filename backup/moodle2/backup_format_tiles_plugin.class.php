@@ -26,7 +26,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Provides the information to backup tiles course format
+ * Specialised backup for format_tiles
+ *
+ * Ensure that photo background images are included in course backups.
+ *
+ * @package   format_tiles
+ * @category  backup
+ * @copyright 2019 David Watson {@link http://evolutioncode.uk}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_format_tiles_plugin extends backup_format_plugin {
 

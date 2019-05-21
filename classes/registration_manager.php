@@ -32,6 +32,12 @@ defined('MOODLE_INTERNAL') || die();
  */
 class registration_manager {
 
+    /**
+     * Contact the registration server and seek a key.
+     * @param [] $data the registration data.
+     * @return bool|mixed
+     * @throws \coding_exception
+     */
     public function request_key($data) {
         try {
             $serverresponse = self::make_curl_request($data, 3);
@@ -72,6 +78,7 @@ class registration_manager {
     }
 
     /**
+     * Is this plugin already registered.
      * @return bool
      */
     public static function is_registered() {
@@ -79,6 +86,7 @@ class registration_manager {
     }
 
     /**
+     * Schedule an attempt to register with the server for later.
      * @param [] $data
      * @throws \coding_exception
      */
@@ -96,6 +104,7 @@ class registration_manager {
     }
 
     /**
+     * Contact the registration server using CURL and get response.
      * @param object $data the form data
      * @param int $timeout
      * @return mixed
@@ -118,6 +127,7 @@ class registration_manager {
     }
 
     /**
+     * Execute this when we want to make our deferred registration attempt (rescheduled from earlier fail).
      * @param [] $data
      * @return bool
      * @throws \coding_exception
@@ -136,14 +146,17 @@ class registration_manager {
     }
 
     /**
-     * @return string
+     * Get the registration server URL.
+     * @return string the URL.
      */
     public static function registration_server_url() {
         return "https://api.evolutioncode.uk/registration";
     }
 
     /**
-     * @return bool
+     * Set the plugin as registered.
+     * @return bool if successful.
+     * @throws \coding_exception
      */
     public static function set_registered() {
         \core\notification::success(get_string('registeredthanks', 'format_tiles'));
@@ -151,7 +164,8 @@ class registration_manager {
     }
 
     /**
-     * @param $key
+     * Validate the a key for this plugin.
+     * @param string $key the key we want to check.
      * @return bool
      */
     public static function validate_key($key) {
