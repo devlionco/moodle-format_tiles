@@ -144,7 +144,17 @@ function xmldb_format_tiles_upgrade($oldversion) {
         $filerecord['mimetype'] = 'image/jpeg';
         $filerecord['filename'] = 'sample_image.jpg';
         $path = $CFG->dirroot . '/course/format/tiles/';
-        $fs->create_file_from_pathname($filerecord, $path . $filerecord['filename']);
+        $existingfile = $fs->get_file(
+            $filerecord['contextid'],
+            $filerecord['component'],
+            $filerecord['filearea'],
+            $filerecord['itemid'],
+            $filerecord['filepath'],
+            $filerecord['filename']
+        );
+        if ($existingfile == false) {
+            $fs->create_file_from_pathname($filerecord, $path . $filerecord['filename']);
+        }
 
         upgrade_plugin_savepoint(true, 2019052100, 'format', 'tiles');
     }
