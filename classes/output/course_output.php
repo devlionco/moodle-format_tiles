@@ -1274,7 +1274,7 @@ class course_output implements \renderable, \templatable
 
         // Otherwise proceed to adapt the standard items to this format.
         foreach ($actions as $actionname => $action) {
-            $actionstomodify = ['hide', 'show', 'duplicate', 'delete', 'groupsseparate', 'groupsvisible', 'groupsnone', 'stealth'];
+            $actionstomodify = ['hide', 'show', 'duplicate', 'groupsseparate', 'groupsvisible', 'groupsnone', 'stealth'];
             if (!$this->treat_as_label($mod) && array_search($actionname, $actionstomodify) !== false) {
                 // For non labels, we don't want core JS to be used to hide/show etc when these menu items are used.
                 // Core converts the cm HTML to the standard activity display format (not subtile).
