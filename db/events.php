@@ -19,7 +19,7 @@
  *
  * @package   format_tiles
  * @category  event
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,5 +29,9 @@ $observers = array (
     array(
     'eventname'     => '\core\event\course_deleted',
     'callback'    => 'format_tiles_observer::course_deleted',
+    ),
+    array(
+        'eventname'     => '\core\event\course_section_deleted',
+        'callback'    => 'format_tiles_observer::course_section_deleted',
     ),
 );

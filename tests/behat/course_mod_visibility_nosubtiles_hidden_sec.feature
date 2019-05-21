@@ -9,7 +9,7 @@ Feature:  In a section for Teacher, hidden activities are dimmed where subtiles 
       | teacher1 | Teacher   | 1        | teacher1@example.com |
     And the following "courses" exist:
       | fullname | shortname | format | coursedisplay | numsections | enablecompletion |
-      | Course 1 | C1        | tiles  | 0             | 5           | 1                |
+      | Course Mod Vis NoSubtiles Course2 | C1        | tiles  | 0             | 5           | 1                |
     And the following "activities" exist:
       | activity | name          | intro                  | course | idnumber | section | visible |
       | quiz     | Test quiz V   | Test quiz description  | C1     | quiz1    | 1       | 1       |
@@ -36,20 +36,22 @@ Feature:  In a section for Teacher, hidden activities are dimmed where subtiles 
       | usejavascriptnav       | 1        | format_tiles |
       | jsmaxstoreditems       | 0        | format_tiles |
     # We set jsmaxstoreditems to zero as otherwise when we switch between subtiles and tiles format we may not see an immediate change in display
-    And format_tiles subtiles are off for course "Course 1"
+    And format_tiles subtiles are off for course "Course Mod Vis NoSubtiles Course2"
 
     And  I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I hide section "1"
+    And I am on "Course Mod Vis NoSubtiles Course2" course homepage with editing mode on
+    And I wait until the page is ready
+    And I wait "1" seconds
+    And I hide tile "1"
 #  Section 1 is hidden so all activities below should be dimmed even if not individually hidden
     And I turn editing mode off
-    And I log out
+    And I log out tiles
 
   @javascript
   Scenario: Teacher sees hidden section but activities are dimmed with subtiles off
     When I log in as "teacher1"
 
-    And I am on "Course 1" course homepage
+    And I am on "Course Mod Vis NoSubtiles Course2" course homepage
 
     And I click on tile "1"
     And I wait until the page is ready
@@ -78,12 +80,12 @@ Feature:  In a section for Teacher, hidden activities are dimmed where subtiles 
     And activity in format tiles is dimmed "Test URL NV"
 
     And I click on close button for tile "1"
-    And I log out
+    And I log out tiles
 
   @javascript
   Scenario: Student cannot see visible (NV) activities or section with subtiles off
     When I log in as "student1"
-    And I am on "Course 1" course homepage
+    And I am on "Course Mod Vis NoSubtiles Course2" course homepage
     And I wait "1" seconds
     Then "li#tile-1" "css_element" should not be visible
     And I should not see "Test quiz V"
@@ -94,5 +96,4 @@ Feature:  In a section for Teacher, hidden activities are dimmed where subtiles 
     And I should not see "Test page NV"
     And I should not see "Test forum NV"
     And I should not see "Test URL NV"
-
-    And I log out
+    And I log out tiles

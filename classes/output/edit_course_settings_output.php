@@ -18,7 +18,7 @@
  * Tiles course format, edit course settings course output class (Course admin > edit settings)
  *
  * @package format_tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace format_tiles\output;
@@ -29,7 +29,7 @@ require_once($CFG->dirroot .'/course/format/lib.php');
 
 /**
  * Gets icon picker data ready
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edit_course_settings_output implements \renderable, \templatable {

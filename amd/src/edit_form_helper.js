@@ -25,7 +25,7 @@
  * @module      edit_form_helper
  * @package     course/format
  * @subpackage  tiles
- * @copyright   2018 David Watson
+ * @copyright   2018 David Watson {@link http://evolutioncode.uk}
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       Moodle 3.3
  */
@@ -34,7 +34,7 @@ define(["jquery", "core/notification", "core/str", "core/templates", "format_til
     function ($, Notification, str, Templates, browserStorage) {
         "use strict";
         return {
-            init: function (pageType, courseDefaultIcon, courseId, sectionId, section, userId) {
+            init: function (pageType, courseDefaultIcon, courseId, sectionId, section, userId, allowphototiles, documentationUrl) {
                 $(document).ready(function () {
                     $("select#id_courseusesubtiles").change(function (e) {
                         if (e.currentTarget.value !== "0") {
@@ -109,6 +109,13 @@ define(["jquery", "core/notification", "core/str", "core/templates", "format_til
                             circles.removeClass("selected");
                             $("#colourpick_" + colourSelectMenu.val().replace("#", "")).addClass("selected");
                         });
+
+                        // If the course is being switched in to "Tiles", body will still have old format class e.g. format-topics.
+                        // This comes from core.  We want body to have format-tiles class for our colour picker CSS, so we add it.
+                        var body = $("body");
+                        if (!body.hasClass("format-tiles")) {
+                            body.addClass("format-tiles");
+                        }
                     });
 
                     // If we are on the course edit settings form, render a button to be added to it.
@@ -126,32 +133,38 @@ define(["jquery", "core/notification", "core/str", "core/templates", "format_til
                     }
                     if (pageType === "course-edit" || (pageType === "course-editsection" && section !== "0")) {
                         var currentIcon;
-                        switch (selectBox.val()) {
-                            case "":
-                                currentIcon = courseDefaultIcon;
-                                break;
-                            default:
-                                currentIcon = selectBox.val();
+                        if (selectBox.val() === "") {
+                            currentIcon = courseDefaultIcon;
+                        } else {
+                            currentIcon = selectBox.val();
                         }
                         Templates.render("format_tiles/icon_picker_launch_btn", {
                             initialicon: currentIcon,
                             initialname: selectedIconName,
-                            sectionId: sectionId
+                            sectionId: sectionId,
+                            allowphototiles: allowphototiles
                         }).done(function (html) {
                             $(html).insertAfter(selectBox);
 
                             // We can hide the original select box now as users will use the button instead.
                             selectBox.hide();
-                            require(["format_tiles/icon_picker"], function(iconPicker) {
-                                iconPicker.init(courseId, pageType);
+                            require(["format_tiles/edit_icon_picker"], function(iconPicker) {
+                                iconPicker.init(courseId, pageType, allowphototiles, documentationUrl);
                             });
                         });
                     } else if (pageType === "course-editsection" && section === "0") {
                         selectBox.closest(".row").hide(); // Don't have an icon for section zero.
                     }
 
+                    // Add a row to the page with link to plugin documentation.
+                    Templates
+                        .render("format_tiles/edit_form_helptext", {documentationurl: documentationUrl + '/teacher'})
+                        .done(function (html) {
+                            $(html).appendTo($("#id_courseformathdr .fcontainer"));
+                        });
+
                     // Clean up all browser storage since the settings may have changed so stored content is wrong.
-                    browserStorage.init(courseId, 1, 1, 1, 0, 0, userId);
+                    browserStorage.init(courseId, 1, true, 1, 0, true, userId);
                     browserStorage.cleanUpStorage();
                 });
             }

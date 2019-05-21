@@ -68,6 +68,7 @@
             </div>
         </form>
     {{/completionenabled}}
+    {{> format_tiles/above_tiles}}
 {{/from_ajax}}
 
 {{#userdisabledjsnav}}
@@ -87,6 +88,28 @@
         {{/jsSessionDisabled}}
     </noscript>
 {{/userdisabledjsnav}}
+
+{{#showinitialpageloadingicon}}
+    <a id="page-loading-icon" href="{{config.wwwroot}}/course/view.php?id={{courseid}}&skipcheck=1">
+        <div class="text-center mt-5">
+        {{> format_tiles/loading}}
+            <div class="text-center" style="text-decoration: none;"><small>{{#str}}clickiffailstoload, format_tiles{{/str}}</small></div>
+        </div>
+    </a>
+{{/showinitialpageloadingicon}}
+
+{{#isediting}}
+    <div class="expand-collapse-all-btns">
+        <a class="btn btn-secondary" data-toggle="tooltip" data-action="expand-all" title="{{#str}}expandall, format_tiles{{/str}}"
+           href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=1" id="expand-all-btn">
+        {{#pix}}expand, format_tiles{{/pix}}&nbsp;{{#str}}expandall, format_tiles{{/str}}
+        </a>
+        <a class="btn btn-secondary" data-toggle="tooltip" data-action="collaspse-all" title="{{#str}}collapsesections, format_tiles{{/str}}"
+            href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=-1" id="collapse-all-btn">
+        {{#pix}}collapse, format_tiles{{/pix}}&nbsp;{{#str}}collapsesections, format_tiles{{/str}}
+        </a>
+    </div>
+{{/isediting}}
 
 <ul class="tiles" id="multi_section_tiles">
     {{#section_zero}}
@@ -108,6 +131,8 @@
         <li class="tile spacer" aria-hidden="true"></li>
         <li class="tile spacer" aria-hidden="true"></li>
         <li class="tile spacer" aria-hidden="true"></li>
+        <li class="tile spacer" aria-hidden="true"></li>
+        <li class="tile spacer" aria-hidden="true"></li>
         <li class="tile spacer" aria-hidden="true" id="lasttile"></li>
 
         {{!moveable sections for JS to add content to and move around (one relating to each tile)}}
@@ -120,24 +145,24 @@
 <span class="pull-right" id="coursecontrolbuttons">
     {{#isediting}}
         <span id="changenumsections" data-toggle="tooltip" title="{{#str}}addsections, format_tiles{{/str}}">
-        <a data-add-sections="{{#str}}addsections, format_tiles{{/str}}"
-           href="{{{ config.wwwroot }}}/course/changenumsections.php?courseid={{courseid}}&sesskey={{sesskey}}&insertsection=0&sectionreturn=0">
-            {{#pix}}t/switch_plus, core, {{#str}}addsections, format_tiles{{/str}}{{/pix}}
-        </a>
-    </span>
+            <a data-add-sections="{{#str}}addsections, format_tiles{{/str}}"
+               href="{{{ config.wwwroot }}}/course/changenumsections.php?courseid={{courseid}}&sesskey={{sesskey}}&insertsection=0&sectionreturn=0">
+                {{#pix}}t/switch_plus, core, {{#str}}addsections, format_tiles{{/str}}{{/pix}}
+            </a>
+        </span>
         {{#all_tiles_expanded}}
-            <span data-toggle="tooltip" title="{{#str}}collapsesections, format_tiles{{/str}}">
-        <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=-1">
-            {{#pix}}collapse, format_tiles{{/pix}}
-        </a>
-    </span>
+        <span data-toggle="tooltip" title="{{#str}}collapsesections, format_tiles{{/str}}">
+            <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=-1">
+                {{#pix}}collapse, format_tiles{{/pix}}
+            </a>
+        </span>
         {{/all_tiles_expanded}}
         {{^all_tiles_expanded}}
-            <span data-toggle="tooltip" title="{{#str}}expandsections, format_tiles{{/str}}">
-        <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=1">
-            {{#pix}}expand, format_tiles{{/pix}}
-        </a>
-    </span>
+        <span data-toggle="tooltip" title="{{#str}}expandsections, format_tiles{{/str}}">
+            <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=1">
+                {{#pix}}expand, format_tiles{{/pix}}
+            </a>
+        </span>
         {{/all_tiles_expanded}}
     {{/isediting}}
 </span>

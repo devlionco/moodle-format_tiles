@@ -18,7 +18,7 @@
  * Upgrade scripts for course format "Tiles"
  *
  * @package    format_tiles
- * @copyright  2018 David Watson (copied in part from the script for format "Topics" 2017 Marina Glancy)
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk} (part copied from "Topics" 2017 Marina Glancy)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

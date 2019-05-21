@@ -51,6 +51,9 @@
 }}
 
 <div class="single-section">
+    {{^from_ajax}}
+        {{> format_tiles/above_tiles}}
+    {{/from_ajax}}
     <ul id="single_section_tiles">
         {{^from_ajax}}
             {{#section_zero}}

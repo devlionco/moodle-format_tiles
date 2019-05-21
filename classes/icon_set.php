@@ -17,7 +17,7 @@
 /**
  * Icon set class for format tiles.
  * @package    format_tiles
- * @copyright  2019 David Watson
+ * @copyright  2019 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Icon set class for format tiles.
  * @package    format_tiles
- * @copyright  2019 David Watson
+ * @copyright  2019 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class icon_set {
@@ -215,12 +215,14 @@ class icon_set {
         // First the general icons (not specific to tiles).
         // These are used for example to show nav buttons within tiles.
         $generalicons = [
+            'format_tiles:camera' => 'fa-camera',
             'format_tiles:check' => 'fa-check',
             'format_tiles:chevron-left' => 'fa-chevron-left',
             'format_tiles:chevron-right' => 'fa-chevron-right',
             'format_tiles:clone' => 'fa-clone',
             'format_tiles:close' => 'fa-close',
             'format_tiles:cloud-download' => 'fa-cloud-download',
+            'format_tiles:cloud-upload' => 'fa-cloud-upload',
             'format_tiles:filter' => 'fa-filter',
             'format_tiles:eye-slash' => 'fa-eye-slash',
             'format_tiles:home' => 'fa-home',

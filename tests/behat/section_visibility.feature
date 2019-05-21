@@ -34,6 +34,8 @@ Feature: Show/hide course sections in format_tiles
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I wait until the page is ready
+    And I follow "Collapse all"
+    And I wait until the page is ready
     And I expand section "1" for edit
     And I wait until the page is ready
     And I add a "Forum" to section "1" and I fill the form with:
@@ -41,7 +43,7 @@ Feature: Show/hide course sections in format_tiles
       | Description  | Test hidden forum 11 description |
       | Availability | Hide from students               |
     And I wait until the page is ready
-
+    And I wait "1" seconds
     And I add a "Forum" to section "1" and I fill the form with:
       | Forum name   | Test hidden forum 12 name        |
       | Description  | Test hidden forum 12 description |
@@ -50,8 +52,11 @@ Feature: Show/hide course sections in format_tiles
 
     And I am on "Course 1" course homepage
     And I wait until the page is ready
+    And I follow "Collapse all"
+    And I wait until the page is ready
     And I expand section "2" for edit
     And I wait until the page is ready
+    And I wait "1" seconds
     And I add a "Forum" to section "2" and I fill the form with:
       | Forum name   | Test hidden forum 21 name        |
       | Description  | Test hidden forum 21 description |
@@ -59,16 +64,13 @@ Feature: Show/hide course sections in format_tiles
     And I wait until the page is ready
     And activity in format tiles is dimmed "Test hidden forum 21 name"
 
-    And I add a "Forum" to section "2" and I fill the form with:
-      | Forum name   | Test hidden forum 22 name        |
-      | Description  | Test hidden forum 22 description |
-      | Availability | Hide from students              |
-    And I wait until the page is ready
-    And activity in format tiles is dimmed "Test hidden forum 22 name"
-
     And I am on "Course 1" course homepage
+    And I wait until the page is ready
+    And I follow "Collapse all"
+    And I wait until the page is ready
     And I expand section "3" for edit
     And I wait until the page is ready
+    And I wait "1" seconds
     And I add a "Forum" to section "3" and I fill the form with:
       | Forum name   | Test hidden forum 31 name        |
       | Description  | Test hidden forum 31 description |
@@ -76,7 +78,7 @@ Feature: Show/hide course sections in format_tiles
     And I wait until the page is ready
     And I wait "1" seconds
     And activity in format tiles is dimmed "Test hidden forum 31 name"
-
+    And I wait "1" seconds
     And I add a "Forum" to section "3" and I fill the form with:
       | Forum name   | Test visible forum 32 name        |
       | Description  | Test visible forum 32 description |
@@ -86,8 +88,12 @@ Feature: Show/hide course sections in format_tiles
     And activity in format tiles is not dimmed "Test hidden forum 31 name"
 
     And I am on "Course 1" course homepage
-    When I hide tile "1"
-    Then section "1" should be hidden
+    And I wait "1" seconds
+    And I wait until the page is ready
+    And I hide tile "1"
+    And I wait until the page is ready
+    And I wait "1" seconds
+    And section "1" should be hidden
     And section "2" should be visible
     And section "3" should be visible
     And I hide tile "2"
@@ -104,7 +110,7 @@ Feature: Show/hide course sections in format_tiles
     And section "2" should be visible
     And section "3" should be hidden
     And all activities in section "1" should be hidden
-    And I log out
+    And I log out tiles
 
     And I log in as "student1"
     And I am on "Course 1" course homepage
@@ -116,4 +122,3 @@ Feature: Show/hide course sections in format_tiles
     And I should see "Tile 5"
     And I click on tile "2"
     And I should not see "Test hidden forum 22 name"
-    And I should see "Test visible forum 2"

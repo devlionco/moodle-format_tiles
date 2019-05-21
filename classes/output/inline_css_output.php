@@ -18,7 +18,7 @@
  * Tiles course format, inline css output class
  *
  * @package format_tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace format_tiles\output;
@@ -31,7 +31,7 @@ require_once($CFG->dirroot .'/course/format/lib.php');
  * Prepares data for echoing inline css via template to provide custom colour for tiles
  *
  * @package format_tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class inline_css_output implements \renderable, \templatable {
@@ -40,33 +40,78 @@ class inline_css_output implements \renderable, \templatable {
      * @var
      */
     private $course;
+
+    /**
+     * Whether we have a mobile user agent.
+     * @var
+     */
+    private $ismobile;
+
+    /**
+     * Whether site admin has enabled photo tiles.
+     * @var
+     */
+    private $allowphototiles;
+
     /**
      * course_output constructor
      * @param \stdClass $course the course DB object
      */
-    public function __construct($course) {
+    public function __construct($course, $ismobile, $usejsnav, $allowphototiles) {
         $this->course = $course;
+        $this->ismobile = $ismobile;
+        $this->usejsnav = $usejsnav;
+        $this->allowphototiles = $allowphototiles;
     }
     /**
      * Export the data for the mustache template.
+     * @see format_tiles_width_template_data()
      * @param \renderer_base $output
      * @return array|\stdClass
      * @throws \dml_exception
      * @throws \moodle_exception
      */
     public function export_for_template(\renderer_base $output) {
+
+        // TODO avoid using inline CSS for tile colours - better to use a class so that themes can override.
+        // Would involve injecting our dynamic values into theme CSS.
+        // Our styles.css gets in via outputlib.php get_css_files()).
+        // See also styles.php theme_styles_generate_and_store().
         $basecolour = $this->get_tile_base_colour($this->course);
         $outputdata = array(
             'base_colour' => $this->rgbacolour($basecolour),
             'tile_light_colour' => $this->rgbacolour($basecolour, 0.05),
             'tile_hover_colour' => get_config('format_tiles', 'hovercolour'),
             'custom_css' => get_config('format_tiles', 'customcss'),
-            'button_hover_colour' => $this->rgbacolour($basecolour, 0.1)
+            'button_hover_colour' => $this->rgbacolour($basecolour, 0.1),
         );
+        if ($this->allowphototiles) {
+            $outputdata['allowphototiles'] = 1;
+            $outputdata['photo_tile_text_bg'] = $this->rgbacolour(
+                $basecolour,
+                1.0 - (float)get_config('format_tiles', 'phototiletitletransarency')
+            );
+
+            // The best values here vary by theme and browser, so mostly come from admin setting.
+            // If the site admin sets background opacity to solid then it doesn't matter if the lines overlap.
+            $outputdata['phototilefontsize'] = 20;
+            $outputdata['phototiletextpadding'] = (float)get_config('format_tiles', 'phototitletitlepadding') / 10;
+            $outputdata['phototiletextlineheight'] = (float)get_config('format_tiles', 'phototitletitlelineheight') / 10;
+        }
+
         if ($this->course->courseusebarforheadings != 0 && $this->course->courseusebarforheadings != 'standard') {
             // Will be 1 or 0 for use or not use now.
             // (Legacy values could be 'standard' for not use, or a colour for use, but in that case treat as 'use').
             $outputdata['shade_heading_bar'] = true;
+        }
+        $outputdata['ismobile'] = $this->ismobile;
+
+        if ($this->usejsnav && !$this->ismobile) {
+            // See the PHP doc for the template_data function below for what this is doing.
+            $widthdata = format_tiles_width_template_data($this->course->id);
+            foreach ($widthdata as $k => $v) {
+                $outputdata[$k] = $v;
+            }
         }
         return $outputdata;
     }
@@ -101,7 +146,7 @@ class inline_css_output implements \renderable, \templatable {
             }
         }
         // We are following theme's main colour so find out what it is.
-        if (!$basecolour) {
+        if (!$basecolour || !hexdec($basecolour)) {
             // If boost theme is in use, it uses "brandcolor" so try to get that if current theme has it.
             $basecolour = get_config('theme_' . $PAGE->theme->name, 'brandcolor');
             if (!$basecolour) {

@@ -31,14 +31,16 @@ Feature: HTML file can be set to open in modal windows with subtiles off
     # We set jsmaxstoreditems to zero as otherwise when we switch between subtiles and tiles format we may not see an immediate change in display
     When I log in as "teacher1"
     And format_tiles subtiles are off for course "Course 1"
-    And I am on "Course 1" course homepage
-
     And I am on "Course 1" course homepage with editing mode on
     And I wait until the page is ready
+    And I follow "Collapse all"
+    And I wait until the page is ready
     And I expand section "1" for edit
+    And I wait until the page is ready
+    And I wait "3" seconds
     And I add a "File" to section "1"
     And I wait until the page is ready
-    And I wait "2" seconds
+
     And I set the following fields to these values:
       | Name        | Test HTML file         |
       | Description | File description       |
@@ -48,7 +50,9 @@ Feature: HTML file can be set to open in modal windows with subtiles off
     And I set the field "Show type" to "1"
     And I press "Save and return to course"
     Then I should see "Test HTML file"
-    And I log out
+    And I wait "2" seconds
+    And I am on "Course 1" course homepage
+    And I log out tiles
 
   #  First check can see the HTML with subtiles off
   @javascript
@@ -69,6 +73,7 @@ Feature: HTML file can be set to open in modal windows with subtiles off
     And I wait until the page is ready
     And "Test HTML file" "dialogue" should not be visible
     And I click on close button for tile "1"
+    And I log out tiles
 
 #  Now with subtiles on
   @javascript
@@ -89,5 +94,4 @@ Feature: HTML file can be set to open in modal windows with subtiles off
     And I wait until the page is ready
     And "Test HTML file" "dialogue" should not be visible
     And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
+    And I log out tiles

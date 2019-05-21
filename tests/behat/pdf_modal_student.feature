@@ -34,7 +34,12 @@ Feature: PDFs can be set to open in modal windows
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I wait until the page is ready
+    And I follow "Collapse all"
+    And I wait until the page is ready
+    And I wait "1" seconds
     And I expand section "1" for edit
+    And I wait until the page is ready
+    And I wait "2" seconds
     And I add a "File" to section "1"
     And I wait until the page is ready
     And I wait "2" seconds
@@ -47,12 +52,14 @@ Feature: PDFs can be set to open in modal windows
     And I set the field "Show type" to "1"
     And I press "Save and return to course"
     Then I should see "Test PDF"
-    And I log out
+    And I wait "2" seconds
+    And I log out tiles
 
     # First with subtiles off as student
   @javascript
   Scenario: Open modal PDF as student with subtiles off
     When format_tiles subtiles are off for course "Course 1"
+    And I wait "2" seconds
     And I log in as "student1"
     And I am on "Course 1" course homepage
     And I wait until the page is ready
@@ -68,8 +75,7 @@ Feature: PDFs can be set to open in modal windows
     And I wait until the page is ready
     And "Test PDF" "dialogue" should not be visible
     And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
+    And I log out tiles
 
     # First with subtiles off as teacher
   @javascript
@@ -90,8 +96,7 @@ Feature: PDFs can be set to open in modal windows
     And I wait until the page is ready
     And "Test PDF" "dialogue" should not be visible
     And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
+    And I log out tiles
 
       # Now the same again with subtiles on
   @javascript
@@ -112,8 +117,7 @@ Feature: PDFs can be set to open in modal windows
     And I wait until the page is ready
     And "Test PDF" "dialogue" should not be visible
     And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
+    And I log out tiles
 
   # Now the same again for teacher with subtiles on
   @javascript
@@ -134,5 +138,4 @@ Feature: PDFs can be set to open in modal windows
     And I wait until the page is ready
     And "Test PDF" "dialogue" should not be visible
     And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
+    And I log out tiles

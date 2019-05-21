@@ -37,7 +37,7 @@
     {}
 }}
 
-<li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#isactive}}current {{/isactive}}clearfix{{#restricted}} tile_bar_restricted{{/restricted}}"
+<li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#isactive}}current {{/isactive}}clearfix{{#restricted}} tile_bar_restricted{{/restricted}}{{#hastilephoto}} phototilebar{{/hastilephoto}} collapsed"
     role="region" data-section="{{tileid}}" data-sectionid="{{secid}}"
     aria-label="{{{title}}}">
     {{!hidden section requried for drag and drop to work, left side and right side for edit controls}}
@@ -50,7 +50,22 @@
 
     <div class="content">
         <div class="tile_bar narrow" data-section="{{tileid}}">
-              {{>format_tiles/tileicon}}
+            {{^hastilephoto}}
+                <div class="tileiconcontainer" id="tileicon_{{tileid}}"
+                    {{#isediting}}data-toggle="tooltip" data-placement="left"
+                        data-original-title="{{^allowphototiles}}{{#str}}picknewicon, format_tiles{{/str}}{{/allowphototiles}}{{#allowphototiles}}{{#str}}picknewiconphoto, format_tiles{{/str}}{{/allowphototiles}}"
+                     {{/isediting}}>
+                        {{>format_tiles/tileicon}}
+                </div>
+            {{/hastilephoto}}
+            {{#hastilephoto}}
+                <span class="tileiconcontainer hasphoto" id="tileicon_{{tileid}}"
+                {{#isediting}}data-toggle="tooltip" data-placement="left"
+                      data-original-title="{{^allowphototiles}}{{#str}}picknewicon, format_tiles{{/str}}{{/allowphototiles}}{{#allowphototiles}}{{#str}}picknewiconphoto, format_tiles{{/str}}{{/allowphototiles}}"
+                {{/isediting}}>
+                    {{>format_tiles/tilebarphoto}}
+                </span>
+            {{/hastilephoto}}
             {{^isediting}}
                 <span class="tile_bar_text">
                   <span class="tile-textinner{{titleclass}}" id="tileTextin-{{tileid}}">
@@ -62,21 +77,21 @@
                 <span class="tile_bar_text" tabindex="3">
                     {{{inplace_editable_title}}}
                 </span>
+
                 <div class="icon20 pull-right" id="hiddeneye{{tileid}}" title="{{#str}}hidden, format_tiles{{/str}}"></div>
                 {{#is_expanded}}
-                    <a class="expand-section pull-right" data-toggle="tooltip" data-placement="right" data-original-title="{{#str}}collapse, format_tiles{{/str}}"
-                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand=-1#section-{{tileid}}" id="collapse{{tileid}}">
-                        {{#pix}}collapse, format_tiles, {{#str}}collapse, format_tiles{{/str}}{{/pix}}
+                    <a class="expand-collapse-sec collapse-section pull-right" data-toggle="tooltip" data-placement="right" data-original-title="{{#str}}collapse, format_tiles{{/str}}"
+                       data-section="{{tileid}}" href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand=-1#section-{{tileid}}" id="collapse{{tileid}}">
                       </span>
                     </a>
                 {{/is_expanded}}
                 {{^is_expanded}}
-                    <a class="expand-section pull-right" data-toggle="tooltip" data-placement="right" data-original-title="{{#str}}expand, format_tiles{{/str}}"
+                    <a class="expand-collapse-sec expand-section pull-right" data-toggle="tooltip" data-placement="right" data-original-title="{{#str}}expand, format_tiles{{/str}}"
                        data-sectionid="{{secid}}" data-section="{{tileid}}" id="expand{{tileid}}"
-                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand={{tileid}}#section-{{tileid}}" >
-                      {{#pix}}expand, format_tiles, {{#str}}expand, format_tiles{{/str}}{{/pix}}
+                       href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand={{tileid}}#section-{{tileid}}">
                     </a>
                 {{/is_expanded}}
+                <div class="section-summary-activities pull-right"><small>{{{activity_summary}}}</small></div>
             {{/isediting}}
         </div>
         {{#isediting}}
@@ -92,14 +107,7 @@
                             {{/course_modules}}
                     {{/is_expanded}}
                 </ul>
-                {{#is_expanded}}
-                    {{{single_sec_add_cm_control_html}}}
-                {{/is_expanded}}
-                {{^is_expanded}}
-                    <a href="{{{ config.wwwroot }}}/course/view.php?id={{courseid}}&section={{tileid}}">
-                        <div class="section-summary-activities mdl-right">{{{activity_summary}}}</div>
-                    </a>
-                {{/is_expanded}}
+                <div class="mod-chooser-outer"{{#hideaddcmcontrol}} style="display: none;"{{/hideaddcmcontrol}}>{{{single_sec_add_cm_control_html}}}</div>
             </div>
 
         {{/isediting}}

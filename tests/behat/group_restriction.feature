@@ -25,7 +25,7 @@ Feature: Teacher can restrict course modules to groups
       | enablecompletion       | 1        | core         |
       | modalmodules           | page     | format_tiles |
       | modalresources         | pdf,html | format_tiles |
-      | assumedatastoreconsent | 0        | format_tiles |
+      | assumedatastoreconsent | 1        | format_tiles |
       | reopenlastsection      | 0        | format_tiles |
       | usejavascriptnav       | 1        | format_tiles |
       | enableavailability     | 1        | core         |
@@ -47,7 +47,7 @@ Feature: Teacher can restrict course modules to groups
     And I am on "Course 1" course homepage with editing mode on
     And I wait until the page is ready
     And I expand section "1" for edit
-    And I wait "1" seconds
+    And I wait "3" seconds
     And I wait until activity "Restricted page" exists in "subtiles" format
     And I follow "Restricted page"
     And I navigate to "Edit settings" in current page administration
@@ -61,10 +61,13 @@ Feature: Teacher can restrict course modules to groups
     And I click on ".availability-item .availability-eye img" "css_element"
     And I wait until the page is ready
     And I press "Save and return to course"
+
     And I wait until the page is ready
-#    And I expand section "1" for edit
+    And I follow "Collapse all"
+    And I expand section "1" for edit
     And I add a "Label" to section "1"
     And I wait "2" seconds
+    And I wait until the page is ready
     And I set the following fields to these values:
       | Label text | I am a restricted label |
     And I expand all fieldsets
@@ -77,8 +80,7 @@ Feature: Teacher can restrict course modules to groups
     And I click on ".availability-item .availability-eye img" "css_element"
     And I wait until the page is ready
     And I press "Save and return to course"
-    And I wait "1" seconds
-    And I log out
+    And I log out tiles
 
      # Log back in as student.
     And I log in as "studenta"
@@ -95,8 +97,7 @@ Feature: Teacher can restrict course modules to groups
     # Add student to group and log out/in again.
 
     And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
+    And I log out tiles
     And the following "group members" exist:
       | user     | group |
       | studenta | A     |

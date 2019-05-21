@@ -23,7 +23,7 @@
  * @module      filter_buttons
  * @package     course/format
  * @subpackage  tiles
- * @copyright   2018 David Watson
+ * @copyright   2018 David Watson {@link http://evolutioncode.uk}
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 3.3
  */
@@ -131,8 +131,8 @@ define(["jquery"], function ($) {
                     // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
                     pageContent = $(Selector.REGION_MAIN);
                 }
-                 // When a filter button is pressed, mark it as selected and hide/unhide the related tiles.
-                 // See @param buttonId {integer|string} the ID of the button pressed.
+                // When a filter button is pressed, mark it as selected and hide/unhide the related tiles.
+                // See @param buttonId {integer|string} the ID of the button pressed.
                 pageContent.on("click", Selector.FILTER_BUTTON, function (e) {
                     var button = $(e.target);
                     var buttonId = button.attr("data-buttonid");

@@ -3,7 +3,8 @@
     overflow: visible;
     width: 100%;
     /*was hidden but want to allow drop down edit menu for last item on page to be displayed in full*/
-    margin: 0; /* required for essential theme */
+    margin: auto;
+    padding: 0;
 }
 .format-tiles ul.tiles.expanded {
     max-height: unset;
@@ -66,10 +67,6 @@
     vertical-align: baseline;
 }
 
-.format-tiles.editing ul.tiles li.section .section-summary-activities {
-    width: 90%;
-}
-
 .format-tiles ul.tiles li.section .activity-count {
     margin-right: 3px;
 }
@@ -80,6 +77,7 @@ li#section-0.section.main.clearfix {
 
 .format-tiles .tile a {
     text-decoration: none;
+    padding: 7px 10px 5px 10px;
 }
 
 .format-tiles .progress-indic {
@@ -158,8 +156,8 @@ li#section-0.section.main.clearfix {
     width: 100%;
     min-height: 65px;
     text-align: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     background-color: #fff;
     border-top: 0.45em solid transparent;
     -webkit-transition: all 0.2s ease-in-out;
@@ -261,7 +259,6 @@ li#section-0.section.main.clearfix {
     justify-content: flex-start;
     flex-wrap: wrap;
 }
-
 .format-tiles #single_section_tiles {
     display: block;
     padding-left: 0;
@@ -271,7 +268,7 @@ li#section-0.section.main.clearfix {
     display: block;
 }
 .format-tiles.editing ul.tiles#multi_section_tiles li.section {
-    padding: 35px;
+    padding: 0;
 }
 
 .format-tiles .editing ul.tiles#multi_section_tiles li.section,
@@ -283,7 +280,7 @@ li#section-0.section.main.clearfix {
     position: relative;
 }
 .format-tiles .course-content ul li.section.main {
-    width: calc(100% - 2px);
+    width: calc(100% - 15px);
     background-color: white;
     /* stop 'dot' background image in essential theme*/
     background-image: none;
@@ -311,6 +308,7 @@ li#section-0.section.main.clearfix {
 }
 .format-tiles .course-content ul li.section.main.moveablesection {
     padding: 30px 10px 10px 10px;
+    margin-left: 7px;
     /* For snap theme*/
     visibility: visible;
 }
@@ -319,7 +317,6 @@ li#section-0.section.main.clearfix {
     flex-basis: 225px;
     max-width: 260px;
     flex-grow: 1;
-    padding: 7px 10px 5px 10px;
     margin: 7px;
     max-height: 175px;
     vertical-align: top;
@@ -332,6 +329,7 @@ li#section-0.section.main.clearfix {
     color: #777;
     box-shadow: 2px 4px 5px 0 #bdbdbd;
     position: relative;
+    overflow: hidden;
 }
 .format-tiles .course-content ul.tiles .tile.spacer {
     margin-top: 0;
@@ -474,6 +472,9 @@ li#section-0.section.main.clearfix {
     height: 55px;
     font-size: 1em;
 }
+.format-tiles .tileiconcontainer.hasphoto {
+    width: 85px;
+}
 .format-tiles .tileiconcontainer .icon {
     width: 55px;
     height: 55px;
@@ -517,11 +518,18 @@ li#section-0.section.main.clearfix {
     height: 45px;
     text-align: center;
 }
+.format-tiles .expand-section,
+.format-tiles .collapse-section {
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    margin-top: 10px;
+}
 .format-tiles .expand-section {
-    padding: 10px;
-    width: 2.5em;
-    height: 2.5em;
-    text-align: center;
+    background-image: url([[pix:format_tiles|expand]]);
+}
+.format-tiles .collapse-section {
+    background-image: url([[pix:format_tiles|collapse]]);
 }
 .format-tiles ul.tiles .tile .tile-text {
     text-align: left;
@@ -628,7 +636,14 @@ li#section-0.section.main.clearfix {
 .format-tiles .label-collapse-btn {
     float: left;
 }
-
+.format-tiles .expand-collapse-all-btns {
+    right: 0;
+    position: absolute;
+}
+.format-tiles .expand-collapse-all-btns .btn-secondary {
+    /*Adatpable theme*/
+    min-height: unset;
+}
 .format-tiles .buttonhidesec0 {
     cursor: pointer;
     height: 40px;
@@ -724,6 +739,7 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     display: inline-block;
     margin-bottom: 3px;
     min-height: 45px;
+    float: left;
 }
 
 .format-tiles .overall-prog-radial {
@@ -758,9 +774,6 @@ body.jsenabled.format-tiles #collapsiblesec0 {
 }
 .format-tiles .completion-icon.completion-icon-fail {
     background-image: url([[pix:format_tiles|completion-fail]]);
-}
-.format-tiles #embed_module_buttons .completion-icon {
-    opacity: 1;
 }
 .format-tiles .completionchangenotify {
     position: absolute;
@@ -799,10 +812,14 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     margin: 5px 0 2px 0;
     display: none;
     width: calc(100% - 70px);
+    text-align: right;
 }
 
 body.format-tiles.jsenabled .course-content .headerabovetiles {
     display: block;
+}
+.format-tiles .headerabovetiles .progress-indic {
+    height: 42px;
 }
 
 .format-tiles .filterbutton {
@@ -879,10 +896,12 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles .tiles .section.main {
     /* stylelint-disable-next-line declaration-no-important */
     border: 0 !important;
+    /* We use important here as core-course-dragdrop is not replacing this.originalstyle correctly. */
+    /* stylelint-disable-next-line declaration-no-important */
+    opacity: 1 !important;
 }
-
 .format-tiles li.section .availabilityinfo {
-    margin-left: 2em;
+    margin-left: 3em;
 }
 .availabilityinfo.isstealth .tag {
     font-size: 0.6em;
@@ -932,7 +951,9 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles .section .activity .activityinstance div.contentafterlink {
     display: block;
 }
-
+.format-tiles .section .label .mod-indent-outer {
+    padding-left: 0;
+}
 
 @media screen and (max-width: 680px) {
     .format-tiles li.activity.subtile {
@@ -943,7 +964,11 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
         /* stylelint-disable-next-line declaration-no-important */
         margin: 0 5px 3px 0 !important;
         /* stylelint-disable-next-line declaration-no-important */
-        max-width: 48% !important;
+        max-width: 44% !important;
+    }
+    .format-tiles .clickable-region {
+        /* stylelint-disable-next-line declaration-no-important */
+        width: 100% !important;
     }
     .format-tiles li.subtile.spacer {
         /* stylelint-disable-next-line declaration-no-important */
@@ -962,9 +987,26 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     .format-tiles #section-0 ul.section,
     .format-tiles .course-content .card-block {
         /* stylelint-disable-next-line declaration-no-important */
-        margin: 0 0 0 0 !important;
-        /* stylelint-disable-next-line declaration-no-important */
         padding-left: 0 !important;
+    }
+    .format-tiles .card .card-body {
+        /* Moove theme.*/
+        padding: 0;
+    }
+    .format-tiles .course-content ul.section {
+        padding: 1em;
+    }
+    .format-tiles .course-content ul.section.subtiles {
+        margin: auto !important;
+    }
+    .format-tiles .course-content ul.section {
+        /* stylelint-disable-next-line declaration-no-important */
+        margin: 1px !important;
+        /* stylelint-disable-next-line declaration-no-important */
+        padding: 1px !important;
+    }
+    .format-tiles #region-main {
+        padding: 0;
     }
     .format-tiles.path-course-view .card-block {
         padding-left: 0.3em;
@@ -979,7 +1021,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         /* stylelint-disable-next-line declaration-no-important */
         margin: 0 !important;
     }
-    .format-tiles .course-content ul.section {
+    .format-tiles .subtiles .course-content ul.section {
         padding: 0.5em 0.5em 0.5em 1em;
     }
     .format-tiles .pagesechead {
@@ -1005,7 +1047,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     .format-tiles ul.tiles#multi_section_tiles {
         justify-content: center;
     }
-    .format-tiles ul.tiles .tile {
+    .format-tiles .course-content ul.tiles .tile {
         /* stylelint-disable-next-line declaration-no-important */
         flex-basis: 160px !important;
         min-height: 210px;
@@ -1014,13 +1056,11 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         max-width: 45% !important;
         /* stylelint-disable-next-line declaration-no-important */
         padding: 7px 2px 5px 7px !important;
+        margin: 5px;
     }
     .format-tiles .clickable-region {
         /* stylelint-disable-next-line declaration-no-important */
         width: 150px !important;
-    }
-    .format-tiles .section .label .mod-indent-outer {
-        padding-left: 0;
     }
     .format-tiles ul.tiles .tile .tile-text {
         height: 130px;
@@ -1042,8 +1082,25 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     .format-tiles ul.tiles#multi_section_tiles li.section.moveablesection {
         padding: 30px 0 30px 0;
     }
+    .format-tiles li.activity.subtile .activitytitle {
+        font-size: 1em;
+        word-break: break-word;
+        margin-top: 0;
+    }
+    .format-tiles .progress-indic {
+        font-size: 0.8em;
+    }
+    .format-tiles ul.tiles .tile h3 {
+        font-size: 1.1em;
+        word-break: break-word;
+    }
 }
 
+@media screen and (max-width: 330px) {
+    .format-tiles li.activity.subtile .activitytitle {
+        font-size: 0.9em;
+    }
+}
 .format-tiles textarea#id_headertextabovetiles.form-control {
     width: 100%;
 }
@@ -1113,7 +1170,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     padding: 0;
 }
 
-.format-tiles .embed_cm_modal.page .modal-body {
+.format-tiles .embed_cm_modal.mod_page .modal-body {
     padding: 2em;
 }
 .format-tiles .modal-container.embed_cm_modal .modal-header {
@@ -1144,7 +1201,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     font-size: 0.9em;
 }
 .format-tiles .embed_cm_modal button {
-    vertical-align: bottom;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
 }
 .format-tiles .embed_cm_modal .modal-header #modaltitle {
     font-size: 1.2em;
@@ -1168,6 +1227,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     transition: background-size 0.5s ease-in-out;
     background-image: url([[pix:format_tiles|subtile/file-text-o]]);
     position: relative;
+    /* We use important here as dragdrop is not removing its own inline opacity once dragdrop complete.*/
+    /* See moodle-core-dragdrop this.originalstyle (not replaced correctly). */
+    /* stylelint-disable-next-line declaration-no-important */
+    opacity: 1 !important;
 }
 
 .format-tiles .subtile_inner,
@@ -1325,6 +1388,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     font-size: 1.3em;
     font-weight: normal;
     padding-left: 10px;
+    max-height: 160px;
+    overflow: hidden;
+    margin: 0;
 }
 .format-tiles li.activity.subtile .activitytitle a {
     display: block;
@@ -1383,6 +1449,12 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 30px;
     padding-top: 3px;
 }
+.format-tiles .nosubtiles .completioncheckbox .btn:hover,
+.format-tiles .nosubtiles .completioncheckbox .btn:active {
+    /* Adaptable */
+    /* stylelint-disable-next-line declaration-no-important */
+    background-color: inherit !important;
+}
 .format-tiles .subtiles .completioncheckbox.completion-auto .completion-icon {
     margin-top: 2px;
 }
@@ -1392,9 +1464,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 30px;
     width: 30px;
     padding: 0;
-}
-.format-tiles .embed_cm_modal #embed_module_buttons {
-    text-align: center;
+    margin-left: 10px;
 }
 .format-tiles .embed_cm_modal .embed_file_button,
 .format-tiles .modal-container .modal .modal-header button.close {
@@ -1410,50 +1480,67 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     opacity: 0.9;
     text-align: center;
     box-shadow: none;
-    margin-right: 9px;
 }
 .format-tiles .modal-container .modal .modal-header button.close {
     font-size: 1.8em;
     background-repeat: no-repeat;
     background-image: url([[pix:format_tiles|close-white]]);
     background-size: 17px 17px;
-    margin-top: 3px;
 }
-.format-tiles #embed_module_buttons {
-    display: inline-block;
-    right: 50px;
-    position: absolute;
+.format-tiles .modal-container .modal .modal-header .embed-module-buttons .close {
+    /*Clean theme.*/
+    position: relative;
+    top: unset;
+    right: unset;
+}
+.format-tiles .embed-module-buttons {
+    min-width: 125px;
+    text-align: right;
     top: 0;
+    position: absolute;
+    right: 0;
 }
-.format-tiles #embed_module_buttons img.icon {
+.format-tiles .embed-module-buttons button.close {
+    width: 28px;
+    height: 28px;
+    padding-top: 3px;
+    float: none;
+}
+.format-tiles .embed-module-buttons .completion-icon {
+    opacity: 1;
+}
+.format-tiles .embed-module-buttons img.icon {
     width: 23px;
     height: 23px;
     padding-right: 10px;
     padding-bottom: 10px;
     margin: 2px 0 0;
 }
-.format-tiles #embed_module_buttons a:focus,
-.format-tiles #embed_module_buttons form:focus {
+.format-tiles .embed-module-buttons a:focus,
+.format-tiles .embed-module-buttons form:focus {
     outline: 1px dotted;
 }
-.format-tiles #embed_module_buttons .icon:hover,
-.format-tiles #embed_module_buttons img.icon:hover {
+.format-tiles .embed-module-buttons .icon:hover,
+.format-tiles .embed-module-buttons img.icon:hover {
     opacity: 0.7;
 }
-.format-tiles #embed_module_buttons .btn {
+.format-tiles .embed-module-buttons .btn {
     box-shadow: none;
     margin-top: 2px;
 }
-.format-tiles #embed_module_buttons a .icon {
+.format-tiles .embed-module-buttons a .icon {
     color: #fff;
 }
-.format-tiles .embed_cm_modal #embed_module_buttons form {
+.format-tiles .embed_cm_modal .embed-module-buttons form {
     width: 28px;
     height: 28px;
     display: inline-block;
 }
-.format-tiles .embed_cm_modal #embed_module_buttons .completioncheckbox .icon {
+.format-tiles .embed_cm_modal .embed-module-buttons .completioncheckbox .icon {
     padding: 0;
+}
+.format-tiles .embed_cm_modal .modal-title {
+    max-width: calc(100% - 120px);
 }
 .format-tiles .sectionerror {
     margin-left: 30px;
@@ -1524,6 +1611,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     position: absolute;
     bottom: 5px;
     left: 0;
+    font-size: 0.8em;
 }
 .format-tiles li.tile .availabilityinfo {
     line-height: 30px;
@@ -1544,7 +1632,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles .course-content ul.section {
     margin: 0;
-    padding: 1em;
+    padding: 1.2em;
 }
 .format-tiles .course-content ul.section.moveablesection {
     padding: 0;
@@ -1557,7 +1645,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     width: 100%;
 }
 .format-tiles .course-content ul.section.nosubtiles .actions {
-    right: 1.5em;
     margin-top: 0.5em;
 }
 .format-tiles #selectedicon .icon,
@@ -1598,13 +1685,23 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     padding-left: 30px;
 }
 
+.format-tiles.editing ul.section {
+    margin-left: 3em;
+    padding-right: 3em;
+}
+
 .format-tiles .tooltip-inner {
     background-color: #fff;
     color: #181818;
     border: 2px solid #4a4a4a;
-    opacity: 0.95;
+    opacity: 0.98;
 }
-
+.format-tiles.editing .section-summary-activities {
+    width: 200px;
+    text-align: right;
+    max-height: 60px;
+    margin-right: 3px;
+}
 .format-tiles .section-summary-activities .activity-count {
     display: block;
 }
@@ -1660,4 +1757,113 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .btn:active,
 .format-tiles .btn.progresshelp {
     background: inherit;
+}
+
+.format-tiles .course-content ul.tiles .tile.phototile {
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    height: 175px;
+}
+.format-tiles .course-content ul.tiles .tile.phototile  .photo-tile-text {
+    top: 10px;
+    bottom: inherit;
+    width: calc(100% - 10px);
+    text-align: left;
+    position: absolute;
+}
+
+.format-tiles .course-content ul.tiles .tile.phototile .photo-tile-text h3 {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    display: inline;
+    line-height: 30px;
+    padding: 4px 7px;
+    font-size: 20px;
+    color: #fff;
+}
+.format-tiles li.tile.phototile  .availabilityinfo {
+    position: absolute;
+    bottom: 10px;
+}
+/*Alternate styles for previous phototile items ("altstyle")*/
+.format-tiles .course-content ul.tiles .tile.phototile.altstyle .photo-tile-text {
+    bottom: 0;
+    top: inherit;
+    text-align: center;
+    width: 100%;
+}
+.format-tiles .course-content ul.tiles .tile.phototile.altstyle .photo-tile-text h3 {
+    font-size: 1.3em;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 5px;
+    position: relative;
+    display: block;
+    line-height: 25px;
+}
+.format-tiles li.tile.phototile.altstyle  .availabilityinfo {
+    position: inherit;
+    bottom: inherit;
+}
+.format-tiles .existingtilephoto {
+    height: 160px;
+    margin: 10px;
+}
+.format-tiles .tilebarphoto {
+    width: 82px;
+    height: 55px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    float: left;
+}
+
+.format-tiles ul.tiles .phototilebar .tile_bar_text {
+    max-width: calc(100% - 150px);
+}
+
+.format-tiles .iconpickerheader {
+    height: 40px;
+}
+.format-tiles .iconpickerheader #phototilebtn {
+    color: #fff;
+}
+.format-tiles .iconpickerheader #phototilebtn:hover {
+    color: darkslategrey;
+}
+.format-tiles .tile.phototile a {
+    padding: 0;
+}
+.format-tiles .iconpickerphotos {
+    margin: 30px;
+    text-align: center;
+}
+.format-tiles .iconpickerphotos .photo {
+    height: 100px;
+    width: 150px;
+    background-color: lightgrey;
+    display: inline-block;
+    margin: 0.5em;
+}
+
+.format-tiles .iconpickerphotos .photo:hover {
+    opacity: 0.7;
+}
+
+.format-tiles #page-loading-icon img {
+    padding: 100px;
+    height: 50px;
+    width: 50px;
+    opacity: 0.8;
+}
+.format-tiles a#page-loading-icon {
+    color: #0c0c0c;
+    text-decoration: none;
+}
+
+#page-admin-setting-formatsettingtiles #docsbuttons {
+    float: right;
+    transform: translateY(-50px);
+    height: 0;
 }

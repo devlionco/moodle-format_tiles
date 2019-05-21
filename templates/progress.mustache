@@ -57,7 +57,7 @@
 }}
 
 {{#isComplete}}
-    <div class="progress-indic{{#showAsPercent}} percent{{/showAsPercent}}{{#isOverall}} pull-right overall-progress allcomplete{{/isOverall}}"
+    <div class="progress-indic{{#showAsPercent}} percent{{/showAsPercent}}{{#isOverall}} overall-progress allcomplete{{/isOverall}}"
          id="tileprogress-{{tileid}}" data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip">
         {{#isOverall}}{{#pix}}star-o, format_tiles, {{#str}}allcomplete, format_tiles{{/str}}{{/pix}}{{#str}}allcomplete, format_tiles{{/str}}{{/isOverall}}
         {{^isOverall}}{{#pix}}check, format_tiles, {{#str}}allcomplete, format_tiles{{/str}}{{/pix}}{{/isOverall}}
@@ -68,7 +68,7 @@
     {{#numOutOf}}
         {{! if the progress is out of zero then do not show the indicator at all}}
         {{#showAsPercent}}
-        <div class="progress-indic percent{{#isOverall}} pull-right overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
+        <div class="progress-indic percent{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
              data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}"
              title="{{#str}}progress, format_tiles{{/str}}:<br>{{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}}<br>{{percent}}%<br>{{#str}}complete, format_tiles{{/str}}"
              data-toggle="tooltip" data-html="true" >
@@ -88,7 +88,7 @@
         {{/showAsPercent}}
 
         {{^showAsPercent}}
-            <div class="progress-indic{{#isOverall}} pull-right overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
+            <div class="progress-indic{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
                  title="{{#str}}progress, format_tiles{{/str}}:<br> {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) <br>{{#str}}complete, format_tiles{{/str}}"
                  data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip" data-html="true">
                 {{#str}}progress, format_tiles{{/str}}:<br>

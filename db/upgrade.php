@@ -18,7 +18,7 @@
  * Upgrade scripts for course format "Tiles"
  *
  * @package    format_tiles
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -120,6 +120,33 @@ function xmldb_format_tiles_upgrade($oldversion) {
         unset_config('showiconslist', 'format_tiles'); // Removed functionality.
 
         upgrade_plugin_savepoint(true, 2018080103, 'format', 'tiles');
+    }
+
+    if ($oldversion < 2019052100) {
+        // Check the "URL" box under admin settings "Modal resources" (this is a new setting we want on by default).
+        $setting = get_config('format_tiles', 'modalresources');
+        if ($setting == '') {
+            set_config('modalresources', 'url', 'format_tiles');
+        } else {
+            $setting = explode(",", get_config('format_tiles', 'modalresources'));
+            if (in_array('url', $setting) === false) {
+                $setting[] = 'url';
+                $setting = implode(",", $setting);
+                set_config('modalresources', $setting, 'format_tiles');
+            }
+        }
+
+        // Store the sample photo tile image in the database.
+        $fs = get_file_storage();
+        $filerecord = format_tiles\tile_photo::file_api_params();
+        $filerecord['contextid'] = \context_system::instance()->id;
+        $filerecord['itemid'] = 0;
+        $filerecord['mimetype'] = 'image/jpeg';
+        $filerecord['filename'] = 'sample_image.jpg';
+        $path = $CFG->dirroot . '/course/format/tiles/';
+        $fs->create_file_from_pathname($filerecord, $path . $filerecord['filename']);
+
+        upgrade_plugin_savepoint(true, 2019052100, 'format', 'tiles');
     }
     return true;
 }

@@ -1,4 +1,4 @@
-@format @format_tiles @icon_picker @javascript
+@format @format_tiles @format_tiles_icon_picker @javascript
 Feature: Teacher can allocate icons to tiles
 
   Background:
@@ -86,4 +86,4 @@ Feature: Teacher can allocate icons to tiles
     And I click on tile "1"
     And I wait "1" seconds
     And I click on close button for tile "1"
-    And I log out
+    And I log out tiles

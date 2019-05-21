@@ -34,7 +34,11 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     When I am on "Course 1" course homepage with editing mode on
     And format_tiles subtiles are off for course "Course 1"
     And I wait until the page is ready
+    And I follow "Collapse all"
+    And I wait until the page is ready
     And I expand section "1" for edit
+    And I wait until the page is ready
+    And I wait "3" seconds
     And I add a "page" to section "1"
     And I wait until the page is ready
     And I wait "2" seconds
@@ -66,7 +70,7 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     And "Test page 1" "text" should not be visible
     And "Test page 2" "text" should not be visible
     And I wait "1" seconds
-    And I log out
+    And I log out tiles
 
 #Now try the same again with sub tiles on
   @javascript
@@ -74,7 +78,11 @@ Feature: Teacher can add a page to a course and open it with subtiles off
     When I am on "Course 1" course homepage with editing mode on
     And format_tiles subtiles are on for course "Course 1"
     And I wait until the page is ready
+    And I follow "Collapse all"
+    And I wait until the page is ready
+    And I wait "2" seconds
     And I expand section "1" for edit
+    And I wait until the page is ready
     And I add a "page" to section "1"
     And I wait until the page is ready
     And I wait "2" seconds

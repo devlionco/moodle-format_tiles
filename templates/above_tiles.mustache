@@ -1,0 +1,30 @@
+{{^isediting}}{{#usingjsnav}}
+    <div id="abovetiles">
+        <div id="headerabovetiles" class="headerabovetiles" aria-hidden="true">
+            {{#is_multi_section}}
+                {{#has_filter_buttons}}
+                    <div id="filterbuttons">
+                            <span id="filterintro">
+                                {{#pix}}filter, format_tiles{{/pix}}
+                            </span>
+                        {{#fiternumberedbuttons}}
+                            {{> format_tiles/filterbutton}}
+                        {{/fiternumberedbuttons}}
+                        {{#fiteroutcomebuttons}}
+                            {{> format_tiles/filterbutton}}
+                        {{/fiteroutcomebuttons}}
+                        <div id="filterbutton-all" class="filterbutton" data-buttonid="all" data-sections="[all]">
+                            {{#str}}all, format_tiles{{/str}}
+                        </div>
+                    </div>
+                {{/has_filter_buttons}}
+                {{#overall_progress_indicator}}
+                    {{> format_tiles/progress}}
+                {{/overall_progress_indicator}}
+            {{/is_multi_section}}
+            {{^isediting}}{{#section_zero_show}}
+                <div class="buttonhidesec0 open" id="buttonhidesec0"></div>
+            {{/section_zero_show}}{{/isediting}}
+        </div>
+    </div>
+{{/usingjsnav}}{{/isediting}}

@@ -44,15 +44,16 @@
     }
 }}
 
-<div class="tileiconcontainer" {{#isediting}}data-toggle="tooltip"{{/isediting}} data-sectionid="{{secid}}"
-     data-section="{{tileid}}"{{#isediting}} data-original-title="{{#str}}tooltipchangeicon, format_tiles{{/str}}"{{/isediting}}>
-    <span class="launchiconpicker" id="tileicon_{{tileid}}" data-sectionid="{{secid}}"
-          data-section="{{tileid}}">
-        {{#tileicon}}
-            {{#pix}}tileicon/{{{tileicon}}}, format_tiles, {{{title}}}{{/pix}}
-        {{/tileicon}}
-        {{^tileicon}}
-            {{#pix}}tileicon/{{{defaulttileicon}}}, format_tiles, {{{title}}}{{/pix}}
-        {{/tileicon}}
-    </span>
-</div>
+<span class="tile-icon{{#isediting}} launchiconpicker{{/isediting}}"
+    {{#isediting}}
+      data-section="{{tileid}}" data-sectionid="{{secid}}" data-sectionid="3" data-section="2"
+          {{^allowphototiles}}title="{{#str}}picknewicon, format_tiles{{/str}}{{/allowphototiles}}"
+          {{#allowphototiles}}title="{{#str}}picknewiconphoto, format_tiles{{/str}}{{/allowphototiles}}"
+    {{/isediting}}>
+    {{#tileicon}}
+        {{#pix}}tileicon/{{{tileicon}}}, format_tiles{{/pix}}
+    {{/tileicon}}
+    {{^tileicon}}
+        {{#pix}}tileicon/{{{defaulttileicon}}}, format_tiles{{/pix}}
+    {{/tileicon}}
+</span>

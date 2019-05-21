@@ -18,12 +18,14 @@
  * Format tiles external API
  *
  * @package    format_tiles
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+use format_tiles\tile_photo;
 
+defined('MOODLE_INTERNAL') || die;
+global $CFG;
 require_once("$CFG->libdir/externallib.php");
 require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
 
@@ -32,7 +34,7 @@ require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
  *
  * @package    format_tiles
  * @category   external
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.3
  */
@@ -42,30 +44,132 @@ class format_tiles_external extends external_api
      * Teacher is changing the icon for a course section or whole course using AJAX
      * @param Integer $courseid the id of this course
      * @param Integer $sectionid the number of the section in this course - zero if whole course
-     * @param String $icon
-     * @return bool success
+     * @param String $filename the icon filename or photo filename for this tile.
+     * @return [] status and image URL if applicable.
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
      * @throws required_capability_exception
      * @throws restricted_context_exception
      */
-    public static function set_icon($courseid, $sectionid, $icon) {
+    public static function set_image(
+        $courseid, $sectionid, $filename, $imagetype = 'tileicon', $sourcecontextid = 0, $sourceitemid = 0
+    ) {
         global $DB;
 
-        $data = self::validate_parameters(self::set_icon_parameters(),
+        $data = self::validate_parameters(self::set_image_parameters(),
             array(
                 'courseid' => $courseid,
                 'sectionid' => $sectionid,
-                'icon' => $icon,
+                'image' => $filename,
+                'sourcecontextid' => $sourcecontextid,
+                'sourceitemid' => $sourceitemid,
+                'imagetype' => $imagetype
             )
         );
+
+        // Section id of zero means we are changing the course icon.  Otherwise check sec id is valid.
+        if ($data['sectionid'] !== 0 && $DB->get_record('course_sections',
+                array('course' => $data['courseid'], 'id' => $data['sectionid'])) === false) {
+            throw new invalid_parameter_exception('Invalid course and section id combination');
+        }
+
         $context = context_course::instance($data['courseid']);
         self::validate_context($context);
-        require_capability('moodle/course:update', $context);
+        require_capability('moodle/course:viewhiddenactivities', $context); // This allows non-editing teachers for the course.
 
+        switch ($data['imagetype']) {
+            case 'tileicon':
+                $result = self::set_tile_icon($data);
+                break;
+            case 'tilephoto':
+                if (!get_config('format_tiles', 'allowphototiles')) {
+                    throw new invalid_parameter_exception("Photo tiles are disabled by site admin");
+                }
+                $result = self::set_tile_photo($data);
+                break;
+            case 'draftfile':
+                $result = self::set_tile_photo_from_draftfile($data);
+                break;
+            default:
+                throw new invalid_parameter_exception('Image type is invalid ' . $data['imagetype']);
+        }
+        return $result;
+    }
+
+    private static function set_tile_photo_from_draftfile($data) {
+        if (!$data['sourcecontextid'] || !$data['sourceitemid']) {
+            throw new invalid_parameter_exception("Invalid source context id or source item id");
+        }
+        $tilephoto = new tile_photo($data['courseid'], $data['sectionid']);
+        $fs = get_file_storage();
+        $sourcefile = $fs->get_file(
+            $data['sourcecontextid'],
+            'user',
+            'draft',
+            $data['sourceitemid'],
+            '/',
+            $data['image']
+        );
+        $newfile = $tilephoto->set_file_from_stored_file($sourcefile, $data['image']);
+        if ($newfile) {
+            return array(
+                'status' => true,
+                'imageurl' => $tilephoto->get_image_url()
+            );
+        } else {
+            return array(
+                'status' => false,
+                'imageurl' => ''
+            );
+        }
+    }
+
+    private static function set_tile_photo($data) {
+        $sourcecontext = context::instance_by_id($data['sourcecontextid']);
+        $issettingsampleimage =
+            $sourcecontext->contextlevel == CONTEXT_SYSTEM && $data['sourceitemid'] == 0 & $data['image'] == 'sample_image.jpg';
+
+        if (!$data['sourcecontextid'] || (!$data['sourceitemid'] && !$issettingsampleimage)) {
+            throw new invalid_parameter_exception("Invalid source context id or source item id");
+        }
+
+        if ($sourcecontext->contextlevel !== CONTEXT_COURSE && !$issettingsampleimage) {
+            throw new InvalidArgumentException("Invalid context level");
+        }
+
+        if ($data['sourcecontextid'] &&!$issettingsampleimage) {
+            // Arguably we don't need to do this as the only files the user will see are those they posted themselves.
+            // This is thanks to the database query which generates the files list. So they could see them once.
+            require_capability('moodle/course:viewhiddenactivities', $sourcecontext);
+        }
+        $courseid = $sourcecontext->instanceid;
+        if ($issettingsampleimage) {
+            $sourcefile = tile_photo::get_sample_image_file();
+        } else {
+            $sourcephoto = new tile_photo($courseid, $data['sourceitemid']);
+            $sourcefile = $sourcephoto->get_file();
+        }
+
+        $tilephoto = new tile_photo($data['courseid'], $data['sectionid']);
+        $file = $tilephoto->set_file_from_stored_file($sourcefile, $data['image']);
+        if ($file) {
+            return array(
+                'status' => true,
+                'imageurl' => $tilephoto->get_image_url()
+            );
+        } else {
+            return array(
+                'status' => false,
+                'imageurl' => ''
+            );
+        }
+    }
+
+    private static function set_tile_icon($data) {
+        global $DB;
         $availableicons = (new \format_tiles\icon_set)->available_tile_icons($data['courseid']);
-        if (!isset($availableicons[$data['icon']])) {
+        if (!isset($availableicons[$data['image']])) {
             throw new invalid_parameter_exception('Icon is invalid');
         }
 
@@ -86,7 +190,7 @@ class format_tiles_external extends external_api
             $record->courseid = $data['courseid'];
             $record->sectionid = $data['sectionid'];
             $record->name = $optionname;
-            $record->value = $data['icon'];
+            $record->value = $data['image'];
             $result = $DB->insert_record('course_format_options', $record);
         } else if ($data['sectionid'] != 0) {
             // We are dealing with a tile icon for one particular section, so check if user has picked the course default.
@@ -94,7 +198,7 @@ class format_tiles_external extends external_api
                 'course_format_options',
                 ['format' => 'tiles', 'name' => 'defaulttileicon', 'courseid' => $data['courseid'], 'sectionid' => 0]
             )->value;
-            if ($data['icon'] == $defaulticonthiscourse) {
+            if ($data['image'] == $defaulticonthiscourse) {
                 // Using default icon for a tile do don't store anything in database = default.
                 $result = $DB->delete_records(
                     'course_format_options',
@@ -102,19 +206,24 @@ class format_tiles_external extends external_api
                 );
             } else {
                 // User has not picked default and there is an existing record so update it.
-                $existingicon->value = $data['icon'];
+                $existingicon->value = $data['image'];
                 $result = $DB->update_record('course_format_options', $existingicon);
             }
         } else {
             // Updating existing course icon record.
-            $existingicon->value = $data['icon'];
+            $existingicon->value = $data['image'];
             $result = $DB->update_record('course_format_options', $existingicon);
         }
-        if ($result) {
-            return true;
-        } else {
-            return false;
+
+        if ($data['sectionid'] !== 0) {
+            // If there is a tile photo attached to this tile, clear it.
+            $tilephoto = new tile_photo($data['courseid'], $data['sectionid']);
+            $tilephoto->clear();
         }
+        return  array(
+            'status' => $result ? true : false,
+            'imageurl' => ''
+        );
     }
 
     /**
@@ -122,13 +231,23 @@ class format_tiles_external extends external_api
      *
      * @return external_function_parameters
      */
-    public static function set_icon_parameters() {
+    public static function set_image_parameters() {
         return new external_function_parameters(
             array(
-                'courseid' => new external_value(PARAM_INT, 'course id to edit'),
-                'sectionid' => new external_value(PARAM_INT, 'section id to edit - zero means whole course not just one section'),
-                'icon' => new external_value(PARAM_RAW, 'file name for the icon picked')
+                'courseid' => new external_value(PARAM_INT, 'Course id whose icon/image we are setting'),
+                'sectionid' => new external_value(
+                    PARAM_INT,
+                    'Section id whose icon/imasge we are setting (zero means whole course not just one section)'
+                ),
+                'image' => new external_value(PARAM_RAW, 'File name for the image picked'),
+                'imagetype' => new external_value(PARAM_RAW, 'Image type for image picked (tileicon, tilephoto, draftfile)'),
+                'sourcecontextid' => new external_value(
+                    PARAM_INT, 'File table context id for the photo file picked (0 if unused)', VALUE_DEFAULT, 0
+                ),
+                'sourceitemid' => new external_value(
+                    PARAM_INT, 'File table item id for the photo file picked (0 if unused)', VALUE_DEFAULT, 0
                 )
+            )
         );
     }
 
@@ -136,8 +255,11 @@ class format_tiles_external extends external_api
      * Returns description of method result value
      * @return external_description
      */
-    public static function set_icon_returns() {
-        return new external_value(PARAM_BOOL, 'Whether the icon was set');
+    public static function set_image_returns() {
+        return new external_single_structure(array(
+            'status' => new external_value(PARAM_BOOL, 'Whether the image was set'),
+            'imageurl' => new external_value(PARAM_RAW, 'Image URL if background photo set (not used for icons)'),
+        ));
     }
 
     /**
@@ -257,7 +379,7 @@ class format_tiles_external extends external_api
                 // Record from the page table.
                 $record = $DB->get_record($mod->modname, array('id' => $mod->instance), 'intro, content, revision, contentformat');
                 $renderer = $PAGE->get_renderer('format_tiles');
-                $content = $renderer->format_cm_content_text($mod, $record);
+                $content = $renderer->format_cm_content_text($mod, $record, $modcontext);
                 $result['status'] = true;
                 $result['html'] = $content;
                 return $result;
@@ -495,11 +617,16 @@ class format_tiles_external extends external_api
                 );
             }
         };
-        return array(
+        $data = array(
             'status' => true,
             'warnings' => [],
-            'icons' => json_encode((new \format_tiles\icon_set)->available_tile_icons($courseid))
+            'icons' => json_encode((new \format_tiles\icon_set)->available_tile_icons($courseid)),
+            'photos' => ''
         );
+        if (get_config('format_tiles', 'allowphototiles')) {
+            $data['photos'] = json_encode(tile_photo::get_photo_library_photos($context->id));
+        }
+        return $data;
     }
 
     /**
@@ -526,7 +653,80 @@ class format_tiles_external extends external_api
     public static function get_icon_set_returns () {
         return new external_single_structure(
             array(
-                'icons' => new external_value(PARAM_RAW, 'Icon set available for use on tile icons (JSON array)')
+                'icons' => new external_value(PARAM_RAW, 'Icon set available for use on tile icons (JSON array)'),
+                'photos' => new external_value(PARAM_RAW, 'Recent photos set for teacher photo library (JSON array)')
+            )
+        );
+    }
+
+    /**
+     * Set the result of the JS calculation of the optimal width of the main tiles window for a course.
+     * This has to be by course as they have different numbers of tiles.
+     * We can then use this to render the page from PHP at the correct width initially next time.
+     * @param int $courseid the course id we are in
+     * @param int $width the JS calculated width
+     * @see format_tiles_width_template_data() for where this is used.
+     * @return array of warnings and status result
+     * @since Moodle 3.0
+     * @throws moodle_exception
+     */
+    public static function set_session_width($courseid, $width) {
+        global $SESSION;
+        $params = self::validate_parameters(
+            self::set_session_width_parameters(),
+            array('courseid' => $courseid, 'width' => $width)
+        );
+        // Request and permission validation - validate_context() includes require_login() check.
+        $coursecontext = context_course::instance($params['courseid']);
+        self::validate_context($coursecontext);
+        $sessionvar = 'format_tiles_width_' . $params['courseid'];
+
+        if (!get_config('format_tiles', 'fittilestowidth')) {
+            throw new invalid_parameter_exception("Setting tiles width is disabled by site admin");
+        }
+
+        if ($params['width'] < 300 || $params['width'] > 3000) {
+            // Value passed is out of bounds, so unset as something has gone wrong.
+            unset($SESSION->$sessionvar);
+            return array('status' => false, 'warnings' => ['Session width out bounds']);
+        }
+
+        $SESSION->$sessionvar = $params['width'];
+        return array('status' => true, 'warnings' => []);
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.0
+     */
+    public static function set_session_width_parameters() {
+        return new external_function_parameters(
+            array(
+                'courseid' => new external_value(PARAM_INT, 'Course id'),
+                'width' => new external_value(
+                    PARAM_INT,
+                    'The JS calculated width optimal width for tiles window (used to render from PHP next time)',
+                    VALUE_DEFAULT,
+                    0,
+                    true
+                ),
+            )
+        );
+    }
+
+    /**
+     *
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle 3.0
+     */
+    public static function set_session_width_returns () {
+        return new external_single_structure(
+            array(
+                'status' => new external_value(PARAM_BOOL, 'status: true if success')
             )
         );
     }

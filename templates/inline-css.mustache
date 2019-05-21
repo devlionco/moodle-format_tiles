@@ -84,10 +84,16 @@
         color: #fff;
         opacity: 0.8;
     }
-    .format-tiles .embed_cm_modal .modal-header {
+    .format-tiles .embed_cm_modal .modal-header,
+    .format-tiles .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
         background-color: {{base_colour}};
+        color: #fff;
     }
-    .format-tiles .sectiontitle::after{
+    .format-tiles a.nav-link {
+        color: {{base_colour}};
+    }
+    .format-tiles .sectiontitle::after,
+    .format-tiles .tag-info {
         background-color: {{base_colour}};
     }
     .format-tiles ul.tiles .headerabovetiles button:hover {
@@ -128,5 +134,32 @@
             border-left-width: 10px;
         }
     {{/shade_heading_bar}}
+
+    {{#allowphototiles}}
+        .format-tiles .course-content ul.tiles .tile.phototile .photo-tile-text h3 {
+            background-color: {{photo_tile_text_bg}};
+            line-height: {{phototiletextlineheight}}px;
+            padding: {{phototiletextpadding}}px 7px;
+        }
+    {{/allowphototiles}}
+
+    {{^ismobile}}
+        {{#hidetilesinitially}}
+            {{!We will remove this opacity in JS}}
+            .format-tiles.jsenabled ul.tiles,
+            .format-tiles.jsenabled li.tile,
+            .format-tiles.jsenabled #section-0,
+            .format-tiles.jsenabled ul.tiles .tile.tile-restricted,
+            .format-tiles.jsenabled ul.tiles .tile.tile-hidden {
+                opacity: 0;
+            }
+        {{/hidetilesinitially}}
+
+        {{#defaultscreenwidthsession}}
+            .format-tiles.jsenabled ul.tiles {
+                max-width: {{defaultscreenwidthsession}}px;
+            }
+        {{/defaultscreenwidthsession}}
+    {{/ismobile}}
 </style>
 {{#custom_css}}<style type="text/css">{{{custom_css}}}</style>{{/custom_css}}

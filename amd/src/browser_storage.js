@@ -14,55 +14,43 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Javascript Module to handle browser storage for format_tiles
+ * Javascript Module to handle browser storage for format_tiles for student view.
+ * (Can also be used by staff when they view the student view).
  * Stores and retrieves course content and settings
  * e.g. which filter button do I have pressed
  *
  * @module browser_storage
  * @package course/format
  * @subpackage tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 3.3
  */
 /*global localStorage, sessionStorage, setTimeout*/
 /* eslint space-before-function-paren: 0 */
 
-define(["jquery", "core/str", "core/notification"], function ($, str, Notification) {
+define(["jquery", "format_tiles/browser_storage_set_up"], function ($, storageSetUp) {
     "use strict";
 
     var courseId;
     var userId;
-    var storageEnabled = {
-        local: false,
-        session: false
-    };
-    var storageType = {
-        local: "local",
-        session: "session"
-    };
-    var storageUserConsent = {
-        GIVEN: "yes", // What to store in local storage to indicate consent granted.
-        DENIED: "no", // Or to indicate consent denied.
-        userChoice: null // The user's current choice - initially null as we have not yet checked local storage or asked user.
-    };
 
     var localStorageKeyElements = {
-        prefix: "mdl-",
-        course: "mdl-course-",
+        prefix: "mdl-tiles-",
+        course: "mdl-tiles-course-",
         lastSection: "-lastSecId",
         content: "-content",
         lastUpdated: "-lastUpdated",
-        userPrefStorage: "mdl-tiles-userPrefStorage",
         collapseSecZero: "-collapsesec0",
         user: "-user-",
-        section: "-sec-"
+        section: "-sec-",
+        userChoicePrefix: "mdl-tiles-userPrefStorage-"
     };
 
     var MAX_SECTIONS_TO_STORE;
     /**
      * The last visited section number will be stored with a key in the format
-     * mdl-course-[courseid]-lastSecId
+     * mdl-tiles-course-[courseid]-lastSecId
      * @returns {string} the key to use for this course
      */
     var encodeLastVistedSectionKeyName = function() {
@@ -73,7 +61,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
     /**
      The last visited section's content will be stored with a key in the format
-     * mdl-course-[courseid]-sec-[sectionid]-content
+     * mdl-tiles-course-[courseid]-sec-[sectionid]-content
      * @param {number} sectionId the section Id we are interested in
      * @returns {string} the key to use for this course section's content
      */
@@ -87,7 +75,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
     /**
      * The last update time for the content for this section
      * will be stored with a key in the format
-     * mdl-course-[courseid]-sec-[sectionid]-lastUpdated
+     * mdl-tiles-course-[courseid]-sec-[sectionid]-lastUpdated
      * @param {number} sectionId the section Id we are interested in
      * @returns {string} the key to use for this course section's content update time
      */
@@ -109,55 +97,17 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             + localStorageKeyElements.collapseSecZero;
     };
 
-    var encodeUserPrefStorageKey = function() {
-        return localStorageKeyElements.userPrefStorage + localStorageKeyElements.user + userId;
-    };
-
     /**
      * Check if the current key name is a last updated content key or not
      * The format used if this is true will be
-     * mdl-course-[courseid]-sec-[sectionid]-lastUpdated
+     * mdl-tiles-course-[courseid]-sec-[sectionid]-lastUpdated
      * Check for this and return true if this key matches
      * @param {string} key the key to check
      * @returns {boolean} whether it matches or not
      */
     var isContentLastUpdatedKeyName = function(key) {
-        return key.substring(0, 4) === localStorageKeyElements.prefix
-            && key.substr(-12) === localStorageKeyElements.lastUpdated;
-    };
-
-    /**
-     * Check if the user's browser supports localstorage or session storage
-     * @param {String} localOrSession the type of storage we wish to check
-     * @param {number} maxSectionsToStore how many sections the site admin has said we can store
-     * @returns {boolean} whether or not storage is supported
-     */
-    var storageInitialCheck = function (localOrSession, maxSectionsToStore) {
-        var storage;
-        if (!maxSectionsToStore) {
-            return false;
-        }
-        try {
-            if (localOrSession === storageType.local) {
-                storage = localStorage;
-            } else if (localOrSession === storageType.session) {
-                storage = sessionStorage;
-            }
-            if (typeof storage === "undefined") {
-                return false;
-            }
-            storage.setItem("testItem", "testValue");
-            if (storage.getItem("testItem") === "testValue") {
-                storage.removeItem("testItem");
-                return true;
-            }
-            return false;
-        } catch (err) {
-            require(["core/log"], function(log) {
-                log.debug(err);
-            });
-            return false;
-        }
+        return key.indexOf(localStorageKeyElements.prefix) === 0
+            && key.substr(-localStorageKeyElements.lastUpdated.length) === localStorageKeyElements.lastUpdated;
     };
 
     /**
@@ -174,7 +124,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         }
         try {
             if (html !== undefined && html !== ""
-                && storageEnabled.session && storageUserConsent.userChoice === storageUserConsent.GIVEN) {
+                && storageSetUp.Enabled.session && storageSetUp.storageAllowed() === true) {
                 sessionStorage.setItem(encodeContentKeyName(sectionId), html);
                 sessionStorage.setItem(
                     encodeContentLastUpdatedKeyName(sectionId),
@@ -194,19 +144,17 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
     /**
      * Decode a storage key in the format
-     * mdl-course-2-sec-3-user-2-lastUpdated
-     * i.e. course 2, section 3, user 2
-     * @param {string} key the text value of key e.g. mdl-course-12-sec-7-lastUpdated
+     * @param {string} key the text value of key e.g. mdl-tiles-course-3-sec-10-user-2-lastUpdated
      * @return {object} json with key values
      */
     var decodeLastUpdatedKey = function (key) {
         var splitKey = key.split("-");
         if (isContentLastUpdatedKeyName(key)) {
             return {
-                courseId: parseInt(splitKey[2]),
-                sectionId: parseInt(splitKey[4]),
-                userId: parseInt(splitKey[6]),
-                title: splitKey[7]
+                courseId: parseInt(splitKey[splitKey.indexOf("course") + 1]),
+                sectionId: parseInt(splitKey[splitKey.indexOf("sec") + 1]),
+                userId: parseInt(splitKey[splitKey.indexOf("user") + 1]),
+                title: "lastUpdated"
             };
         } else {
             throw new Error("Invalid lastUpdated key");
@@ -229,7 +177,8 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
         // Otherwise leave it (used for last visited section IDs etc).
         if (clearBrowserStorage) {
             Object.keys(localStorage).filter(function (key) {
-                return key.substring(0, 4) === localStorageKeyElements.prefix && key !== encodeUserPrefStorageKey();
+                return key.indexOf(localStorageKeyElements.prefix) === 0
+                    && key.indexOf(localStorageKeyElements.userChoicePrefix) !== 0;
             }).forEach(function (item) {
                 // Item does relate to this plugin.
                 // It is not the user's preference about whether to use storage or not (keep that).
@@ -239,7 +188,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             // Now clean sessionStorage (used for course content HTML).
             Object.keys(sessionStorage).filter(function (key) {
                 // Filter to only keys relating to this plugin.
-                return key.split("-")[0] === "mdl";
+                return key.indexOf(localStorageKeyElements.prefix) === 0;
             }).forEach(function (itemKey) {
                 // Item does relate to this plugin.
                 if (isContentLastUpdatedKeyName(itemKey)) {
@@ -253,7 +202,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             var staleTime = Math.round(Date.now() / 1000) - contentDeleteMins * 60;
             Object.keys(sessionStorage).filter(function (key) {
                 // Filter to only keys relating to this plugin.
-                return key.split("-")[0] === "mdl";
+                return key.indexOf(localStorageKeyElements.prefix) === 0;
             }).forEach(function (itemKey) {
                 if (isContentLastUpdatedKeyName(itemKey)) {
                     var params = decodeLastUpdatedKey(itemKey);
@@ -294,34 +243,10 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
     };
 
     /**
-     * Launch the window enabling the user to select whether we want to store data locally or not
+     * Clear all storage used by this plugin.
      */
-    var launchUserPreferenceWindow = function () {
-        str.get_strings([
-            {key: "datapref", component: "format_tiles"},
-            {key: "dataprefquestion", component: "format_tiles"},
-            {key: "yes"},
-            {key: "no"}
-        ]).done(function (s) {
-            Notification.confirm(
-                s[0],
-                s[1],
-                s[2],
-                s[3],
-                function () {
-                    storageUserConsent.userChoice = storageUserConsent.GIVEN;
-                    localStorage.setItem(encodeUserPrefStorageKey(), storageUserConsent.GIVEN);
-                    storageEnabled.local = storageInitialCheck(storageType.local, MAX_SECTIONS_TO_STORE);
-                    storageEnabled.session = storageInitialCheck(storageType.session, MAX_SECTIONS_TO_STORE);
-                },
-                function () {
-                    storageUserConsent.userChoice = storageUserConsent.DENIED;
-                    localStorage.setItem(encodeUserPrefStorageKey(), storageUserConsent.DENIED);
-                    cleanUp(0, 1, 0);
-                    storageEnabled.local = 0;
-                }
-            );
-        });
+    var clearAllStorage = function() {
+        cleanUp(0, 1, 1);
     };
 
     /**
@@ -332,7 +257,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
      * @param {number} sectionNum the section number last visited
      */
     var setLastVisitedSection = function (sectionNum) {
-        if (sectionNum && storageEnabled.local) {
+        if (sectionNum && storageSetUp.Enabled.local) {
             localStorage.setItem(encodeLastVistedSectionKeyName(), sectionNum.toString());
         } else {
             localStorage.removeItem(encodeLastVistedSectionKeyName());
@@ -346,76 +271,49 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
             courseId = course.toString();
             userId = user.toString();
             MAX_SECTIONS_TO_STORE = parseInt(maxContentSectionsToStore);
-             // Work out if we should be using local storage or not - does user want it and is it available.
-             // Local is used for storing small items last sec visited ID etc.
-             // Session is used for course content.
-            storageUserConsent.userChoice = parseInt(assumeDataStoreConsent) === 1
-                ? storageUserConsent.GIVEN
-                : localStorage.getItem(encodeUserPrefStorageKey());
-            if (storageUserConsent.userChoice === storageUserConsent.DENIED) {
-                storageEnabled.local = false;
-                storageEnabled.session = 0;
-                cleanUp(0, 1, 0);
-            } else {
-                storageEnabled.local = storageInitialCheck(storageType.local, MAX_SECTIONS_TO_STORE);
-                storageEnabled.session = storageInitialCheck(storageType.session, MAX_SECTIONS_TO_STORE);
-            }
+            storageSetUp.init(userId, assumeDataStoreConsent, clearAllStorage);
 
             $(document).ready(function () {
-                if (assumeDataStoreConsent === 1) {
-                    storageUserConsent.userChoice = storageUserConsent.GIVEN;
+
+                if (storageSetUp.storageAllowed() !== true) {
+                    cleanUp(0, 1, 0);
                 }
-                 // We do not know if if user is content for us to use local storage, so find out.
-                if ((storageEnabled.local || storageEnabled.session) && storageUserConsent.userChoice === null) {
-                    setTimeout(function () {
-                        launchUserPreferenceWindow();
-                    }, 500);
-                }
-
-                // If the user clicks the "Data preference" item in the navigation menu,
-                // show them the dialogue box to re-enter their local storage choice.
-
-                $('a[href*="datapref"]').click(function (e) {
-                    e.preventDefault();
-                    launchUserPreferenceWindow();
-                });
-
                 if (isEditing) {
                     // Teacher is editing now so not using JS nav but set their current section for when they stop editing.
                     setLastVisitedSection(sectionNum);
                     // Clear storage in case they just changed something.
                     cleanUp(0, 1, 0);
-                    if (storageEnabled.session) {
+                    if (storageSetUp.Enabled.session) {
                         storeCourseContent(courseId, sectionNum, "");
                     }
+                    // If user switches to another role, clear any stored content so they only see new role's content.
+                    $('a.menu-action[data-title="switchroleto,moodle"]').click(function() {
+                        cleanUp(0, 1, 0);
+                    });
+                } else {
+                    var pageContent = $("#page-content");
+                    if (pageContent.length === 0) {
+                        // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
+                        pageContent = $("#region-main");
+                    }
+                    pageContent.on("click", ".tile", function () {
+                        // Evict unused HTML content from session storage to reduce footprint (after a delay).
+                        setTimeout(function () {
+                            cleanUp(parseInt(storedContentDeleteMins), 0, MAX_SECTIONS_TO_STORE);
+                        }, 2000);
+                    });
                 }
-
-                var pageContent = $("#page-content");
-                if (pageContent.length === 0) {
-                    // Some themes e.g. RemUI do not have a #page-content div, so use #region-main.
-                    pageContent = $("#region-main");
-                }
-                pageContent.on("click", ".tile", function () {
-                    // Evict unused HTML content from session storage to reduce footprint (after a delay).
-                    setTimeout(function () {
-                        cleanUp(parseInt(storedContentDeleteMins), 0, MAX_SECTIONS_TO_STORE);
-                    }, 2000);
-                });
-                // If user switches to another role, clear any stored content so they only see new role's content.
-                $('a.menu-action[data-title="switchroleto,moodle"]').click(function() {
-                    cleanUp(0, 1, 0);
-                });
             });
         },
 
         storageEnabledSession: function () {
-            return storageEnabled.session;
+            return storageSetUp.Enabled.session;
         },
         storageEnabledLocal: function () {
-            return storageEnabled.local;
+            return storageSetUp.Enabled.local;
         },
-        storageUserPreference: function () {
-            return storageUserConsent.userChoice === storageUserConsent.GIVEN;
+        storagestorageSetUperence: function () {
+            return storageSetUp.storageAllowed();
         },
 
         /**
@@ -423,7 +321,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
          * @return {string|null} the section ID or null if none stored
          */
         getLastVisitedSection: function () {
-            return localStorage.getItem(encodeLastVistedSectionKeyName());
+            return storageSetUp.Enabled.local && localStorage.getItem(encodeLastVistedSectionKeyName());
         },
 
         /**
@@ -461,7 +359,7 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
          * @param {string} status to be applied
          */
         setSecZeroCollapseStatus: function (status) {
-            if (storageEnabled.local && storageUserConsent.userChoice === storageUserConsent.GIVEN) {
+            if (storageSetUp.Enabled.local && storageSetUp.storageAllowed()) {
                 if (status === "collapsed") {
                     localStorage.removeItem(collapseSecZeroKey());
                 } else {
@@ -484,17 +382,12 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
         cleanUpStorage: function () {
             // Return object ("public") access to the "private" method above (used when teacher edits course settings).
-            cleanUp(0, 1, 1);
-        },
-
-        launchUserPreferenceWindow: function () {
-            // Return object ("public") access to the "private" method above.
-            launchUserPreferenceWindow();
+            clearAllStorage();
         },
 
         setLastVisitedSection: function (sectionNum) {
             // Return object ("public") access to the "private" method above.
-            if (storageUserConsent.userChoice === storageUserConsent.GIVEN) {
+            if (storageSetUp.storageAllowed()) {
                 setLastVisitedSection(sectionNum);
             }
         }
@@ -502,5 +395,3 @@ define(["jquery", "core/str", "core/notification"], function ($, str, Notificati
 
     return Module;
 });
-
-// TODO consider using core/sessionstorage instead of this?

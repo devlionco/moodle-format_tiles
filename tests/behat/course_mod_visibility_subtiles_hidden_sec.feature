@@ -8,7 +8,7 @@ Feature: Teacher can hide course modules when subtiles being used and this is re
       | teacher1 | Teacher   | 1        | teacher1@example.com |
     And the following "courses" exist:
       | fullname | shortname | format | coursedisplay | numsections | enablecompletion |
-      | Course 1 | C1        | tiles  | 0             | 5           | 1                |
+      | Course Mod Vis Course3 | C1        | tiles  | 0             | 5           | 1                |
     And the following "activities" exist:
       | activity | name          | intro                  | course | idnumber | section | visible |
       | quiz     | Test quiz V   | Test quiz description  | C1     | quiz1    | 1       | 1       |
@@ -36,16 +36,18 @@ Feature: Teacher can hide course modules when subtiles being used and this is re
       | jsmaxstoreditems       | 0        | format_tiles |
     # We set jsmaxstoreditems to zero as otherwise when we switch between subtiles and tiles format we may not see an immediate change in display
 
-    And format_tiles subtiles are on for course "Course 1"
+    And format_tiles subtiles are on for course "Course Mod Vis Course3"
     And I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I hide section "1"
-    And I log out
+    And I am on "Course Mod Vis Course3" course homepage with editing mode on
+    And I wait until the page is ready
+    And I wait "2" seconds
+    And I hide tile "1"
+    And I log out tiles
 
   @javascript
   Scenario: Teacher hides *whole section* then all activities not visible with subtiles on
     When I log in as "teacher1"
-    And I am on "Course 1" course homepage
+    And I am on "Course Mod Vis Course3" course homepage
     And I click on tile "1"
     And I wait until the page is ready
     And I should see "Test quiz V"
@@ -67,12 +69,12 @@ Feature: Teacher can hide course modules when subtiles being used and this is re
     And activity in format tiles is dimmed "Test URL NV"
 
     And I click on close button for tile "1"
-    And I log out
+    And I log out tiles
 
   @javascript
   Scenario: Student cannot see visible (NV) activities or section with subtiles on
     When I log in as "student1"
-    And I am on "Course 1" course homepage
+    And I am on "Course Mod Vis Course3" course homepage
     Then "li#tile-1" "css_element" should not be visible
     And I should not see "Test quiz V"
     And I should not see "Test page V"
@@ -85,4 +87,4 @@ Feature: Teacher can hide course modules when subtiles being used and this is re
 
     And "#closesectionbtn-1" "css_element" should not be visible
     And I wait "1" seconds
-    And I log out
+    And I log out tiles

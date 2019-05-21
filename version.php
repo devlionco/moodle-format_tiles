@@ -18,14 +18,14 @@
  * Version details
  *
  * @package     format_tiles
- * @copyright   2016 onwards David Watson
+ * @copyright   2016 onwards David Watson {@link http://evolutioncode.uk}
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2019040203;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2019052100;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2017050500;        // Requires this Moodle version.
 $plugin->component = 'format_tiles';    // Full name of the plugin (used for diagnostics).
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release = "3.3.6";
+$plugin->maturity  = MATURITY_BETA;
+$plugin->release = "3.7.0";

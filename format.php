@@ -18,7 +18,7 @@
  * Tiles course format.  Display the whole course as "tiles" made of course modules.
  *
  * @package format_tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,7 +34,6 @@ if ($topic = optional_param('topic', 0, PARAM_INT)) {
     redirect($url);
 }
 // End backwards-compatible aliasing..
-
 $context = context_course::instance($course->id);
 
 if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context) && confirm_sesskey()) {
@@ -48,13 +47,14 @@ $course = $courseformat->get_course();
 $isediting = $PAGE->user_is_editing();
 $renderer = $PAGE->get_renderer('format_tiles');
 $ismobile = core_useragent::get_device_type() == core_useragent::DEVICETYPE_MOBILE ? 1 : 0;
+$allowphototiles = get_config('format_tiles', 'allowphototiles');
 $userstopjsnav = get_user_preferences('format_tiles_stopjsnav', 0);
 
 // JS navigation and modals in Internet Explorer are not supported by this plugin so we disable JS nav here.
 $usejsnav = !$userstopjsnav && get_config('format_tiles', 'usejavascriptnav') && !core_useragent::is_ie();
 
 // Inline CSS may be requried if this course is using different tile colours to default - echo this first if so.
-$templateable = new \format_tiles\output\inline_css_output($course);
+$templateable = new \format_tiles\output\inline_css_output($course, $ismobile, $usejsnav, $allowphototiles);
 $data = $templateable->export_for_template($renderer);
 echo $renderer->render_from_template('format_tiles/inline-css', $data);
 
@@ -73,6 +73,7 @@ if ($isediting) {
     } else if (optional_param('expanded', 0, PARAM_INT) == -1) {
         // Cancel all epxanded if user cancels it.
         unset($SESSION->editing_all_sections_expanded_course);
+        unset($SESSION->editing_last_edited_section);
     } else if ($secnum = optional_param('expand', 0, PARAM_INT)) {
         // User is expanding one section.
         unset($SESSION->editing_all_sections_expanded_course);
@@ -94,13 +95,7 @@ if (optional_param('canceljssession', false, PARAM_BOOL)) {
 }
 
 
-if (empty($displaysection) || (
-    $usejsnav
-    && isset($SESSION->format_tiles_jssuccessfullyused)
-    && !$isediting
-    && get_config('format_tiles', 'usejsnavforsinglesection')
-    )
-) {
+if (display_multiple_section_page($displaysection, $usejsnav, $context, $isediting)) {
     $renderer->print_multiple_section_page($course, null, null, null, null);
 } else {
     $SESSION->editing_last_edited_section = $course->id . "-" . $displaysection;
@@ -115,50 +110,44 @@ if (!empty($displaysection)) {
     $jssectionnum = $displaysection;
 } else if (! $jssectionnum = optional_param('expand', 0, PARAM_INT)) {
     $jssectionnum = 0;
+} else if (isset($SESSION->editing_last_edited_section)) {
+    $jssectionnum = $SESSION->editing_last_edited_section;
 }
 
 $allowedmodmodals = format_tiles_allowed_modal_modules();
 
 $jsparams = array(
-    $course->id,
-    $isediting,
-    $usejsnav, // See also lib.php page_set_course().
-    get_config('format_tiles', 'jsmaxstoreditems'),
-    $ismobile,
-    $jssectionnum,
-    get_config('format_tiles', 'jsstoredcontentexpirysecs'),
-    get_config('format_tiles', 'jsstoredcontentdeletemins'),
-    $course->displayfilterbar,
-    get_config('format_tiles', 'assumedatastoreconsent'),
-    get_config('format_tiles', 'reopenlastsection'),
-    $USER->id
+    'courseId' => $course->id,
+    'useJSNav' => $usejsnav, // See also lib.php page_set_course().
+    'jsMaxStoredItems' => get_config('format_tiles', 'jsmaxstoreditems'),
+    'isMobile' => $ismobile,
+    'jsSectionNum' => $jssectionnum,
+    'jsStoredConentExpirySecs' => get_config('format_tiles', 'jsstoredcontentexpirysecs'),
+    'jsStoredContentDeleteMins' => get_config('format_tiles', 'jsstoredcontentdeletemins'),
+    'displayFilterBar' => $course->displayfilterbar,
+    'assumeDataStoreContent' => get_config('format_tiles', 'assumedatastoreconsent'),
+    'reOpenLastSection' => get_config('format_tiles', 'reopenlastsection'),
+    'userId' => $USER->id,
+    'fitTilesToWidth' => get_config('format_tiles', 'fittilestowidth')
+        && !optional_param("skipcheck", 0, PARAM_INT)
+        && !isset($SESSION->format_tiles_skip_width_check)
 );
-
-$PAGE->requires->js_call_amd(
-    'format_tiles/format_tiles', 'init', $jsparams
-);
-if (!$userstopjsnav && (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0)) {
+if (!$isediting) {
+    // Initalise the main JS module for non editing users.
     $PAGE->requires->js_call_amd(
-        'format_tiles/course_mod_modal', 'init', array($course->id)
+        'format_tiles/course', 'init', $jsparams
     );
 }
-if ($isediting && get_config('format_tiles', 'allowsubtilesview') && $course->courseusesubtiles) {
-    $PAGE->requires->js_call_amd(
-        'format_tiles/course_mod_edit', 'init', array(
-            $course->id,
-            $displaysection,
-            optional_param('labelconvert', 0, PARAM_INT)
-        )
-    );
-}
-// This is also called from lib.php, via edit_form_helper, if user is on course/edit.php or editsection.php.
 if ($isediting) {
-    $PAGE->requires->js_call_amd('format_tiles/icon_picker', 'init',
-        array(
-            'courseId' => $course->id,
-            'pagetype' => $PAGE->pagetype
-        )
-    );
+    // Initalise the main JS module for editing users.
+    $jsparams['pagetype'] = $PAGE->pagetype;
+    $jsparams['allowphototiles'] = $allowphototiles;
+    $jsparams['usesubtiles'] = get_config('format_tiles', 'allowsubtilesview') && $course->courseusesubtiles;
+    $jsparams['areconvertinglabel'] = optional_param('labelconvert', 0, PARAM_INT);
+    $jsparams['documentationurl'] = get_config('format_tiles', 'documentationurl');
+
+
+    $PAGE->requires->js_call_amd('format_tiles/edit_course', 'init', $jsparams);
     if (strpos($PAGE->pagetype, 'course-view-') === 0 && $PAGE->theme->name == 'snap') {
         \core\notification::ERROR(
             get_string('snapwarning', 'format_tiles') . ' ' .
@@ -169,6 +158,15 @@ if ($isediting) {
         );
     }
 }
+
+// Now the modules which we want whether editing or not.
+
+// If we are allowing course modules to be displayed in modal windows when clicked.
+if (!$userstopjsnav && (count($allowedmodmodals['resources']) > 0 || count($allowedmodmodals['modules']) > 0)) {
+    $PAGE->requires->js_call_amd(
+        'format_tiles/course_mod_modal', 'init', array($course->id, $isediting)
+    );
+}
 if ($course->enablecompletion) {
     $PAGE->requires->js_call_amd('format_tiles/completion', 'init',
         array(
@@ -177,4 +175,25 @@ if ($course->enablecompletion) {
             json_encode($courseformat->labellikecoursemods)
         )
     );
+}
+
+function display_multiple_section_page($displaysection, $usejsnav, $context, $isediting) {
+    global $SESSION;
+    if (empty($displaysection)) {
+        // If the URL does not request a specific section page (&section=xx) we always show multiple secs.
+        return true;
+    }
+
+    if (optional_param('singlesec', 0, PARAM_INT)) {
+        // Singlesec param is appended to inplace editable links by format_tiles\inplace_editable_render_section_name().
+        return false;
+    }
+
+    // Otherwise, even if URL requests single, we may show multiple in certain situations.
+    if ($usejsnav && isset($SESSION->format_tiles_jssuccessfullyused)) {
+        if (!$isediting && get_config('format_tiles', 'usejsnavforsinglesection')) {
+            return true;
+        }
+    }
+    return false;
 }

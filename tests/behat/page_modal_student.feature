@@ -7,14 +7,14 @@ Feature: Student can open a page
       | student1 | Student   | 1        | student1@example.com |
     And the following "courses" exist:
       | fullname | shortname | format | coursedisplay | numsections | enablecompletion |
-      | Course 2 | C2        | tiles  | 0             | 5           | 1                |
+      | Course 5 | C5        | tiles  | 0             | 6           | 1                |
     And the following "activities" exist:
       | activity | name           | intro                 | course | idnumber | section | visible |
-      | quiz     | Test quiz name | Test quiz description | C2     | quiz1    | 3       | 1       |
-      | page     | Test page name | Test page description | C2     | page1    | 3       | 1       |
+      | quiz     | Test quiz name | Test quiz description | C5     | quiz1    | 6       | 1       |
+      | page     | Test page name | Test page description | C5     | page1    | 6       | 1       |
     And the following "course enrolments" exist:
       | user     | course | role    |
-      | student1 | C2     | student |
+      | student1 | C5     | student |
     And the following config values are set as admin:
       | config                 | value    | plugin       |
       | enablecompletion       | 1        | core         |
@@ -28,11 +28,13 @@ Feature: Student can open a page
 
   @javascript
   Scenario: Open page using modal as student with subtiles on
-    When format_tiles subtiles are on for course "Course 2"
+    When format_tiles subtiles are on for course "Course 5"
     And I log in as "student1"
-    And I am on "Course 2" course homepage
-    And I click on tile "3"
+    And I am on "Course 5" course homepage
     And I wait until the page is ready
+    And I click on tile "6"
+    And I wait until the page is ready
+    And I wait "1" seconds
     And I click format tiles activity "Test page name"
     And I wait until the page is ready
     And "Test page name" "dialogue" should be visible
@@ -42,16 +44,16 @@ Feature: Student can open a page
     And I wait until the page is ready
     And I wait "1" seconds
 
-    And I click on close button for tile "3"
+    And I click on close button for tile "6"
     And "Test page content" "text" should not be visible
-    And I log out
+    And I log out tiles
 
   @javascript
   Scenario: Open page using modal as student - with subtiles off
-    When format_tiles subtiles are off for course "Course 2"
+    When format_tiles subtiles are off for course "Course 5"
     And I log in as "student1"
-    And I am on "Course 2" course homepage
-    And I click on tile "3"
+    And I am on "Course 5" course homepage
+    And I click on tile "6"
     And I wait until the page is ready
     And I click format tiles activity "Test page name"
     And I wait until the page is ready
@@ -61,6 +63,6 @@ Feature: Student can open a page
     And I click on "Close" "button"
     And I wait until the page is ready
     And I wait "1" seconds
-    And I click on close button for tile "3"
+    And I click on close button for tile "6"
     And "Test page content" "text" should not be visible
-    And I log out
+    And I log out tiles

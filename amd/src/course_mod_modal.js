@@ -24,7 +24,7 @@
  * @module      course_mod_modal
  * @package     course/format
  * @subpackage  tiles
- * @copyright   2018 David Watson
+ * @copyright   2018 David Watson {@link http://evolutioncode.uk}
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       Moodle 3.3
  */
@@ -41,6 +41,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         var modalStore = {};
         var loadingIconHtml;
         var win = $(window);
+        var courseId;
 
         var Selector = {
             toggleCompletion: ".togglecompletion",
@@ -55,7 +56,12 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             cmModal: ".embed_cm_modal",
             moodleMediaPlayer: ".mediaplugin_videojs",
             urlModalLoadWarning: "#embed-url-error-msg-",
-            closeBtn: "button.close"
+            closeBtn: "button.close",
+            ACTIVITY: "li.activity",
+            URLACTIVITYPOPUPLINK: ".activity.modtype_url.urlpopup a",
+            newWindowButton: ".button_expand",
+            modalHeader: ".modal-header",
+            embedModuleButtons: ".embed-module-buttons"
         };
 
         var LaunchModalDataActions = {
@@ -65,7 +71,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         };
 
         var modalMinWidth = function () {
-            return Math.min(win.width(), 900);
+            return Math.min(win.width(), 1000);
         };
 
         /**
@@ -181,8 +187,9 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     templateData.completionIsManual = clickedCmObject
                         .find(Selector.toggleCompletion).attr("data-ismanual");
                 }
-                Templates.render("format_tiles/embed_module_modal_header", templateData).done(function (html) {
-                    modal.setTitle(html);
+                Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {
+                    modalRoot.find(Selector.modalHeader).append(html);
+                    modalRoot.find(Selector.closeBtn).detach().appendTo(modalRoot.find(Selector.embedModuleButtons));
                 }).fail(Notification.exception);
 
                 return true;
@@ -231,7 +238,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     config: {wwwroot: config.wwwroot},
                     showDownload: 0,
                     showNewWindow: 1,
-                    completionInUseForCm: 0
+                    completionInUseForCm: 0,
+                    secondaryurl: clickedCmObject.closest(Selector.ACTIVITY).attr("data-url-secondary")
                 };
 
                 Templates.render("format_tiles/embed_url_modal_body", templateData).done(function (html) {
@@ -255,9 +263,20 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     templateData.completionIsManual = clickedCmObject
                         .find(Selector.toggleCompletion).attr("data-ismanual");
                 }
-                Templates.render("format_tiles/embed_module_modal_header", templateData).done(function (html) {
-                    modal.setTitle(html);
+                Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {
+                    modalRoot.find(Selector.modalHeader).append(html);
+                    modalRoot.find(Selector.closeBtn).detach().appendTo(modalRoot.find(Selector.embedModuleButtons));
                 }).fail(Notification.exception);
+
+                // Listen to see if user clicks to view the modal contents in a new window.  Dismiss modal if so.
+                // Important for video which may end up playing twice otherwise.
+                setTimeout(function() {
+                    modalRoot.find(Selector.newWindowButton).click(function() {
+                        modalStore[modalRoot.attr("data-cmid")] = undefined;
+                        modalRoot.remove();
+                        $(".modal-backdrop").not("#window-overlay").removeClass("show").addClass("hide");
+                    });
+                }, 1000);
 
                 return true;
             });
@@ -320,14 +339,13 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             });
         };
 
-        // TODO refactor these to avoid repetition?
+        // TODO refactor these to avoid repetition.
         /**
          * Launch a Course activity Modal if we have it already, or make one and launch e.g. for "Page"
          * @param {object} clickedCmObject the course module object which was clicked
-         * @param {number} courseId the course id for this course
          * @returns {boolean} if successful or not
          */
-        var launchCourseActivityModal = function (clickedCmObject, courseId) {
+        var launchCourseActivityModal = function (clickedCmObject) {
             var cmid = clickedCmObject.attr("data-cmid");
             // TODO code envisages potentially adding in other web services for other mod types, but for now we have page only.
             var methodName = "format_tiles_get_mod_" + clickedCmObject.attr("data-modtype") + "_html";
@@ -344,7 +362,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 modalRoot.attr("data-cmid", cmid);
                 modalRoot.attr("id", "embed_mod_modal_" + cmid);
                 modalRoot.addClass("embed_cm_modal");
-                modalRoot.addClass(clickedCmObject.attr("data-modtype"));
+                modalRoot.addClass('mod_' + clickedCmObject.attr("data-modtype"));
                 stopAllVideosOnDismiss(modalRoot);
                 ajax.call([{
                     methodname: methodName,
@@ -372,8 +390,9 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         templateData.completionInUseForCm = 0;
                     }
                     modal.setBody(templateData.content);
-                    Templates.render("format_tiles/embed_module_modal_header", templateData).done(function (html) {
-                        modal.setTitle(html);
+                    Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {
+                        modalRoot.find(Selector.modalHeader).append(html);
+                        modalRoot.find(Selector.closeBtn).detach().appendTo(modalRoot.find(Selector.embedModuleButtons));
                     }).fail(Notification.exception);
 
                     resizeModal(modalRoot);
@@ -391,8 +410,58 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             return false;
         };
 
+        /**
+         * If a URL activity is clicked and it's been set to open in "Pop up" then launch a browser pop up.
+         * @param {object} e
+         */
+        var launchUrlPopUp = function (e) {
+            var clickedActivity = $(e.currentTarget).closest(Selector.ACTIVITY);
+            if (clickedActivity.attr("data-url") !== undefined) {
+                e.stopPropagation();
+                e.preventDefault();
+                // Log the fact we viewed it.
+                ajax.call([{
+                    methodname: "format_tiles_log_mod_view", args: {
+                        courseid: courseId,
+                        cmid: clickedActivity.attr("data-cmid")
+                    }
+                }])[0].done(function () {
+                    // Because we intercepted the normal event for the click, process auto completion.
+                    require(["format_tiles/completion"], function (completion) {
+                        completion.markAsAutoCompleteInUI(courseId, clickedActivity);
+                    });
+                    // Then open the pop up.
+                    var newWin = window.open(clickedActivity.attr("data-url"));
+                    try {
+                        newWin.focus();
+                    } catch (e) {
+                        // Blocked pop-up?
+                        var popUpLink = '<div>'
+                            + '<a href="' + clickedActivity.attr("data-url") + '">'
+                            + clickedActivity.attr("data-url")
+                            + '</a></div>';
+                        require(['core/str', 'core/notification'], function(Str, Notification) {
+                            var stringKeys = [
+                                {key: "sectionerrortitle", component: "format_tiles"},
+                                {key: "blockedpopup", component: "format_tiles"},
+                                {key: "cancel"}
+                            ];
+                            Str.get_strings(stringKeys).done(function (s) {
+                                Notification.alert(
+                                   s[0],
+                                    s[1] + popUpLink,
+                                    s[2]
+                                );
+                            });
+                        });
+                    }
+                }).fail(Notification.exception);
+            }
+        };
+
         return {
-            init: function (courseId) {
+            init: function (courseIdInit, isEditing) {
+                courseId = courseIdInit;
                 $(document).ready(function () {
                     var modalSelectors = Object.keys(LaunchModalDataActions).map(function (key) {
                         return '[data-action="' + LaunchModalDataActions[key] + '"]';
@@ -416,13 +485,13 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                             // We don't already have it, so make it.
                             switch (tgt.attr("data-action")) {
                                 case LaunchModalDataActions.launchModuleModal:
-                                    launchCourseActivityModal(clickedCmObject, courseId);
+                                    launchCourseActivityModal(clickedCmObject);
                                     break;
                                 case LaunchModalDataActions.launchResourceModal:
-                                    launchCourseResourceModal(clickedCmObject, courseId);
+                                    launchCourseResourceModal(clickedCmObject);
                                     break;
                                 case LaunchModalDataActions.launchUrlModal:
-                                    launchEmbeddedUrlModal(clickedCmObject, courseId);
+                                    launchEmbeddedUrlModal(clickedCmObject);
                                     break;
                                 default:
                                     throw new Error("Unknown modal type " + tgt.attr("data-action"));
@@ -443,6 +512,13 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         .done(function (html) {
                             loadingIconHtml = html; // TODO get this from elsewhere.
                         }).fail(Notification.exception);
+
+                    if (!isEditing) {
+                        // If a URL activity is clicked and it's been set to open in "Pop up" then launch a browser pop up.
+                        pageContent.on("click", Selector.URLACTIVITYPOPUPLINK, function(e) {
+                            launchUrlPopUp(e);
+                        });
+                    }
                 });
             }
         };

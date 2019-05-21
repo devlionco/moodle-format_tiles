@@ -102,19 +102,27 @@
                 </div>
 
             {{/from_ajax}}
-            <div class="tileiconcontainer"{{#isediting}}data-toggle="tooltip" data-placement="left"
-                 data-original-title="{{#str}}tooltipchangeicon, format_tiles{{/str}}"{{/isediting}}>
-                    <span class="tile-icon{{#isediting}} launchiconpicker{{/isediting}}"{{#isediting}}
-                          data-section="{{tileid}}" data-sectionid="{{secid}}"{{/isediting}} id="tileicon_{{tileid}}"{{#isediting}}
-                          data-sectionid="3" data-section="2"{{/isediting}}>
-                        {{#tileicon}}
-                            {{#pix}}tileicon/{{{tileicon}}}, format_tiles{{/pix}}
-                        {{/tileicon}}
-                        {{^tileicon}}
-                            {{#pix}}tileicon/{{{defaulttileicon}}}, format_tiles{{/pix}}
-                        {{/tileicon}}
-                    </span>
-            </div>
+            {{^hastilephoto}}
+                <div class="tileiconcontainer" id="tileicon_{{tileid}}"
+                {{#isediting}}data-toggle="tooltip" data-placement="left"
+                     data-original-title="{{^allowphototiles}}{{#str}}picknewicon, format_tiles{{/str}}{{/allowphototiles}}{{#allowphototiles}}{{#str}}picknewiconphoto, format_tiles{{/str}}{{/allowphototiles}}"
+                {{/isediting}}>
+                    {{>format_tiles/tileicon}}
+                </div>
+            {{/hastilephoto}}
+
+            {{#hastilephoto}}
+                {{#isediting}}
+                    <div class="tileiconcontainer hasphoto" id="tileicon_{{tileid}}"
+                        {{#isediting}}data-toggle="tooltip" data-placement="left"
+                         data-original-title="{{^allowphototiles}}{{#str}}picknewicon, format_tiles{{/str}}{{/allowphototiles}}{{#allowphototiles}}{{#str}}picknewiconphoto, format_tiles{{/str}}{{/allowphototiles}}"
+                        {{/isediting}}>
+
+                        {{>format_tiles/tilebarphoto}}
+                    </div>
+                {{/isediting}}
+            {{/hastilephoto}}
+
             <div class="pagesechead">
                 <div class="sectiontitlecontainer">
                     <div class="sectiontitle" id="sectiontitle{{tileid}}" tabindex="3">
@@ -157,7 +165,7 @@
             {{/from_ajax}}
 
             {{#completion_help}}
-                <span class="pull-right">{{#str}}yourprogress, format_tiles{{/str}}
+                <span class="pull-right">{{#str}}yourprogress, completion{{/str}}
                     <a id="completionhelp_{{tileid}}" class="btn btn-link p-a-0 progresshelp" role="button"
                        data-container="body" data-toggle="popover"
                        data-placement="left" data-content="{{#str}}completion_help, format_tiles{{/str}}"

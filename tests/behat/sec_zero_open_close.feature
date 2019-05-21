@@ -23,7 +23,7 @@ Feature: Section zero can be collapsed or expanded in tiles format
       | student1 | C1     | student |
     And the following config values are set as admin:
       | config                 | value    | plugin       |
-      | usejavascriptnav       | 0        | format_tiles |
+      | usejavascriptnav       | 1        | format_tiles |
       | enablecompletion       | 1        | core         |
       | modalmodules           | page     | format_tiles |
       | modalresources         | pdf,html | format_tiles |
@@ -37,6 +37,7 @@ Feature: Section zero can be collapsed or expanded in tiles format
 
   @javascript
   Scenario: Collapse section zero then expand it again
+    And I wait "60" seconds
     When "#buttonhidesec0" "css_element" should be visible
     And I click on "#buttonhidesec0" "css_element"
     And I wait "1" seconds
@@ -46,4 +47,4 @@ Feature: Section zero can be collapsed or expanded in tiles format
     And I click on "#buttonhidesec0" "css_element"
     And I wait "1" seconds
     And I should see "Announcements Sec 0" in the "#section-0" "css_element"
-    And I log out
+    And I log out tiles

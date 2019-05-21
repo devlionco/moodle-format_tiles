@@ -17,7 +17,7 @@
 /**
  * This class implements the Privacy API explained at https://docs.moodle.org/dev/Privacy_API
  * @package format_tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 /**
@@ -43,7 +43,7 @@
 /**
  * @package    format_tiles
  * @category   privacy
- * @copyright  2018 David Watson based upon work done by Andrew Nicols <andrew@nicols.co.uk>.
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk} based upon work done by Andrew Nicols <andrew@nicols.co.uk>.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 namespace format_tiles\privacy;
@@ -56,7 +56,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Privacy Subsystem implementation for format_tiles
  *
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements \core_privacy\local\metadata\provider,

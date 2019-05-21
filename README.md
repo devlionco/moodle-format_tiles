@@ -1,7 +1,6 @@
 #Tiles Course Format
 
-###Author: David Watson
-###Released: Summer 2018
+###Author: David Watson http://evolutioncode.uk
 
 This is the "Tiles" course format plugin for Moodle.
 
@@ -9,6 +8,7 @@ This is the "Tiles" course format plugin for Moodle.
 This plugin should be installed in a sub directory of /course/format/ called tiles
 
 Once installed:
+
 - it will be available for an editing teacher to select as the format for a given course under Course Administration > Edit Settings > Course Format
 
 - if this is done, the format will be displayed to a user when they enter that course (as student or teacher)
@@ -16,13 +16,11 @@ Once installed:
 - an Administrator will be able to see the plugins settings under Site Administration > Plugins > Course Formats > Tiles
 
 ##Compatibility and Support
-The plugin is compatible with Moodle 3.3, 3.4, 3.5 and 3.6.  
+The plugin is compatible with Moodle versions from 3.3 to 3.7 inclusive.  
 
 It supports the Privacy API.  
 
 It is intended to support the current versions of the most popular browsers such as Chrome, Firefox, desktop Safari and mobile iOS and Android.
-
-The plugin was completely refactored for this release to use Mustache templates, and Javascript AMD modules, which were not available in Moodle when it was first written.
 
 ##Wiki
 Detailed information about the operation of the plugin is available at https://bitbucket.org/dw8/moodle-format_tiles/wiki/

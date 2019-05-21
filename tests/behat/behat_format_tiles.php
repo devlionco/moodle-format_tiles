@@ -19,7 +19,7 @@
  *
  * @package    format_tiles
  * @category   test
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,7 +32,7 @@ require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
  *
  * @package    format_tiles
  * @category   test
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_format_tiles extends behat_base {
@@ -203,13 +203,16 @@ class behat_format_tiles extends behat_base {
         $tileid = behat_context_helper::escape("expand" . $tileumber);
 
         // Click the tile.
+        $this->wait_for_pending_js();
+        $this->getSession()->wait(1500);  // Just in case we did a collapse all - wait a bit.
         $this->execute("behat_general::i_click_on", array("//a[@id=" . $tileid . "]", "xpath_element"));
-        $this->getSession()->wait(2000); // Important to wait here as section is expanding with transition.
         $this->wait_for_pending_js(); // Wait for AJAX request to complete.
+        $this->getSession()->wait(3000); // Important to wait here as section is expanding with transition.
     }
 
     /**
-     * I click a tile (to open it)
+     * I click a tile (to close it)
+     * This is using the button at the top right of the content bearing section.
      *
      * @Given /^I click on close button for tile "(?P<tilenumber>\d+)"$/
      * @param string $tilenumber
@@ -219,6 +222,7 @@ class behat_format_tiles extends behat_base {
         $tileid = behat_context_helper::escape("closesectionbtn-" . $tilenumber);
 
         // Click the button.
+        $this->wait_for_pending_js();
         $this->execute("behat_general::i_click_on", array("//span[@id=" . $tileid . "]", "xpath_element"));
         $this->execute('behat_general::wait_until_the_page_is_ready');
         $this->getSession()->wait(2000);
@@ -322,7 +326,6 @@ class behat_format_tiles extends behat_base {
     /**
      * Checks if the course section exists.
      *
-     * @throws \Behat\Mink\Exception\ElementNotFoundException Thrown by behat_base::find
      * @throws \Behat\Mink\Exception\ExpectationException
      * @param int $sectionnumber
      * @return string The xpath of the section.
@@ -342,9 +345,8 @@ class behat_format_tiles extends behat_base {
      *
      * @Given /^I hide tile "(?P<section_number>\d+)"$/
      * @param int $sectionnumber
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
-     * @throws \Behat\Mink\Exception\ExpectationException
      * @throws coding_exception
+     * @throws \Behat\Mink\Exception\ExpectationException
      */
     public function i_hide_tile($sectionnumber) {
         // Ensures the section exists.
@@ -357,7 +359,6 @@ class behat_format_tiles extends behat_base {
      *
      * @Given /^I show tile "(?P<section_number>\d+)"$/
      * @param int $sectionnumber
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
      * @throws \Behat\Mink\Exception\ExpectationException
      * @throws coding_exception
      */
@@ -381,24 +382,81 @@ class behat_format_tiles extends behat_base {
         // If javascript is on, link is inside a menu.
         if ($this->running_javascript()) {
             $fullxpath = $xpath
-                . "/descendant::div[contains(@class, 'section-actions')]/descendant::a[contains(@class, 'dropdown-toggle')]";
+                . "/descendant::div[contains(@class, 'section-actions')]/descendant::a[contains(@data-toggle, 'dropdown')]";
             $exception = new \Behat\Mink\Exception\ExpectationException(
-                'Tile "' . $sectionnumber . '" was not found', $this->getSession()
+                'Tile "' . $sectionnumber . '" edit menu was not found', $this->getSession()
             );
             $menu = $this->find('xpath', $fullxpath, $exception);
             $menu->click();
         }
 
-        // Click on hide link.
-        $fullxpath = $xpath . '/descendant::a[@title="' . get_string($showhide, 'format_tiles') .'"]';
-        $exception = new \Behat\Mink\Exception\ExpectationException(
-            'Hide link for tile "' . $sectionnumber . '" was not found', $this->getSession()
+        // Click on show/hide link.
+        $strhide = get_string($showhide, 'format_tiles');
+        $this->execute('behat_general::i_click_on_in_the',
+            array($strhide, "link", $this->escape($xpath), "xpath_element")
         );
-        $link = $this->find('xpath', $fullxpath, $exception);
-        $link->click();
 
         if ($this->running_javascript()) {
             $this->getSession()->wait(self::TIMEOUT * 1000, self::PAGE_READY_JS);
         }
+    }
+
+    /**
+     * Logs out of the system.
+     * Copied from behat_auth to add delay as sometimes not working.
+     *
+     * @Given /^I log out tiles$/
+     */
+    public function i_log_out_tiles() {
+
+        // Wait for page to be loaded.
+        $this->wait_for_pending_js();
+        $this->getSession()->wait(1000); // Additional wait.
+
+        // Click on logout link in footer, as it's much faster.
+        $this->execute('behat_general::i_click_on_in_the', array(get_string('logout'), 'link', '#page-footer', "css_element"));
+    }
+
+    // @codingStandardsIgnoreStart.
+    /**
+     * Checks if the tile photo is set to a certain value
+     *
+     * @Given /^course "(?P<course_name>(?:[^"]|\\")*)" tile "(?P<section_number>\d+)" should show photo "(?P<photo_name>(?:[^"]|\\")*)"$/
+     * @throws \Behat\Mink\Exception\ElementNotFoundException Thrown by behat_base::find
+     * @throws \Behat\Mink\Exception\ExpectationException
+     * @param string $coursename
+     * @param int $sectionnumber
+     * @param string $photoname
+     * @return string The style of the image container
+     */
+    public function tile_should_show_photo($coursename, $sectionnumber, $photoname) {
+        // @codingStandardsIgnoreEnd.
+        global $CFG, $DB;
+        $courseid = $DB->get_field('course', 'id', array('fullname' => $coursename), MUST_EXIST);
+        $context = context_course::instance($courseid);
+        $sectionid = $DB->get_field(
+            'course_sections', 'id', array('course' => $courseid, 'section' => $sectionnumber), MUST_EXIST
+        );
+
+        $tilephoto = new \format_tiles\tile_photo($courseid, $sectionid);
+        if (!$tilephoto->get_file()) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "File not found in files table for course $coursename tile $sectionnumber photo $photoname ",
+                $this->getSession()
+            );
+        }
+
+        $imageurl = $CFG->wwwroot . "/pluginfile.php/" . $context->id
+            . '/format_tiles/tilephoto/' . $sectionid . '/tilephoto/' . $photoname;
+        $xpath = "//li[@id='tile-" . $sectionnumber . "']";
+        $node = $this->get_selected_node("xpath_element", $xpath);
+        if (strpos($node->getAttribute('style'), $imageurl) === false) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'Tile ' . $sectionnumber . ':Photo not displaying as background tile ' . $sectionnumber . ' course ' . $coursename
+                . 'could not find ' . $imageurl . ' in ' . $node->getAttribute('style'),
+                $this->getSession()
+            );
+        }
+        return $node->getAttribute("style");
     }
 }

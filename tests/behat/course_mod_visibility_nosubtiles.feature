@@ -8,7 +8,7 @@ Feature: In a section for Teacher, hidden activities are dimmed
       | teacher1 | Teacher   | 1        | teacher1@example.com |
     And the following "courses" exist:
       | fullname | shortname | format | coursedisplay | numsections | enablecompletion |
-      | Course 1 | C1        | tiles  | 0             | 5           | 1                |
+      | Course Mod Vis NoSubtiles Course | C1        | tiles  | 0             | 5           | 1                |
     And the following "activities" exist:
       | activity | name          | intro                  | course | idnumber | section | visible |
       | quiz     | Test quiz V   | Test quiz description  | C1     | quiz1    | 1       | 1       |
@@ -35,12 +35,12 @@ Feature: In a section for Teacher, hidden activities are dimmed
       | usejavascriptnav       | 1        | format_tiles |
       | jsmaxstoreditems       | 0        | format_tiles |
     # We set jsmaxstoreditems to zero as otherwise when we switch between subtiles and tiles format we may not see an immediate change in display
-    And format_tiles subtiles are off for course "Course 1"
+    And format_tiles subtiles are off for course "Course Mod Vis NoSubtiles Course"
 
   @javascript
   Scenario: Teacher can see visible (V) and not visible (NV) activities with subtiles off
     When I log in as "teacher1"
-    And I am on "Course 1" course homepage
+    And I am on "Course Mod Vis NoSubtiles Course" course homepage
     And I click on tile "1"
     And I wait until the page is ready
 
@@ -69,13 +69,12 @@ Feature: In a section for Teacher, hidden activities are dimmed
     And activity in format tiles is dimmed "Test URL NV"
 
     And I click on close button for tile "1"
-    And I wait until the page is ready
-    And I log out
+    And I log out tiles
 
   @javascript
   Scenario: Student can see visible (V) but not visible (NV) activities with subtiles off
     When I log in as "student1"
-    And I am on "Course 1" course homepage
+    And I am on "Course Mod Vis NoSubtiles Course" course homepage
     And I click on tile "1"
     And I wait until the page is ready
 
@@ -89,6 +88,4 @@ Feature: In a section for Teacher, hidden activities are dimmed
     And I should not see "Test URL NV"
 
     And I click on close button for tile "1"
-    And I wait until the page is ready
-
-    And I log out
+    And I log out tiles

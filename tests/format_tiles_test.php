@@ -18,7 +18,7 @@
  * Course related unit tests for format tiles
  *
  * @package    format_tiles
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/course/lib.php');
 
 /**
  * Class format_tiles_testcase
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_tiles_testcase extends advanced_testcase
@@ -220,7 +220,10 @@ class format_tiles_testcase extends advanced_testcase
             $tmpl = component_callback('format_weeks', 'inplace_editable', array('sectionname', $section->id, 'New name'));
             $this->fail('Exception expected');
         } catch (moodle_exception $e) {
-            $this->assertEquals(1, preg_match('/^Can not find data record in database/', $e->getMessage()));
+            $this->assertTrue(
+                preg_match('/^Can not find data record in database/', $e->getMessage()) === 1
+                || preg_match('/^Can\'t find data record in database/', $e->getMessage()) === 1
+            );
         }
     }
 }

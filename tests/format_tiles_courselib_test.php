@@ -20,7 +20,7 @@
  * Course related tests for format tiles (copied core courselib_test with format changed to tiles).
  *
  * @package    format_tiles
- * @copyright  2018 David Watson based on core version 2012 Petr Skoda {@link http://skodak.org}
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk} based on core version 2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/enrol/imsenterprise/tests/imsenterprise_test.php'
 /**
  * Class format_tiles_course_courselib_testcase
  *
- * @copyright 2018 David Watson based on core version 2012 Petr Skoda {@link http://skodak.org}
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk} based on core version 2012 Petr Skoda {@link http://skodak.org}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_tiles_course_courselib_testcase extends advanced_testcase {
@@ -399,11 +399,11 @@ class format_tiles_course_courselib_testcase extends advanced_testcase {
     }
 
 
-
     /**
      * Test a specific type of module.
      *
      * @param string $modulename - the module name to test
+     * @return stdClass
      */
     private function update_specific_module_test($modulename) {
         global $DB, $CFG;
@@ -3131,7 +3131,6 @@ class format_tiles_course_courselib_testcase extends advanced_testcase {
         $this->assertFalse($adminoptions->outcomes);
         $this->assertTrue($adminoptions->badges);
         $this->assertTrue($adminoptions->import);
-        $this->assertTrue($adminoptions->publish);
         $this->assertTrue($adminoptions->reset);
         $this->assertTrue($adminoptions->roles);
     }

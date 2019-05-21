@@ -19,7 +19,7 @@
  *
  * @package   format_tiles
  * @category  backup
- * @copyright 2017 David Watson, Marina Glancy
+ * @copyright 2017 David Watson {@link http://evolutioncode.uk}, Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,11 +33,12 @@ define('FILTER_OUTCOMES_AND_NUMBERS', 3);
 /**
  * Specialised restore for format_tiles
  *
- * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned"
+ * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned".
+ * Also handles restoring tile background image files from the backup archive to the tiles.
  *
  * @package   format_tiles
  * @category  backup
- * @copyright 2017 David Watson, Marina Glancy
+ * @copyright 2019 David Watson {@link http://evolutioncode.uk}, Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_format_tiles_plugin extends restore_format_plugin {
@@ -65,12 +66,11 @@ class restore_format_tiles_plugin extends restore_format_plugin {
      */
     public function define_course_plugin_structure() {
         global $DB;
-
         // Since this method is executed before the restore we can do some pre-checks here.
         // In case of merging backup into existing course find the current number of sections.
         $target = $this->step->get_task()->get_target();
         if (($target == backup::TARGET_CURRENT_ADDING || $target == backup::TARGET_EXISTING_ADDING) &&
-                $this->need_restore_numsections()) {
+            $this->need_restore_numsections()) {
             $maxsection = $DB->get_field_sql(
                 'SELECT max(section) FROM {course_sections} WHERE course = ?',
                 [$this->step->get_task()->get_courseid()]);
@@ -81,6 +81,13 @@ class restore_format_tiles_plugin extends restore_format_plugin {
         return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse'))];
     }
 
+
+    public function define_section_plugin_structure() {
+        $this->add_related_files('format_tiles', 'tilephoto', null);
+        // Dummy path element is needed in order for after_restore_section() to be called.
+        return [new restore_path_element('dummy_section', $this->get_pathfor('/dummysection'))];
+    }
+
     /**
      * Dummy process method
      */
@@ -89,11 +96,49 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     }
 
     /**
+     * Dummy process method
+     */
+    public function process_dummy_section() {
+
+    }
+
+    /**
+     * Executed after course restore is complete
+     *
+     * This method is only executed if course configuration was overridden
+     * @return bool|stored_file
+     * @throws dml_exception
+     * @throws file_exception
+     * @throws stored_file_creation_exception
+     */
+    public function after_restore_section() {
+
+        global $DB;
+        $data = $this->connectionpoint->get_data();
+        if (isset($data['path']) && $data['path'] = '/section' && isset($data['tags']['id'])) {
+            $oldsectionid = $data['tags']['id'];
+            $oldsectionnum = $data['tags']['number'];
+
+            $newcourseid = $this->step->get_task()->get_courseid();
+            $newsectionid = $DB->get_field('course_sections', 'id', array(
+                    'course' => $newcourseid,
+                    'section' => $oldsectionnum
+                )
+            );
+            if ($newsectionid) {
+                return self::update_file_record(
+                    $newcourseid, context_course::instance($newcourseid)->id, $oldsectionid, $newsectionid
+                );
+            }
+        }
+        return false;
+    }
+
+    /**
      * Executed after course restore is complete
      *
      * This method is only executed if course configuration was overridden
      * @throws dml_exception
-     * @throws coding_exception
      */
     public function after_restore_course() {
         global $DB;
@@ -130,7 +175,6 @@ class restore_format_tiles_plugin extends restore_format_plugin {
                 'course_format_options',
                 array('name' => 'tileoutcomeid', 'format' => 'tiles', 'courseid' => $this->step->get_task()->get_courseid())
             );
-            core\notification::add(get_string('filteroutcomesrestore', 'format_tiles'), core\notification::SUCCESS);
         }
 
         // The name of course format option "defaulttileicon" for a course used to be "defaulttiletopleftdisplay".
@@ -171,5 +215,49 @@ class restore_format_tiles_plugin extends restore_format_plugin {
                 }
             }
         }
+
+        // While we are here, delete any temp tile photo files (we don't expect any but just in case).
+        $fs = get_file_storage();
+        $fs->delete_area_files(context_course::instance($courseid)->id, 'format_tiles', 'temptilephoto');
+    }
+
+    /**
+     * Tile image file record needs updating to have section ids from new section not old.
+     * Restore process will have created the file in files table but given it old section id.
+     * This handles it and section ids from the new sections end up in {files} table.
+     * @param int $newcourseid
+     * @param int $contextid
+     * @param int $oldsectionid
+     * @param int $newsectionid
+     * @return bool|stored_file
+     * @throws dml_exception
+     * @throws file_exception
+     * @throws stored_file_creation_exception
+     */
+    private static function update_file_record($newcourseid, $contextid, $oldsectionid, $newsectionid) {
+        global $DB;
+        $record = $DB->get_record_select(
+            'files',
+            "contextid = :coursecontextid AND component = 'format_tiles'
+            AND filearea = 'tilephoto' AND filepath = '/tilephoto/'
+            AND itemid = :oldsectionid AND filesize > 0",
+            array ('coursecontextid' => $contextid, 'oldsectionid' => $oldsectionid)
+        );
+        if ($record) {
+            $fs = get_file_storage();
+            $record->itemid = $newsectionid;
+            $oldfile = $fs->get_file_by_id($record->id);
+            $newfile = false;
+            if ($oldfile) {
+                // We have a file in the table with the old section id.
+                // However if we are merging a backup into an existing course, the new section may already have a photo too.
+                // We have to delete it if it does, as well as delete the old sec id version.
+                \format_tiles\tile_photo::delete_file_from_ids($newcourseid, $newsectionid);
+                $newfile = $fs->create_file_from_storedfile($record, $oldfile);
+                $oldfile->delete();
+            }
+            return $newfile;
+        }
+        return false;
     }
 }

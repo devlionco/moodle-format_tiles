@@ -158,3 +158,18 @@
 - Modals - when dismiss modal, video stops playing automatically
 - Navbar overlay height - improvements including account for difference between firefox and chrome
 - URL activity - remove intermediate screen on launch by student (go directly to URL but log click with AJAX)
+
+3.7.0 Beta (2019052100) (Major release beta)
+==================================
+New features
+- Photo tiles, with photo picker and conversion of Grid format courses
+- Tiles fit to screen on page load
+- YouTube and Vimeo URL activities - display in modal windows if "Display: embed", and list as "Video" not "URL"
+- Other embedded URL activities can launch in modal windows, with fallback link if "Display: embed"
+- Improve administrator settings pages and add settings related to new features
+- Administrator can now reset all course tile colours after changing the palette of available colours
+- Optional ability to register plugin for updates
+- Moodle 3.7 compatibility
+Other
+- Refactor code for simplicity and to help future features
+- Bug fixes

@@ -19,7 +19,7 @@
  * Renderer for outputting the tiles course format.
  *
  * @package format_tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @copyright Based partly on previous topics format renderer and general course format renderer
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 2.7
@@ -33,7 +33,7 @@ require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
 /**
  * Basic renderer for tiles format.
  * @package format_tiles
- * @copyright 2016 David Watson
+ * @copyright 2016 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_tiles_renderer extends format_section_renderer_base
@@ -139,13 +139,13 @@ class format_tiles_renderer extends format_section_renderer_base
 
         if (!$onsectionpage && $section->section && has_capability('moodle/course:update', $coursecontext)) {
             // Add controls to drop down menu on each editing tile for teacher to enter section, expand section etc.
-            $url = new moodle_url('/course/view.php', array(
-                'id' => $course->id,
-                'section' => $section->section
-                )
+            $urlparams = array('id' => $course->id, 'section' => $section->section);
+            $url = new moodle_url('/course/view.php', $urlparams);
+            $urlsinglesection = new moodle_url(
+                '/course/view.php', array_merge($urlparams, array('singlesec' => $section->section))
             );
             $controls['entersection'] = array(
-                'url' => $url,
+                'url' => $urlsinglesection,
                 "icon" => 'a/view_list_active',
                 'name' => get_string('entersection', 'format_tiles'),
                 'attr' => array(
@@ -469,10 +469,10 @@ class format_tiles_renderer extends format_section_renderer_base
      *
      * @param cm_info $mod the course module
      * @param stdClass $record the database record from the module table (e.g. the page table if it's a page)
+     * @param context the context of the course module.
      * @return string HTML to output.
      */
-    public function format_cm_content_text($mod, $record) {
-        $context = context_module::instance($mod->id);
+    public function format_cm_content_text($mod, $record, $context) {
         if (isset($record->intro)) {
             $content = $record->intro . $record->content;
         } else {

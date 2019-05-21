@@ -18,7 +18,7 @@
  * The format_tiles label converted to page event.
  *
  * @package format_tiles
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package    format_tiles
  * @since      Moodle 3.3
- * @copyright  2018 David Watson
+ * @copyright  2018 David Watson {@link http://evolutioncode.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class label_converted extends \core\event\course_module_created  {

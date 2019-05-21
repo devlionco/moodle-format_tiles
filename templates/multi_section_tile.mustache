@@ -46,19 +46,26 @@
         "restricted": 0
         }
 }}
-<li class="tile{{#hidden}} tile-hidden{{/hidden}}{{#restricted}} tile-restricted{{/restricted}}{{#isactive}} current{{/isactive}}{{#userclickable}} tile-clickable{{/userclickable}}"
-    id="tile-{{tileid}}" data-section="{{tileid}}" data-sectionid="{{secid}}" tabindex="2" aria-role="button">
+<li class="tile{{#hidden}} tile-hidden{{/hidden}}{{#restricted}} tile-restricted{{/restricted}}{{#isactive}} current{{/isactive}}{{#userclickable}} tile-clickable{{/userclickable}} {{extraclasses}}"
+    id="tile-{{tileid}}" data-section="{{tileid}}" data-sectionid="{{secid}}" tabindex="2" aria-role="button"{{#hastilephoto}}{{{phototileinlinestyle}}}{{/hastilephoto}}>
     <a{{#userclickable}} href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&section={{tileid}}"{{/userclickable}}
        data-section="{{tileid}}" id="sectionlink-{{tileid}}">
+
+        {{^hastilephoto}}
         <div class="tile-content" id="tilecontent-{{tileid}}">
             <div class="tile-top" id="tileTop-{{tileid}}">
-                {{>format_tiles/tileicon}}
+                <div class="tileiconcontainer" id="tileicon_{{tileid}}"
+                    {{#isediting}}data-toggle="tooltip" data-placement="left"
+                     data-original-title="{{^allowphototiles}}{{#str}}picknewicon, format_tiles{{/str}}{{/allowphototiles}}{{#allowphototiles}}{{#str}}picknewiconphoto, format_tiles{{/str}}{{/allowphototiles}}"
+                    {{/isediting}}>
+                    {{>format_tiles/tileicon}}
+                </div>
                 <div class="tiletopright pull-right" id="tiletopright-{{tileid}}" aria-hidden="true">
                     {{#hidden}}
                         {{#pix}}eye-slash, format_tiles, {{#str}}hidden, format_tiles{{/str}}{{/pix}}
                     {{/hidden}}
                     {{#restricted}}
-                        {{#pix}}lock, format_tiles, {{#str}}restricted, format_tiles{{/str}}{{/pix}}
+                        {{#pix}}lock, format_tiles, {{#str}}restricted{{/str}}{{/pix}}
                     {{/restricted}}
                     {{#progress}}
                         {{> format_tiles/progress}}
@@ -74,8 +81,22 @@
                 {{/availabilitymessage}}
             </div>
         </div>
+
+        {{/hastilephoto}}
+
+        {{#hastilephoto}}
+            {{#availabilitymessage}}
+                {{>format_tiles/availability_info}}
+            {{/availabilitymessage}}
+            <div class="" id="tileText-{{tileid}}" title="{{activity_summary}}"{{^ismobile}} data-toggle="tooltip" data-html="true"{{/ismobile}}>
+            <span class="photo-tile-text{{titleclass}}" id="tileTextin-{{tileid}}">
+                {{#title}}<h3>{{{title}}}</h3>{{/title}}
+            </span>
+            </div>
+        {{/hastilephoto}}
     </a>
     {{#usingjsnav}}
+        {{! This is added as empty for now - JS will populate and de-populate as necessary and add image to it using template.}}
         <span class="tile-loading-icon" id="loading-icon-{{tileid}}" style="display: none;"></span>
     {{/usingjsnav}}
 </li>

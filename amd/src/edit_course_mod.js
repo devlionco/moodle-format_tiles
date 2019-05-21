@@ -17,12 +17,12 @@
 /* eslint space-before-function-paren: 0 */
 
 /**
- * Javascript Module to handle edit actions on course modules
+ * Javascript Module to handle edit actions on course modules.
  *
- * @module      course_mod_edit
+ * @module      edit_course_mod
  * @package     course/format
  * @subpackage  tiles
- * @copyright   2018 David Watson
+ * @copyright   2018 David Watson {@link http://evolutioncode.uk}
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       Moodle 3.3
  */
@@ -77,10 +77,13 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
         };
 
         /**
+         * This dates from before the change to using AJAX for editing teacher content.
+         * Once the new functionality is no longer experimental, this can be removed.
+         *
          *  If an editing user clicks a show/hide menu item on a course module
          * @param {object} clickEvent
          */
-        var toggleHideCourseMod = function (clickEvent) {
+        var legacyToggleHideCourseMod = function (clickEvent) {
             var clickedLink = $(clickEvent.currentTarget);
             var actions;
             if (clickedLink.attr("data-action") === "tiles-hide") {
@@ -142,6 +145,9 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
         };
 
         /**
+         * This dates from before the change to using AJAX for editing teacher content.
+         * Once the new functionality is no longer experimental, this can be removed.
+         *
          * When a new item is added to course by drag drop, we have to convert it to subtile format
          * For this we need to know which class to add to it (e.g. ppt) so that it has the correct icon
          * and colouring on the sub tile.  The easiest way to work this out is to use the icon URL
@@ -149,7 +155,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
          * @param {string} iconURL the icon URL oe.g. [wwwroot]/theme/image.php/boost/core/1535409577/f/pdf-24
          * @returns {string} the type e.g. 'pdf'
          */
-        var fileTypeFromIconURL = function (iconURL) {
+        var legacyFileTypeFromIconURL = function (iconURL) {
             var extensions = {
                 powerpoint: "ppt",
                 document: "doc",
@@ -167,6 +173,9 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
         };
 
         /**
+         * This dates from before the change to using AJAX for editing teacher content.
+         * Once the new functionality is no longer experimental, this can be removed.
+         *
          * When a new course module is dragged and dropped into the course
          * we need its attributes so that we can convert it into a sub tile if needed
          * This assembles them ready to be sent to the mustache template
@@ -176,7 +185,7 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
          * @param {string} displayname e.g. "Spreadsheet"
          * @returns {object} promise for the module attributes
          */
-        var courseModGetSubtileAttributes = function (cmObject, modResourceType, displayname) {
+        var legacyCourseModGetSubtileAttributes = function (cmObject, modResourceType, displayname) {
             // TODO would be better to handle this whole function with a web service for cm data?
             if (displayname === undefined || displayname === "") {
                 // Failed to get string for this type
@@ -205,6 +214,104 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
             };
             returnData.isPdf = returnData.modResourceType === "pdf";
             return returnData;
+        };
+
+        /**
+         * This dates from before the change to using AJAX for editing teacher content.
+         * Once the new functionality is no longer experimental, this can be removed.
+         * @param {number} courseId
+         * @param {object} addedCourseModule
+         * @param {object} sectionAddedTo
+         * @param {string} msg
+         */
+        var legacyHandleCmAddedToPage = function(courseId, addedCourseModule, sectionAddedTo, msg) {
+            if (sectionAddedTo.hasClass(ClassNames.SECTION_DRAGGABLE)
+                && window.location.href.indexOf('expand=') === -1) {
+                // An item has been dragged into a section when we are on the multi tile screen.
+                // However the section is not yet expanded.
+                // Therefore expand the section it has been dragged into so teacher can see it.
+                window.location = config.wwwroot + '/course/view.php?id=' + courseId
+                    + "&expand=" + sectionAddedTo.attr("data-section")
+                    + "#section-" + sectionAddedTo.attr("data-section");
+            } else if (addedCourseModule.hasClass(ClassNames.LABEL)
+                && addedCourseModule.closest('ul').hasClass('subtiles')) {
+                // The mod type is probably an image (being dragged in to the course.
+                // When this happens, core adds a label and puts it in.
+                // So allow this to happen, then reload the page.
+                // This ensures the image displays correctly (only bother if we are using subtiles).
+                window.location.reload();
+            } else if (
+                addedCourseModule.hasClass(ClassNames.ACTIVITY) && addedCourseModule.closest('ul').hasClass('subtiles')
+            ) {
+                // Only course modules and not (for example) user tours modal.
+                // If we are not using sub tiles in section zero, don't bother changing it there.
+                addedCourseModule.children().hide();
+                addedCourseModule.append($("<img/>")
+                    .attr("src", url.imageUrl("loading", "format_tiles"))
+                    .addClass("loading-subtile").attr('title', stringStore.loading));
+                var previousNonSpacer = addedCourseModule.prevAll(Selector.SUBTILE).not(Selector.SPACER).first();
+                addedCourseModule.prevUntil(previousNonSpacer, Selector.SPACER).hide();
+
+                // Get cmid, modtitle, modnameDisplay, cmeditmenu of ite just added to course by AJAX.
+                // Re-render it in the correct style for this format (as sub tile).
+                var modResourceType = legacyFileTypeFromIconURL(addedCourseModule.find(Selector.ACTIVITY_ICON).attr("src"));
+                if (modResourceType === undefined) {
+                    // We have probably dragged an image into the course and chosen to add it as a file resource.
+                    window.location.reload();
+                }
+                var stringKey = "displaytitle_mod_" + modResourceType;
+                if (stringStore[stringKey] === undefined) {
+                    str.get_string(stringKey, "format_tiles")
+                        .done(function (string) {
+                            if (string.substring(0, 2) !== "[[") {
+                                // The [[ means unknown string.
+                                stringStore[stringKey] = string;
+                            } else {
+                                string = "";
+                            }
+                            var cmAttributes = legacyCourseModGetSubtileAttributes(
+                                addedCourseModule, modResourceType, string
+                            );
+                            Templates.render(
+                                "format_tiles/course_module",
+                                cmAttributes
+                            ).done(function (html) {
+                                addedCourseModule.replaceWith(html);
+                                // Flash the new item to bring attention to it.
+                                var newItem = $("#" + $(msg).attr("id"));
+                                body.animate({scrollTop: newItem.offset().top - 130}, "fast");
+                                for (var x = 0; x < 3; x++) {
+                                    newItem.fadeOut(300).fadeIn(300);
+                                }
+                                // The move cm icon will not work, so if is clicked, we refresh page so it works.
+                                $('#module-' + cmAttributes.cmid).find('.editing_move')
+                                    .attr('data-action', '')
+                                    .on(Event.MOUSEDOWN, function() {
+                                        window.location.reload();
+                                    });
+                            });
+                        });
+                } else {
+                    var cmAttributes = legacyCourseModGetSubtileAttributes(
+                        addedCourseModule, modResourceType, stringStore[stringKey]
+                    );
+                    Templates.render("format_tiles/course_module", cmAttributes).done(function (html) {
+                        addedCourseModule.replaceWith(html);
+                        // The move cm icon will not work, so if is clicked, we refresh page so it works.
+                        $('#module-' + cmAttributes.cmid).find('.editing_move')
+                            .attr('data-action', '')
+                            .on(Event.MOUSEDOWN, function() {
+                                window.location.reload();
+                            });
+                    });
+                }
+            } else {
+                // We are leaving the course module in the old style as added by core drag-drop.
+                // Adjust the inner div styling slightly to make it consistent with the others.
+                addedCourseModule.find('div.mod-indent-outer')
+                    .css('position', 'absolute').css('top', '0')
+                    .css('width', '100%').css('padding-left', '0');
+            }
         };
 
         return {
@@ -250,106 +357,17 @@ define(["jquery", "core/ajax", "core/templates", "core/notification", "core/str"
 
                     // If user clicks show/hide on a course module.
                     page.on("click", Selector.CM_EDIT_ACTION, function (e) {
-                        toggleHideCourseMod(e);
+                        legacyToggleHideCourseMod(e);
                     });
-                    // PHP handles duplicate and separate groups at present.
-                    // (i.e. data-action of tiles-duplicate, tiles-groupsseparate, tiles-groupsnone or tiles-groupsvisible).
-                    // This works, but maybe better to handle with JS?
-                    // see also course_output.php tiles_get_cm_edit_actions().
 
                     // Listen for new items being added to course by drag drop and convert them to subtile format.
                     // Otherwise the core JS will add them to the page in standard "list" format.
+                    // This can be moved to edit_course once legacy functions are removed.
                     $(document).on(Event.MODULE_ADDED, function (event, msg) {
                         var addedCourseModule = $("#" + $(msg).attr("id"));
                         var sectionAddedTo = addedCourseModule.closest(Selector.SECTION_MAIN);
-                        if (sectionAddedTo.hasClass(ClassNames.SECTION_DRAGGABLE)
-                            && window.location.href.indexOf('expand=') === -1) {
-                            // An item has been dragged into a section when we are on the multi tile screen.
-                            // However the section is not yet expanded.
-                            // Therefore expand the section it has been dragged into so teacher can see it.
-                            window.location = config.wwwroot + '/course/view.php?id=' + courseId
-                                + "&expand=" + sectionAddedTo.attr("data-section")
-                                + "#section-" + sectionAddedTo.attr("data-section");
-                        } else if (addedCourseModule.hasClass(ClassNames.LABEL)
-                            && addedCourseModule.closest('ul').hasClass('subtiles')) {
-                            // The mod type is probably an image (being dragged in to the course.
-                            // When this happens, core adds a label and puts it in.
-                            // So allow this to happened, then reload the page.
-                            // This ensures the image displays correctly (only bother if we are using subtiles).
-                            window.location.reload();
-                        } else if (
-                            addedCourseModule.hasClass(ClassNames.ACTIVITY) && addedCourseModule.closest('ul').hasClass('subtiles')
-                        ) {
-                            // Only course modules and not (for example) user tours modal.
-                            // If we are not using sub tiles in section zero, don't bother changing it there.
-                            addedCourseModule.children().hide();
-                            addedCourseModule.append($("<img/>")
-                                .attr("src", url.imageUrl("loading", "format_tiles"))
-                                .addClass("loading-subtile").attr('title', stringStore.loading));
-                            var previousNonSpacer = addedCourseModule.prevAll(Selector.SUBTILE).not(Selector.SPACER).first();
-                            addedCourseModule.prevUntil(previousNonSpacer, Selector.SPACER).hide();
-
-                            // Get cmid, modtitle, modnameDisplay, cmeditmenu of ite just added to course by AJAX.
-                            // Re-render it in the correct style for this format (as sub tile).
-                            var modResourceType = fileTypeFromIconURL(addedCourseModule.find(Selector.ACTIVITY_ICON).attr("src"));
-                            if (modResourceType === undefined) {
-                                // We have probably dragged an image into the course and chosen to add it as a file resource.
-                                window.location.reload();
-                            }
-                            var stringKey = "displaytitle_mod_" + modResourceType;
-                            if (stringStore[stringKey] === undefined) {
-                                str.get_string(stringKey, "format_tiles")
-                                    .done(function (string) {
-                                        if (string.substring(0, 2) !== "[[") {
-                                            // The [[ means unknown string.
-                                            stringStore[stringKey] = string;
-                                        } else {
-                                            string = "";
-                                        }
-                                        var cmAttributes = courseModGetSubtileAttributes(
-                                            addedCourseModule, modResourceType, string
-                                        );
-                                        Templates.render(
-                                            "format_tiles/course_module",
-                                            cmAttributes
-                                        ).done(function (html) {
-                                            addedCourseModule.replaceWith(html);
-                                            // Flash the new item to bring attention to it.
-                                            var newItem = $("#" + $(msg).attr("id"));
-                                            body.animate({scrollTop: newItem.offset().top - 130}, "fast");
-                                            for (var x = 0; x < 3; x++) {
-                                                newItem.fadeOut(300).fadeIn(300);
-                                            }
-                                            // The move cm icon will not work, so if is clicked, we refresh page so it works.
-                                            // TODO fix this so that no page refresh necessary.
-                                            $('#module-' + cmAttributes.cmid).find('.editing_move')
-                                                .attr('data-action', '')
-                                                .on(Event.MOUSEDOWN, function() {
-                                                    window.location.reload();
-                                                });
-                                        });
-                                    });
-                            } else {
-                                var cmAttributes = courseModGetSubtileAttributes(
-                                    addedCourseModule, modResourceType, stringStore[stringKey]
-                                );
-                                Templates.render("format_tiles/course_module", cmAttributes).done(function (html) {
-                                    addedCourseModule.replaceWith(html);
-                                    // The move cm icon will not work, so if is clicked, we refresh page so it works.
-                                    // TODO fix this so that no page refresh necessary.
-                                    $('#module-' + cmAttributes.cmid).find('.editing_move')
-                                        .attr('data-action', '')
-                                        .on(Event.MOUSEDOWN, function() {
-                                            window.location.reload();
-                                        });
-                                });
-                            }
-                        } else {
-                            // We are leaving the course module in the old style as added by core drag-drop.
-                            // Adjust the inner div styling slightly to make it consistent with the others.
-                            addedCourseModule.find('div.mod-indent-outer')
-                                .css('position', 'absolute').css('top', '0')
-                                .css('width', '100%').css('padding-left', '0');
+                        if (sectionAddedTo.length >= 1) {
+                            legacyHandleCmAddedToPage(courseId, addedCourseModule, sectionAddedTo, msg);
                         }
                     });
 

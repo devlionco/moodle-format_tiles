@@ -18,7 +18,7 @@
 {{!
     @template format_tiles/embed_module_modal_header
 
-    The purpose of this template is to render the header for a modal window
+    The purpose of this template is to render the buttons for the header in a modal window
     which can be used to display an embedded file (i.e. a PDF)
 
     Classes required for JS:
@@ -29,7 +29,6 @@
 
     Context variables required for this template:
         * id - id of the course module
-        * modtitle - title of the cm e.g. "Lecture 1 slides PDF",
         * showDownload - whether to show the download button or not
         * showNewWindow - whether to show the new window button or not
         * pluginfileUrl - the url to get the resource directly e.g. "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF"
@@ -39,7 +38,6 @@
     Example context (json):
     {
         "id": 123,
-        "modtitle": "Lecture 1 slides PDF",
         "showDownload": "1",
         "showNewWindow": "1",
         "pluginfileUrl": "http://mydomain.com/moodle/pluginfile.php/12345/mod_resource/content/1/lecture1.PDF",
@@ -47,9 +45,7 @@
         "completionInUseForCm": 1
     }
 }}
-
-<span id="modal-title-{{id}}">{{{modtitle}}}</span>
-<span id="embed_module_buttons">
+<div class="embed-module-buttons pull-right">
     {{#showNewWindow}}
         <a href="{{pluginfileUrl}}?redirect=1" class="embed_file_button button_expand" id="expandbutton_{{id}}" data-cmid="{{id}}" data-command="expand" target="_blank">
             {{#pix}}clone, format_tiles, {{#str}}showseparatewin, format_tiles{{/str}}{{/pix}}
@@ -63,4 +59,4 @@
     {{#completionInUseForCm}}
         {{>format_tiles/completion_icon}}
     {{/completionInUseForCm}}
-</span>
+</div>

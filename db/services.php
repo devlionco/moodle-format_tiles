@@ -19,16 +19,16 @@
  *
  * @package   format_tiles
  * @category  event
- * @copyright 2018 David Watson
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $functions = array (
-    'format_tiles_set_icon' => array(
+    'format_tiles_set_image' => array(
         'classname'   => 'format_tiles_external',
-        'methodname'  => 'set_icon',
+        'methodname'  => 'set_image',
         'classpath'   => 'course/format/tiles/externallib.php',
         'description' => 'Set tile icon (intended to be used from AJAX)',
         'type'        => 'write',
@@ -85,5 +85,15 @@ $functions = array (
         'ajax'        => true,
         'loginrequired' => true,
         'capabilities' => 'moodle/course:update'
+    ),
+    'format_tiles_set_session_width' => array(
+        'classname'   => 'format_tiles_external',
+        'methodname'  => 'set_session_width',
+        'classpath'   => 'course/format/tiles/externallib.php',
+        'description' => 'Set session width of tiles window (so that tiles can be shown with correct width on page load',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities' => '' // Enrolment check, not capability - see externallib.php.
     ),
 );
