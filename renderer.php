@@ -469,7 +469,7 @@ class format_tiles_renderer extends format_section_renderer_base
      *
      * @param cm_info $mod the course module
      * @param stdClass $record the database record from the module table (e.g. the page table if it's a page)
-     * @param context context the context of the course module.
+     * @param context $context the context of the course module.
      * @return string HTML to output.
      */
     public function format_cm_content_text($mod, $record, $context) {

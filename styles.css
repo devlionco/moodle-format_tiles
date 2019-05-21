@@ -997,6 +997,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         padding: 1em;
     }
     .format-tiles .course-content ul.section.subtiles {
+        /* stylelint-disable-next-line declaration-no-important */
         margin: auto !important;
     }
     .format-tiles .course-content ul.section {
@@ -1159,6 +1160,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles .embed_cm_modal .modal {
     margin: 10px auto;
+}
+.format-tiles .embed_cm_modal iframe {
+    border: 0;
 }
 .format-tiles .embed_cm_modal a {
     color: #979797;

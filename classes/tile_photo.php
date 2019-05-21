@@ -206,8 +206,8 @@ class tile_photo {
 
     /**
      * When course_section_deleted is trigger we remove related files.
-     * @param $courseid
-     * @param $sectionid
+     * @param int $courseid the course id.
+     * @param int $sectionid the section id.
      * @return bool
      */
     public static function delete_file_from_ids($courseid, $sectionid) {

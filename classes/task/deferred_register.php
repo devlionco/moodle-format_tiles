@@ -32,6 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class deferred_register
  * @package format_tiles\task
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk}
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class deferred_register extends \core\task\adhoc_task {
 

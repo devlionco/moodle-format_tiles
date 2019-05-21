@@ -34,6 +34,8 @@ class registration_manager {
 
     /**
      * Contact the registration server and seek a key.
+     * @copyright 2018 David Watson {@link http://evolutioncode.uk}
+     * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
      * @param [] $data the registration data.
      * @return bool|mixed
      * @throws \coding_exception

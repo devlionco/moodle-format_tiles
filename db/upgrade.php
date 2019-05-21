@@ -30,10 +30,12 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @param int $oldversion the version we are upgrading from
  * @return bool result
+ * @throws coding_exception
  * @throws dml_exception
  * @throws downgrade_exception
+ * @throws file_exception
+ * @throws stored_file_creation_exception
  * @throws upgrade_exception
- * @throws coding_exception
  */
 function xmldb_format_tiles_upgrade($oldversion) {
     global $CFG, $DB;

@@ -19,7 +19,10 @@
     This template is a slightly modified clone of the theme_boost/admin_setting_tabs template.
 
     Example context (json):
-    {}
+    {
+        "isediting": "1",
+        "single_sec_add_cm_control_html": "some html"
+    }
 }}
 {{#isediting}}
     <div>{{{single_sec_add_cm_control_html}}}</div>

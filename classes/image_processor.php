@@ -32,6 +32,8 @@ require_once($CFG->libdir . '/gdlib.php');
 /**
  * Class image_processor
  * @package format_tiles
+ * @copyright 2018 David Watson {@link http://evolutioncode.uk} in respect of modifications to format_grid versions by G J Barnard.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class image_processor
 {

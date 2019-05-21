@@ -174,12 +174,13 @@ class course_output implements \renderable, \templatable
 
     /**
      * Get the basic data required to render (required whatever we are doing).
-     * @param $output
-     * @return mixed
+     * @param \renderer_base $output
+     * @return array data
      * @throws \coding_exception
      * @throws \dml_exception
      */
     private function get_basic_data($output) {
+        $data = [];
         $data['canedit'] = has_capability('moodle/course:update', $this->coursecontext);
         $data['canviewhidden'] = $this->canviewhidden;
         $data['courseid'] = $this->course->id;
@@ -300,7 +301,7 @@ class course_output implements \renderable, \templatable
 
     /**
      * Get the course format options (how depends on where we are calling from).
-     * @param $fromajax
+     * @param bool $fromajax is this request from AJAX.
      * @return array
      */
     private function get_course_format_options($fromajax) {
