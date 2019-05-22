@@ -549,11 +549,11 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         };
 
         /**
-         * To be called when a tile is clicked.  Get content from server or storage and display/store it.
-         * @param {number} courseId the id of this course.
+         * To be called when a tile is clicked. Get content from server or storage and display or store it.
+         * @param {number} courseId courseId the id of this course.
          * @param {object} thisTile jquery the tile object clicked.
          * @param {number} dataSection the id number of the tile.
-         * @param {number} storedContentExpirySecs.
+         * @param {number} storedContentExpirySecs
          */
         var populateAndExpandSection = function(courseId, thisTile, dataSection, storedContentExpirySecs) {
             setOverlay(dataSection);

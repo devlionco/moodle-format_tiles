@@ -274,7 +274,7 @@ $string['overall'] = 'Overall';
 $string['picknewicon'] = 'Pick a new icon';
 $string['picknewiconphoto'] = 'Pick a new icon or background photo';
 $string['photoguidance_desc'] = '<p>Upload a photo in <strong>landscape</strong> format.  The width should be about 1.35 times the height.  E.g. 270 width x 200 height would fit well.  You need not be exact.</p>
-<p>(Photos in portrait format will not match the shape of the tile).  Large images or files will be scaled down and compressed if necessary, after upload.</p>';
+<p>Photos in portrait format will not match the shape of the tile.  Large images or files will be scaled down and compressed if necessary, after upload.</p>';
 $string['photolibrary'] = 'Photo library';
 $string['pluginname'] = 'Tiles format';
 $string['previoustopic'] = 'Previous topic';

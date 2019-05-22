@@ -18,7 +18,27 @@
     @template format_tiles/icon_picker_photos
 
     Example context (json):
-    {}
+    {
+        icon_picker_photos: [
+            {
+                "filename": "grapes.png",
+                "contextid": "223",
+                "itemid": "123",
+                "filepath": "/tilephoto/",
+                "filearea": "tilephoto",
+                "id": "987"
+            },
+            {
+                "filename": "apples.png",
+                "contextid": "223",
+                "itemid": "120",
+                "filepath": "/tilephoto/",
+                "filearea": "tilephoto",
+                "id": "982"
+            }
+        ],
+        "wwwroot": "https://moodle.org",
+        }
 }}
 
 {{#icon_picker_photos}}
