@@ -299,6 +299,7 @@ $string['registeremailno'] = 'No I do not wish to receive any emails';
 $string['registerclicktocomplete'] = 'Click OK to complete the process';
 $string['reopenlastsection'] = 'Re-open last visited tile';
 $string['reopenlastsection_desc'] = 'When checked, if a user revisits a course, the last section they had open will be re-opened on arrival';
+$string['resetallcoursecolours'] = 'Reset all course colours';
 $string['section0name'] = 'General';
 $string['sectionname'] = 'Tile';
 $string['sectionnumber'] = 'Section / tile number';
