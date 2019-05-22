@@ -40,7 +40,7 @@ define(["jquery", "core/notification", "core/str", "core/templates", "format_til
                         if (e.currentTarget.value !== "0") {
                             // We are changing to use sub tiles.
                             // For convenience, uncheck the "Emphasise headings with coloured tab" box.
-                            // Wser can change it back if they want.
+                            // User can change it back if they want.
                             $("input#id_courseusebarforheadings").prop("checked", false);
                         }
                     });
