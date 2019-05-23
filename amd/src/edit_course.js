@@ -26,7 +26,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 3.3
  */
-/*global document, window */
+/* global document, window */
 /* eslint space-before-function-paren: 0 */
 
 define(

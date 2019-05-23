@@ -325,7 +325,6 @@ $string['tileselecttip'] = "Here's an easier way to change a tile icon or photo:
 $string['tip'] = 'Tip';
 $string['togglecompletion'] = 'Click to toggle completion status';
 $string['toowide'] = 'too wide for the tile';
-$string['makephototile'] = 'Make photo tile';
 $string['uploadnewphoto'] = 'Upload new photo';
 $string['uploadnewphoto_help'] = 'Upload an image to be used on this tile';
 $string['width'] = 'width';

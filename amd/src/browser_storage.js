@@ -26,7 +26,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 3.3
  */
-/*global localStorage, sessionStorage, setTimeout*/
+/* global localStorage, sessionStorage, setTimeout*/
 /* eslint space-before-function-paren: 0 */
 
 define(["jquery", "format_tiles/browser_storage_set_up"], function ($, storageSetUp) {

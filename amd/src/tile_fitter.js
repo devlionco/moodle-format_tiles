@@ -25,7 +25,7 @@
  * @since Moodle 3.3
  */
 
-/*global setTimeout, document, window */
+/* global setTimeout, document, window */
 /* eslint space-before-function-paren: 0 */
 
 define(["jquery", "core/ajax"], function ($, ajax) {
