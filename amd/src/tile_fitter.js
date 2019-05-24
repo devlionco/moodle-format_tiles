@@ -62,32 +62,36 @@ define(["jquery", "core/ajax"], function ($, ajax) {
         // Create a new Deferred.
         var dfd = new $.Deferred();
         var tiles = $(Selector.TILES);
-        var tileStandardWidth = 260;
-        var tileMinWidth = 160; // On mobile devices.
+        var TILE_WIDTHS = {
+            standard: 260,
+            min: 225,
+            mobileMin: 160
+        };
         try {
+            var tilesParentWidth = tiles.parent().innerWidth();
             var firstTile = $(tiles.find(Selector.TILE)[0]);
             // Get the width of one tile.
             var oneTileWidth = firstTile.width()
                 ? firstTile.width()
-                : tileStandardWidth; // Default standard as min tile width if we can't get the actual width.
+                : TILE_WIDTHS.standard; // Default standard as min tile width if we can't get the actual width.
             var tileMargin = 14; // Margin 7px either side.
             oneTileWidth = oneTileWidth + tileMargin;
             var resizeWidth = "inherit";
             // Skip if window is only 2 or smaller than 2 tiles wide already.
             // This ensures that we don't crush the tiles into the centre (i.e. we use at least x% of width).
-            var tilesDivWidth = tiles.parent().innerWidth();
-            var maxPossibleTiles = Math.floor(tilesDivWidth / tileMinWidth);
-            if (tilesDivWidth < tileMinWidth * 2) {
+            var maxPossibleTiles = Math.floor(tilesParentWidth / TILE_WIDTHS.mobileMin);
+            var tileCount = ($(Selector.TILE).not(Selector.SPACER).length); // How many tiles in this course.
+            if (tilesParentWidth < TILE_WIDTHS.mobileMin * 2) {
                 // Only space for one tile - don't resize to save space.
                 dfd.reject("Too narrow to resize");
-            } else if (tilesDivWidth < 225 * 3) {
-                resizeWidth = (tileStandardWidth - tileMargin) * 2;
+            } else if (tileCount <= 3 && tilesParentWidth > tileCount * TILE_WIDTHS.mobileMin) {
+                resizeWidth = TILE_WIDTHS.standard * 4;
+            } else if (tilesParentWidth < TILE_WIDTHS.min * 3) {
+                resizeWidth = (TILE_WIDTHS.standard - tileMargin) * 2;
             } else if (maxPossibleTiles < 4) {
                 // Here we set the max width to the space we have available, so that tiles are centred.
-                resizeWidth = tileStandardWidth * maxPossibleTiles;
+                resizeWidth = TILE_WIDTHS.standard * maxPossibleTiles;
             } else {
-                var tileCount = ($(Selector.TILE).not(Selector.SPACER).length); // How many tiles in this course.
-
                 // Make a range of numbers in an array.  e.g. range(2,5) = [2, 3, 4, 5].
                 var range = function (start, end) {
                     var res = [];
@@ -99,7 +103,7 @@ define(["jquery", "core/ajax"], function ($, ajax) {
 
                 // How many tiles per row could we fit on the screen, if we put in as many as possible?
                 var rowMaxCount = Math.min(
-                    Math.floor($(Selector.TILES).parent().innerWidth() / oneTileWidth),
+                    Math.floor(tilesParentWidth / oneTileWidth),
                     tileCount
                 );
                 // If we'd have a single row of more than 5 tiles, split it into 2.
@@ -110,7 +114,7 @@ define(["jquery", "core/ajax"], function ($, ajax) {
                     // Also if we have 3 or more rows (3 or more) we don't bother restricting as the last row is not so noticeable.
 
                     // How many tiles per row do we want as a minimum (in order to occupy a reasonable amount of width)?
-                    var rowMinCount = Math.floor(tiles.parent().innerWidth() / oneTileWidth);
+                    var rowMinCount = Math.floor(tilesParentWidth / oneTileWidth);
 
                     // What are the possibilities for tiles per row?  Then we can look at which we want.
                     var possibleRowCounts = range(rowMinCount, rowMaxCount).reverse(); // Something like [6, 5, 4, 3].
