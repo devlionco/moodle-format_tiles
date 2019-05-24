@@ -301,7 +301,13 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                                     }).hide();
                                 }
                             });
-                            $(".pickericon").tooltip();
+                            try {
+                                $(".pickericon").tooltip();
+                            } catch (err) {
+                                require(["core/log"], function(log) {
+                                    log.debug(err);
+                                });
+                            }
 
                             if (allowPhotoTiles) {
                                 // Set the URL for the photo tile button if used (done dynamically as contains section id).

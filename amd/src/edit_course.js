@@ -157,7 +157,13 @@ define(
                         // But not on mobile as they make clicks harder.
                         var toolTips = $("[data-toggle=tooltip]");
                         if (toolTips.length !== 0) {
-                            toolTips.tooltip();
+                            try {
+                                toolTips.tooltip();
+                            } catch (err) {
+                                require(["core/log"], function(log) {
+                                    log.debug(err);
+                                });
+                            }
                         }
                     }
 

@@ -50,6 +50,6 @@
     }
 }}
 <img class="photo" id="tilephoto-{{contextid}}-{{id}}" title="{{filename}}" alt="{{filename}}" data-filename="{{filename}}" data-contextid="{{contextid}}" data-itemid="{{itemid}}"
-     data-fileid="{{id}}" data-toggle="tooltip" data-placement="right" data-original-title="{{filename}}" data-filesize="{{filesize}}" src=""
+     data-fileid="{{id}}" {{#filename}}data-toggle="tooltip" data-placement="right" data-original-title="{{filename}}"{{/filename}} data-filesize="{{filesize}}" src=""
      data-imagetype="{{#isdraftfile}}draftfile{{/isdraftfile}}{{^isdraftfile}}tilephoto{{/isdraftfile}}"
     data-url="{{{wwwroot}}}/{{#isdraftfile}}draftfile.php{{/isdraftfile}}{{^isdraftfile}}pluginfile.php{{/isdraftfile}}/{{contextid}}/{{component}}/{{filearea}}/{{itemid}}{{filepath}}{{filename}}">

@@ -72,7 +72,8 @@
                     {{/progress}}
                 </div>
             </div>
-            <div class="tile-text" id="tileText-{{tileid}}" title="{{activity_summary}}"{{^ismobile}} data-toggle="tooltip" data-html="true"{{/ismobile}}>
+            <div class="tile-text" id="tileText-{{tileid}}" title="{{activity_summary}}"
+                {{^ismobile}}{{#activity_summary}}data-toggle="tooltip" data-html="true"{{/activity_summary}}{{/ismobile}}>
                 <span class="tile-textinner{{titleclass}}" id="tileTextin-{{tileid}}">
                   {{#title}}<h3>{{{title}}}</h3>{{/title}}
                 </span>
@@ -88,7 +89,8 @@
             {{#availabilitymessage}}
                 {{>format_tiles/availability_info}}
             {{/availabilitymessage}}
-            <div class="" id="tileText-{{tileid}}" title="{{activity_summary}}"{{^ismobile}} data-toggle="tooltip" data-html="true"{{/ismobile}}>
+            <div class="" id="tileText-{{tileid}}"
+                 {{#activity_summary}}title="{{activity_summary}}"{{^ismobile}} data-toggle="tooltip" data-html="true"{{/ismobile}}{{/activity_summary}}>
             <span class="photo-tile-text{{titleclass}}" id="tileTextin-{{tileid}}">
                 {{#title}}<h3>{{{title}}}</h3>{{/title}}
             </span>

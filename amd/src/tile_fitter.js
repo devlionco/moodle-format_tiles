@@ -79,7 +79,7 @@ define(["jquery", "core/ajax"], function ($, ajax) {
             var resizeWidth = "inherit";
             // Skip if window is only 2 or smaller than 2 tiles wide already.
             // This ensures that we don't crush the tiles into the centre (i.e. we use at least x% of width).
-            var maxPossibleTiles = Math.floor(tilesParentWidth / TILE_WIDTHS.mobileMin);
+            var maxPossibleTilesPerRow = Math.floor(tilesParentWidth / TILE_WIDTHS.min);
             var tileCount = ($(Selector.TILE).not(Selector.SPACER).length); // How many tiles in this course.
             if (tilesParentWidth < TILE_WIDTHS.mobileMin * 2) {
                 // Only space for one tile - don't resize to save space.
@@ -88,9 +88,9 @@ define(["jquery", "core/ajax"], function ($, ajax) {
                 resizeWidth = TILE_WIDTHS.standard * 4;
             } else if (tilesParentWidth < TILE_WIDTHS.min * 3) {
                 resizeWidth = (TILE_WIDTHS.standard - tileMargin) * 2;
-            } else if (maxPossibleTiles < 4) {
+            } else if (maxPossibleTilesPerRow < 4) {
                 // Here we set the max width to the space we have available, so that tiles are centred.
-                resizeWidth = TILE_WIDTHS.standard * maxPossibleTiles;
+                resizeWidth = TILE_WIDTHS.standard * maxPossibleTilesPerRow;
             } else {
                 // Make a range of numbers in an array.  e.g. range(2,5) = [2, 3, 4, 5].
                 var range = function (start, end) {

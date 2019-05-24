@@ -60,13 +60,14 @@
     <span class="completionchangenotify complete-n-{{cmid}}">{{#str}}notcomplete, format_tiles{{/str}}</span>
     {{#completionIsManual}}
         <form method="post" action="{{{ config.wwwroot }}}/course/togglecompletion.php"
-              class="togglecompletion" data-cmid="{{cmid}}" data-section="{{tileid}}" data-toggle="tooltip" data-ismanual="1" data-placement="bottom">
+              class="togglecompletion" data-cmid="{{cmid}}" data-section="{{tileid}}" data-ismanual="1" data-placement="bottom">
             <div class="completioncheckbox" id="completion-check-{{cmid}}">
                 <input type="hidden" name="id" value="{{cmid}}">
                 <input type="hidden" name="sesskey" value="{{sesskey}}">
                 <input type="hidden" name="modulename" value="{{modtitle}}">
                 <input type="hidden" name="completionstate" id="completionstate_{{cmid}}" value="{{completionstateInverse}}">
-                <button class="btn" title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}">
+                <button class="btn" title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}"
+                        data-toggle="tooltip">
                     <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}">
                     </span>
                 </button>

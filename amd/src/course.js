@@ -965,11 +965,17 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         // Move focus to the first tile in the course (not sec zero contents if present).
                         $("ul.tiles .tile").first().focus();
 
-                        // Initialise tooltips shown for example when hover over tile icon "Click to change icon".
+                        // Initialise tooltips shown for example for tile contents when hover on tile ("Files: 1")
                         // But not on mobile as they make clicks harder.
                         var toolTips = $(Selector.TOOLTIP);
                         if (toolTips.length !== 0) {
-                            toolTips.tooltip();
+                            try {
+                                toolTips.tooltip();
+                            } catch (err) {
+                                require(["core/log"], function(log) {
+                                    log.debug(err);
+                                });
+                            }
                         }
                     }
 

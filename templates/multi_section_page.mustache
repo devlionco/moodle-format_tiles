@@ -100,11 +100,11 @@
 
 {{#isediting}}
     <div class="expand-collapse-all-btns">
-        <a class="btn btn-secondary" data-toggle="tooltip" data-action="expand-all" title="{{#str}}expandall, format_tiles{{/str}}"
+        <a class="btn btn-secondary" data-action="expand-all" title="{{#str}}expandall, format_tiles{{/str}}"
            href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=1" id="expand-all-btn">
         {{#pix}}expand, format_tiles{{/pix}}&nbsp;{{#str}}expandall, format_tiles{{/str}}
         </a>
-        <a class="btn btn-secondary" data-toggle="tooltip" data-action="collaspse-all" title="{{#str}}collapsesections, format_tiles{{/str}}"
+        <a class="btn btn-secondary" data-action="collaspse-all" title="{{#str}}collapsesections, format_tiles{{/str}}"
             href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=-1" id="collapse-all-btn">
         {{#pix}}collapse, format_tiles{{/pix}}&nbsp;{{#str}}collapsesections, format_tiles{{/str}}
         </a>
@@ -150,20 +150,6 @@
                 {{#pix}}t/switch_plus, core, {{#str}}addsections, format_tiles{{/str}}{{/pix}}
             </a>
         </span>
-        {{#all_tiles_expanded}}
-        <span data-toggle="tooltip" title="{{#str}}collapsesections, format_tiles{{/str}}">
-            <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=-1">
-                {{#pix}}collapse, format_tiles{{/pix}}
-            </a>
-        </span>
-        {{/all_tiles_expanded}}
-        {{^all_tiles_expanded}}
-        <span data-toggle="tooltip" title="{{#str}}expandsections, format_tiles{{/str}}">
-            <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expanded=1">
-                {{#pix}}expand, format_tiles{{/pix}}
-            </a>
-        </span>
-        {{/all_tiles_expanded}}
     {{/isediting}}
 </span>
 
