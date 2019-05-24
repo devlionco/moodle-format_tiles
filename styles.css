@@ -539,7 +539,6 @@ li#section-0.section.main.clearfix {
     padding-top: 5px;
     position: relative;
 }
-
 /* centralise text vertically on tile */
 .format-tiles ul.tiles .tile .tile-textinner {
     display: inline-block;
@@ -1788,6 +1787,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     padding: 4px 7px;
     font-size: 20px;
     color: #fff;
+}
+.format-tiles ul.tiles .tile.phototile .tile-text {
+    margin-top: 35px;
 }
 .format-tiles li.tile.phototile  .availabilityinfo {
     position: absolute;
