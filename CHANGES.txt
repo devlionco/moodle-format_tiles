@@ -159,7 +159,7 @@
 - Navbar overlay height - improvements including account for difference between firefox and chrome
 - URL activity - remove intermediate screen on launch by student (go directly to URL but log click with AJAX)
 
-3.7.0 Beta (2019052100) (Major release beta)
+3.7.0.x Beta (201905210x) (Major release beta)
 ==================================
 New features
 - Photo tiles, with photo picker and conversion of Grid format courses
