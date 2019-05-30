@@ -165,8 +165,12 @@ class icon_set {
         // However Moover does support fotn awesome for {{pix}}, so we add a whitelist too.
         if ($this->usefontawesome) {
             $fontawesomethemeswhitelist = ['moove', 'boost'];
-            $iconsystem = $PAGE->theme->get_icon_system();
-            if ($iconsystem == icon_system::FONTAWESOME || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
+            try {
+                $faiconsystem = $PAGE->theme->get_icon_system() == icon_system::FONTAWESOME;
+            } catch (Exception $ex) {
+                $faiconsystem = false;
+            }
+            if ($faiconsystem  || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
                 foreach ($this->fontawesometileicons as $iconname) {
                     $pixname = str_replace('fa-', '', $iconname);
                     if ($stringmanager->string_exists('icontitle-' . $pixname, 'format_tiles')) {
