@@ -58,6 +58,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                 if(iconSet.length <= 0) {
                     require(["core/log"], function(log) {
                         log.error("Error empty icon set");
+                        log.debug(response);
                     });
                 }
                 if (typeof callback === "function") {
@@ -77,11 +78,13 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                 if (!response.status) {
                     require(["core/log"], function(log) {
                         log.error("Error response when getting icon set");
+                        log.debug(response);
                     });
                 }
             });
             photosPromises[0].fail(function (response) {
                 require(["core/log"], function(log) {
+                    log.error("Fail when getting icon set");
                     log.debug(response);
                 });
             });
@@ -202,6 +205,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                 }
             }).fail(function(response) {
                 require(["core/log"], function(log) {
+                    log.error("Fail setting icon");
                     log.debug(response);
                 });
             });
