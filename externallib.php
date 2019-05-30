@@ -688,7 +688,9 @@ class format_tiles_external extends external_api
         return new external_single_structure(
             array(
                 'icons' => new external_value(PARAM_RAW, 'Icon set available for use on tile icons (JSON array)'),
-                'photos' => new external_value(PARAM_RAW, 'Recent photos set for teacher photo library (JSON array)')
+                'photos' => new external_value(PARAM_RAW, 'Recent photos set for teacher photo library (JSON array)'),
+                'status' => new external_value(PARAM_BOOL, 'status: true if success'),
+                'warnings' => new external_warnings()
             )
         );
     }
