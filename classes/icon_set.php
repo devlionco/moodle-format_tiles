@@ -167,7 +167,7 @@ class icon_set {
             $fontawesomethemeswhitelist = ['moove', 'boost'];
             try {
                 $faiconsystem = $PAGE->theme->get_icon_system() == icon_system::FONTAWESOME;
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 $faiconsystem = false;
             }
             if ($faiconsystem  || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
