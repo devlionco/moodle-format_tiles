@@ -36,6 +36,16 @@ defined('MOODLE_INTERNAL') || die();
 class icon_set {
 
     /**
+     * Should this plugin use font awesome or not?
+     * This variable is provided to give developers an easy way to disable FA for this plugin if they need to.
+     * The reason is that sometimes a theme *seems* to support FA, but in reality does so with issues.
+     * If set to false, images in pix/tileicon etc will be used instead of FA.
+     * If you change this in code, purge all caches afterwards.
+     * @var bool
+     */
+    private $usefontawesome = true; // Change this to false if you don't want "Tiles" plugin to use font awesome.
+
+    /**
      * These are shown on tiles.  The teacher chooses which one to apply to each tile or course.
      * To make more icons available to a teacher, add them here using the set at https://fontawesome.com/v4.7.0/icons/.
      * Alternatively, if your theme does not support Font Awesome or you want to use image files, add them to pix/tileicon.
@@ -144,6 +154,7 @@ class icon_set {
      * @param int $courseid the id of the course we are in (so we can mark the default icon for this course).
      * @return array of tile icons
      * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function available_tile_icons($courseid = 0) {
         global $CFG, $PAGE, $DB;
@@ -152,17 +163,19 @@ class icon_set {
         // First if the theme supports font awesome, use the available font awesome tile icons.
         // Using $PAGE->theme->get_icon_system()==icons_system::fontawesome does not work for Moove.
         // However Moover does support fotn awesome for {{pix}}, so we add a whitelist too.
-        $fontawesomethemeswhitelist = ['moove', 'boost'];
-        $iconsystem = $PAGE->theme->get_icon_system();
-        if ($iconsystem == icon_system::FONTAWESOME || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
-            foreach ($this->fontawesometileicons as $iconname) {
-                $pixname = str_replace('fa-',  '', $iconname);
-                if ($stringmanager->string_exists('icontitle-' . $pixname, 'format_tiles')) {
-                    $displayname = get_string('icontitle-' . $pixname, 'format_tiles');
-                } else {
-                    $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $pixname))));
+        if ($this->usefontawesome) {
+            $fontawesomethemeswhitelist = ['moove', 'boost'];
+            $iconsystem = $PAGE->theme->get_icon_system();
+            if ($iconsystem == icon_system::FONTAWESOME || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
+                foreach ($this->fontawesometileicons as $iconname) {
+                    $pixname = str_replace('fa-', '', $iconname);
+                    if ($stringmanager->string_exists('icontitle-' . $pixname, 'format_tiles')) {
+                        $displayname = get_string('icontitle-' . $pixname, 'format_tiles');
+                    } else {
+                        $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $pixname))));
+                    }
+                    $availableicons[$pixname] = $displayname;
                 }
-                $availableicons[$pixname] = $displayname;
             }
         }
 
@@ -212,6 +225,9 @@ class icon_set {
      * @return array
      */
     public function get_font_awesome_icon_map() {
+        if(!$this->usefontawesome) {
+            return [];
+        }
         // First the general icons (not specific to tiles).
         // These are used for example to show nav buttons within tiles.
         $generalicons = [
