@@ -169,6 +169,7 @@ class icon_set {
                 $faiconsystem = $PAGE->theme->get_icon_system() == icon_system::FONTAWESOME;
             } catch (\Exception $ex) {
                 $faiconsystem = false;
+                debugging('Could not get theme icon system. Using fallback /pix images for tile icons. ' . $ex->getMessage(), DEBUG_DEVELOPER);
             }
             if ($faiconsystem  || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
                 foreach ($this->fontawesometileicons as $iconname) {
