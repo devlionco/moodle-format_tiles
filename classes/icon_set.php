@@ -229,7 +229,7 @@ class icon_set {
      * @return array
      */
     public function get_font_awesome_icon_map() {
-        if(!$this->usefontawesome) {
+        if (!$this->usefontawesome) {
             return [];
         }
         // First the general icons (not specific to tiles).

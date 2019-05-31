@@ -55,7 +55,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                 Object.keys(icons).forEach(function(icon) {
                     iconSet.push({filename: icon, displayname: icons[icon]});
                 });
-                if(iconSet.length <= 0) {
+                if (iconSet.length <= 0) {
                     require(["core/log"], function(log) {
                         log.error("Error empty icon set");
                         log.debug(response);
@@ -75,9 +75,9 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                         ph.fadeOut(500);
                     }
                 });
-                if (!response.status) {
+                if (response.status !== true) {
                     require(["core/log"], function(log) {
-                        log.error("Error response when getting icon set");
+                        log.error("Non true status response when getting icon set");
                         log.debug(response);
                     });
                 }
