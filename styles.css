@@ -1245,6 +1245,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .clickable-region {
     height: 110px;
     width: 230px;
+    display: block;
 }
 .format-tiles #page-content li.activity.subtile.dimmed a.dropdown-toggle {
     color: #888;
