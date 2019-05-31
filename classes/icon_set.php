@@ -162,14 +162,17 @@ class icon_set {
         $availableicons = [];
         // First if the theme supports font awesome, use the available font awesome tile icons.
         // Using $PAGE->theme->get_icon_system()==icons_system::fontawesome does not work for Moove.
-        // However Moover does support fotn awesome for {{pix}}, so we add a whitelist too.
+        // However Moove does support font awesome for {{pix}}, so we add a whitelist too.
         if ($this->usefontawesome) {
-            $fontawesomethemeswhitelist = ['moove', 'boost'];
+            $fontawesomethemeswhitelist = ['moove'];
             try {
                 $faiconsystem = $PAGE->theme->get_icon_system() == icon_system::FONTAWESOME;
             } catch (\Exception $ex) {
                 $faiconsystem = false;
-                debugging('Could not get theme icon system. Using fallback /pix images for tile icons. ' . $ex->getMessage(), DEBUG_DEVELOPER);
+                debugging(
+                    'Could not get theme icon system. Using fallback /pix images for tile icons. ' . $ex->getMessage(),
+                    DEBUG_DEVELOPER
+                );
             }
             if ($faiconsystem  || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
                 foreach ($this->fontawesometileicons as $iconname) {
