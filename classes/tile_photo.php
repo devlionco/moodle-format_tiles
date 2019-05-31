@@ -452,7 +452,7 @@ class tile_photo {
         // Did not use (new \file_storage())->get_area_files() for this as it requires context id.
         // We want to filter by user id instead.
         global $DB, $USER;
-        list($sqlin, $params) = $DB->get_in_or_equal(self::allowed_file_types(), SQL_PARAMS_NAMED, 'mimetype');
+//        list($sqlin, $params) = $DB->get_in_or_equal(self::allowed_file_types(), SQL_PARAMS_NAMED, 'mimetype');
         $params['contextid'] = $contextid;
         $params['userid'] = $USER->id;
         $params['cutofftime'] = strtotime("-12 months");
@@ -466,7 +466,7 @@ class tile_photo {
             FROM {files}
             WHERE component = :component AND filearea = :filearea AND (contextid = :contextid || userid = :userid)
             AND filename != '.' AND filepath = :filepath
-            AND timemodified > :cutofftime AND mimetype " . $sqlin . "
+            AND timemodified > :cutofftime
             AND filesize < :filesizecutoff AND filesize > 0";
 
         // TODO this query was causing problems with Postgres but was OK on MySQL.
