@@ -465,13 +465,18 @@ class tile_photo {
         $sql = "SELECT id, component, filearea, contextid, itemid, filepath, filename, filesize, mimetype
             FROM {files}
             WHERE component = :component AND filearea = :filearea AND (contextid = :contextid || userid = :userid)
-            AND filename != '.'
-            AND filepath = :filepath
-            AND timemodified >= :cutofftime AND mimetype " . $sqlin . "
-            AND filesize <= :filesizecutoff AND filesize > 0
-            ORDER BY timemodified DESC";
+            AND filename != '.' AND filepath = :filepath
+            AND timemodified > :cutofftime AND mimetype " . $sqlin . "
+            AND filesize < :filesizecutoff AND filesize > 0";
 
-        $records = $DB->get_records_sql($sql, $params, 0, $maxnumberphotos);
+        // TODO this query was causing problems with Postgres but was OK on MySQL.
+        //  Pending further work on this, for now we just catch any exception and fail quietly.
+        try {
+            $records = $DB->get_records_sql($sql, $params, 0, $maxnumberphotos);    
+        } catch (\Exception $ex) {
+            debugging('Failed to run query to get files for library. ' . $ex->getMessage());
+            $records = [];
+        }
 
         // If the teacher has nothing in their library, add a sample image.
         if (count($records) == 0) {
