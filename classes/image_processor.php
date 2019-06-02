@@ -79,7 +79,7 @@ class image_processor
                     $storedfilerecord['filename']
                 );
                 if ($existingfile) {
-                    \core\notification::warning('delete;d ol ' . $existingfile->get_id());
+                    debugging('Deleted old photo' . $existingfile->get_id(), DEBUG_DEVELOPER);
                     $existingfile->delete();
                 }
                 // Create new file.
@@ -89,14 +89,14 @@ class image_processor
                 unset($tempfile);
                 return $newfile;
             } else {
-                debugging('imagecannotbeused', 'format_tiles');
+                debugging('imagecannotbeused', 'format_tiles', DEBUG_DEVELOPER);
             }
         } catch (Exception $e) {
             if (isset($tempfile)) {
                 unset($tempfile);
             }
-            debugging('Format tiles image exception:...');
-            debugging($e->getMessage());
+            debugging('Format tiles image exception:...', DEBUG_DEVELOPER);
+            debugging($e->getMessage(), DEBUG_DEVELOPER);
             return false;
         }
         return false;

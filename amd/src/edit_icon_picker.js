@@ -118,6 +118,51 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
         var setIcon = function (
             sectionId, sectionNum, icon, displayname, pageType, courseId, imageType, sourcecontextid, sourceitemid
         ) {
+            var selectedIcon = $("#selectedicon");
+            var changeUiTilePhoto = function (jqueryObjToChange, imageUrl, imageType) {
+                var templateToRender = '';
+                var templateParams = {
+                    tileicon: icon,
+                    tileid: sectionNum,
+                    secid: sectionId,
+                    isediting: 1
+                };
+                switch (imageType) {
+                    case 'tileicon':
+                        templateToRender = 'tileicon';
+                        break;
+                    case 'tilephoto':
+                        templateToRender = 'tilebarphoto';
+                        templateParams.phototileurl = imageUrl;
+                        templateParams.phototileediturl = getPhotoTileButtonUrl(courseId, sectionId);
+                        templateParams.iamgetype = imageType;
+                        jqueryObjToChange.closest(".tileiconcontainer").addClass("hasphoto");
+                        // Refresh the photos in library as may not are still be available.
+                        setTimeout(function () {
+                            getAndStoreIconSet(courseId);
+                        }, 3000);
+                        break;
+                    case 'draftfile':
+                        templateToRender = 'tilebarphoto';
+                        templateParams.phototileurl = imageUrl;
+                        templateParams.phototileediturl = getPhotoTileButtonUrl(courseId, sectionId);
+                        templateParams.iamgetype = imageType;
+                        break;
+                    default:
+                        throw new Error("Invalid image type " + imageType);
+                }
+                var divToAnimate = pageType === "course-view-tiles" ? jqueryObjToChange : selectedIcon;
+                divToAnimate.animate({opacity: 0}, 500, function () {
+                    Templates.render("format_tiles/" + templateToRender, templateParams)
+                        .done(function (html) {
+                            divToAnimate.html(html)
+                                .animate({opacity: 1}, 500);
+                        });
+                });
+                if (pageType === "course-editsection" && imageType === "tilephoto") {
+                        $('input[name=tilephoto]').val(icon);
+                }
+            };
             var ajaxIconPickArgs = {
                 image: icon,
                 courseid: courseId,
@@ -136,45 +181,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                     if (pageType === "course-view-tiles") {
                         // We are changing an icon for a specific section from within the course.
                         // We are doing this by clicking an existing icon.
-                        var iconToChange = $("#tileicon_" + sectionNum);
-                        var templateToRender = '';
-                        var templateParams = {
-                            tileicon: icon,
-                            tileid: sectionNum,
-                            secid: sectionId,
-                            isediting: 1
-                        };
-                        switch (imageType) {
-                            case 'tileicon':
-                                templateToRender = 'tileicon';
-                                break;
-                            case 'tilephoto':
-                                templateToRender = 'tilebarphoto';
-                                templateParams.phototileurl = response.imageurl;
-                                templateParams.phototileediturl = getPhotoTileButtonUrl(courseId, sectionId);
-                                templateParams.iamgetype = response.imagetype;
-                                iconToChange.closest(".tileiconcontainer").addClass("hasphoto");
-                                // Refresh the photos in library as may not are still be available.
-                                setTimeout(function () {
-                                    getAndStoreIconSet(courseId);
-                                }, 3000);
-                                break;
-                            case 'draftfile':
-                                templateToRender = 'tilebarphoto';
-                                templateParams.phototileurl = response.imageurl;
-                                templateParams.phototileediturl = getPhotoTileButtonUrl(courseId, sectionId);
-                                templateParams.iamgetype = response.imagetype;
-                                break;
-                            default:
-                                throw new Error("Invalid image type " + imageType);
-                        }
-                        iconToChange.animate({opacity: 0}, 500, function () {
-                            Templates.render("format_tiles/" + templateToRender, templateParams)
-                                .done(function (html) {
-                                    iconToChange.html(html)
-                                        .animate({opacity: 1}, 500);
-                                });
-                        });
+                        changeUiTilePhoto($("#tileicon_" + sectionNum), response.imageurl, imageType);
                     } else if (pageType === "course-edit" || pageType === "course-editsection") {
                         // We are changing the icon using a drop down menu not the icon picker modal.
                         // Either for the whole course or for one section.
@@ -185,21 +192,28 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                         }
                         selectBox.val(icon);
                         // Then change the image shown next to it.
-                        Templates.renderPix("tileicon/" + icon, "format_tiles", displayname)
-                            .done(function (newIcon) {
-                                $("#selectedicon").html(newIcon);
-                                if (pageType === "course-editsection") {
-                                    str.get_strings([
-                                        {key: "tip", component: "format_tiles"},
-                                        {key: "tileselecttip", component: "format_tiles"}
-                                    ]).done(function (strings) {
-                                        Notification.alert(
-                                            strings[0],
-                                            strings[1]
-                                        );
-                                    });
-                                }
-                            });
+                        if (imageType === "tileicon") {
+                            Templates.renderPix("tileicon/" + icon, "format_tiles", displayname)
+                                .done(function (newIcon) {
+                                    selectedIcon.html(newIcon);
+                                    if (pageType === "course-editsection") {
+                                        str.get_strings([
+                                            {key: "tip", component: "format_tiles"},
+                                            {key: "tileselecttip", component: "format_tiles"}
+                                        ]).done(function (strings) {
+                                            Notification.alert(
+                                                strings[0],
+                                                strings[1]
+                                            );
+                                        });
+                                    }
+                                });
+                            if (pageType === "course-editsection") {
+                                $('input[name=tilephoto]').val("");
+                            }
+                        } else if (imageType === "tilephoto") {
+                            changeUiTilePhoto($("#tileicon_" + sectionNum), response.imageurl, imageType);
+                        }
                     }
 
                 }
@@ -403,7 +417,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                             courseId,
                             clickedIcon.attr('data-sectionid'),
                             clickedIcon.attr('data-section'),
-                            allowPhotoTiles === "1",
+                            allowPhotoTiles,
                             documentationurl
                         );
                     });

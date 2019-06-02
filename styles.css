@@ -1660,7 +1660,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 25px;
     color: gray;
 }
-
+.format-tiles #selectedicon {
+    margin-right: 10px;
+}
 .format-tiles .modal-header:focus,
 .format-tiles .resourcecontent:focus,
 .format-tiles .sectiontitle:focus,
