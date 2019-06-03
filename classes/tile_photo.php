@@ -469,7 +469,7 @@ class tile_photo {
             AND filesize < :filesizecutoff AND filesize > 0";
 
         try {
-            $records = $DB->get_records_sql($sql, $params, 0, $maxnumberphotos);    
+            $records = $DB->get_records_sql($sql, $params, 0, $maxnumberphotos);
         } catch (\Exception $ex) {
             debugging('Failed to run query to get files for library. ' . $ex->getMessage());
             $records = [];
