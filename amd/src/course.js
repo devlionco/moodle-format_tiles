@@ -76,7 +76,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             MOODLE_VIDEO: ".mediaplugin.mediaplugin_videojs",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
             TOOLTIP: "[data-toggle=tooltip]",
-            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.navbar", "#navwrap",
+            HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.moodle-has-zindex", "#navwrap",
                 "nav.navbar-fixed-top"]
             // We try several different selectors for header bar as it varies between theme.
             // (Boost based, clean based, essential etc).
@@ -830,9 +830,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 // Otherise the header bar has a separate mini overlay of its own - find and hide this.
                                 // If it is clicked, cancel tile selections and click the item behind where clicked.
                                 // Do not include for Moodle 3.5 or higher as not needed.
-                                if (headerBar.height() !== undefined) {
-                                    // Height must always be 50 minimum (Firefox and Moodle 3.3 will return 34 if we let them).
-                                    HEADER_BAR_HEIGHT = Math.max(headerBar.height(), 50);
+                                if (headerBar.outerHeight() !== undefined) {
+                                    HEADER_BAR_HEIGHT = headerBar.outerHeight();
                                     headerOverlay = $("<div></div>")
                                         .addClass(ClassNames.HEADER_OVERLAY).attr("id", ClassNames.HEADER_OVERLAY)
                                         .css(CSS.DISPLAY, "none");
