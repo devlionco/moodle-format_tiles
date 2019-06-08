@@ -23,8 +23,6 @@
 
 namespace format_tiles;
 
-use core\output\icon_system;
-
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -166,7 +164,7 @@ class icon_set {
         if ($this->usefontawesome) {
             $fontawesomethemeswhitelist = ['moove'];
             try {
-                $faiconsystem = $PAGE->theme->get_icon_system() == icon_system::FONTAWESOME;
+                $faiconsystem = $PAGE->theme->get_icon_system() == \core\output\icon_system::FONTAWESOME;
             } catch (\Exception $ex) {
                 $faiconsystem = false;
                 debugging(
