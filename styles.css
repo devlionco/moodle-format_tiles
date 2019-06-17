@@ -1628,10 +1628,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles #single_section_tiles .inplaceeditable input.form-control {
     width: 100%;
 }
-.format-tiles #coursecontrolbuttons {
-    margin-right: 40px;
-}
-
 .format-tiles.editing .section .activity .editing_move {
     position: relative;
 }

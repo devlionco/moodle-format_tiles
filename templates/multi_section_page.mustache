@@ -142,16 +142,14 @@
         {{/tiles}}
     {{/isediting}}
 </ul>
-<span class="pull-right" id="coursecontrolbuttons">
-    {{#isediting}}
-        <span id="changenumsections" data-toggle="tooltip" title="{{#str}}addsections, format_tiles{{/str}}">
-            <a data-add-sections="{{#str}}addsections, format_tiles{{/str}}"
-               href="{{{ config.wwwroot }}}/course/changenumsections.php?courseid={{courseid}}&sesskey={{sesskey}}&insertsection=0&sectionreturn=0">
-                {{#pix}}t/switch_plus, core, {{#str}}addsections, format_tiles{{/str}}{{/pix}}
-            </a>
-        </span>
-    {{/isediting}}
-</span>
+
+{{#isediting}}
+    <span id="changenumsections">
+        <a data-add-sections="{{#str}}addsections, format_tiles{{/str}}" class="pull-right mt-3" href="{{{ config.wwwroot }}}/course/changenumsections.php?courseid={{courseid}}&sesskey={{sesskey}}&insertsection=0&sectionreturn=0">
+            {{#pix}}t/switch_plus, core, {{#str}}addsections, format_tiles{{/str}}{{/pix}} {{#str}}addsections, format_tiles{{/str}}
+        </a>
+    </span>
+{{/isediting}}
 
 {{#isediting}}
     {{^from_ajax}}
