@@ -858,7 +858,9 @@ class course_output implements \renderable, \templatable
             $moduleobject['uservisible'] = $mod->uservisible;
             $moduleobject['clickable'] = $mod->uservisible;
         }
-        if (!$moduleobject['uservisible'] || $mod->deletioninprogress || ($mod->is_stealth() && !$this->canviewhidden)) {
+        // We check that the stealth function exists in case we are running in Totara or earlier Moodle, where it doesn't.
+        $isstealth = method_exists($mod, 'is_stealth') && $mod->is_stealth();
+        if (!$moduleobject['uservisible'] || $mod->deletioninprogress || (!$this->canviewhidden && $isstealth)) {
             return [];
         }
         // If the module isn't available, or we are a teacher (can view hidden activities) get availability info.
@@ -925,7 +927,7 @@ class course_output implements \renderable, \templatable
         }
         $moduleobject['extraclasses'] = $mod->extraclasses;
         $moduleobject['afterlink'] = $mod->afterlink;
-        if ($mod->is_stealth()) {
+        if ($isstealth) {
             $moduleobject['extraclasses'] .= ' stealth';
             $moduleobject['stealth'] = 1;
         } else if (
