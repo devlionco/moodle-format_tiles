@@ -77,7 +77,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
             TOOLTIP: "[data-toggle=tooltip]",
             HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.moodle-has-zindex", "#navwrap",
-                "nav.navbar-fixed-top"]
+                "nav.navbar-fixed-top", "#main-navbar"]
             // We try several different selectors for header bar as it varies between theme.
             // (Boost based, clean based, essential etc).
         };
@@ -841,6 +841,12 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                             cancelTileSelections(0);
                                             clickItemBehind(e);
                                         });
+                                } else {
+                                    require(["core/log"], function(log) {
+                                        log.debug(
+                                            "Failed to get navbar.  Ensure theme's navbar selector is included in global HEADER_BAR"
+                                        );
+                                    });
                                 }
                             }
                         }
