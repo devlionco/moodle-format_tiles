@@ -171,15 +171,9 @@ class image_processor
 
         $finalimage = $tempimage;
         $ratio = min($requestedwidth / $originalwidth, $requestedheight / $originalheight);
-
-        if ($ratio < 1) {
-            $targetwidth = floor($originalwidth * $ratio);
-            $targetheight = floor($originalheight * $ratio);
-        } else {
-            // Do not enlarge the original file if it is smaller than the requested thumbnail size.
-            $targetwidth = $originalwidth;
-            $targetheight = $originalheight;
-        }
+        
+        $targetwidth = floor($originalwidth * $ratio);
+        $targetheight = floor($originalheight * $ratio);
 
         $dstx = floor(($requestedwidth - $targetwidth) / 2);
         $dsty = floor(($requestedheight - $targetheight) / 2);
