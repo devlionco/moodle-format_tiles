@@ -104,7 +104,6 @@ define(
                 reopenLastSection, // Set by site admin see settings.php.
                 userId,
                 fitTilesToWidth,
-                useWindowOverlay,
                 pageType,
                 allowPhotoTiles,
                 useSubTiles,
