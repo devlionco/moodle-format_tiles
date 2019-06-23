@@ -34,16 +34,6 @@ defined('MOODLE_INTERNAL') || die();
 class icon_set {
 
     /**
-     * Should this plugin use font awesome or not?
-     * This variable is provided to give developers an easy way to disable FA for this plugin if they need to.
-     * The reason is that sometimes a theme *seems* to support FA, but in reality does so with issues.
-     * If set to false, images in pix/tileicon etc will be used instead of FA.
-     * If you change this in code, purge all caches afterwards.
-     * @var bool
-     */
-    private $usefontawesome = true; // Change this to false if you don't want "Tiles" plugin to use font awesome.
-
-    /**
      * These are shown on tiles.  The teacher chooses which one to apply to each tile or course.
      * To make more icons available to a teacher, add them here using the set at https://fontawesome.com/v4.7.0/icons/.
      * Alternatively, if your theme does not support Font Awesome or you want to use image files, add them to pix/tileicon.
@@ -155,33 +145,20 @@ class icon_set {
      * @throws \dml_exception
      */
     public function available_tile_icons($courseid = 0) {
-        global $CFG, $PAGE, $DB;
+        global $CFG, $DB;
         $stringmanager = get_string_manager();
         $availableicons = [];
+
         // First if the theme supports font awesome, use the available font awesome tile icons.
-        // Using $PAGE->theme->get_icon_system()==icons_system::fontawesome does not work for Moove.
-        // However Moove does support font awesome for {{pix}}, so we add a whitelist too.
-        if ($this->usefontawesome) {
-            $fontawesomethemeswhitelist = ['moove'];
-            try {
-                $faiconsystem = $PAGE->theme->get_icon_system() == \core\output\icon_system::FONTAWESOME;
-            } catch (\Exception $ex) {
-                $faiconsystem = false;
-                debugging(
-                    'Could not get theme icon system. Using fallback /pix images for tile icons. ' . $ex->getMessage(),
-                    DEBUG_DEVELOPER
-                );
-            }
-            if ($faiconsystem  || array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
-                foreach ($this->fontawesometileicons as $iconname) {
-                    $pixname = str_replace('fa-', '', $iconname);
-                    if ($stringmanager->string_exists('icontitle-' . $pixname, 'format_tiles')) {
-                        $displayname = get_string('icontitle-' . $pixname, 'format_tiles');
-                    } else {
-                        $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $pixname))));
-                    }
-                    $availableicons[$pixname] = $displayname;
+        if ($this->supports_font_awesome()) {
+            foreach ($this->fontawesometileicons as $iconname) {
+                $pixname = str_replace('fa-', '', $iconname);
+                if ($stringmanager->string_exists('icontitle-' . $pixname, 'format_tiles')) {
+                    $displayname = get_string('icontitle-' . $pixname, 'format_tiles');
+                } else {
+                    $displayname = ucwords(str_replace('_', ' ', (str_replace('-', ' ', $pixname))));
                 }
+                $availableicons[$pixname] = $displayname;
             }
         }
 
@@ -226,12 +203,43 @@ class icon_set {
     }
 
     /**
+     * Does the theme support Font Awesome or not?
+     * By setting this to return false, developers can disable FA for this plugin if they need to.
+     * Sometimes a theme *seems* to support FA, but in reality does so with issues.
+     * If set to false, images in pix/tileicon etc will be used instead of FA.
+     * If you change this in code, purge all caches afterwards.
+     * @return bool
+     */
+    public function supports_font_awesome() {
+        global $PAGE;
+        if (!class_exists('\core\output\icon_system') || !method_exists($PAGE->theme, 'get_icon_system')) {
+            return false;
+        }
+
+        $fontawesomethemeswhitelist = ['moove'];
+        // Using $PAGE->theme->get_icon_system()==icons_system::fontawesome does not work for Moove.
+        // However Moove does support font awesome for {{pix}}, so we add a whitelist too.
+        if (array_search($PAGE->theme->name, $fontawesomethemeswhitelist) !== false) {
+            return true;
+        }
+        try {
+            return $PAGE->theme->get_icon_system() == \core\output\icon_system::FONTAWESOME;
+        } catch (\Exception $ex) {
+            debugging(
+                'Could not get theme icon system. Using fallback /pix images for tile icons. ' . $ex->getMessage(),
+                DEBUG_DEVELOPER
+            );
+        }
+        return false;
+    }
+
+    /**
      * Lib.php calls this for example when caches are purged or plugin is updated, to get latest FA icon map.
      * @see format_tiles_get_fontawesome_icon_map()
      * @return array
      */
     public function get_font_awesome_icon_map() {
-        if (!$this->usefontawesome) {
+        if (!$this->supports_font_awesome()) {
             return [];
         }
         // First the general icons (not specific to tiles).

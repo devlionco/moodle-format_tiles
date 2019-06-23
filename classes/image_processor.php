@@ -171,7 +171,7 @@ class image_processor
 
         $finalimage = $tempimage;
         $ratio = min($requestedwidth / $originalwidth, $requestedheight / $originalheight);
-        
+
         $targetwidth = floor($originalwidth * $ratio);
         $targetheight = floor($originalheight * $ratio);
 
