@@ -137,7 +137,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             // First iframes (e.g. embedded YouTube).
             contentSection.find("iframe").each(function (index, iframe) {
                 iframe = $(iframe);
-                iframe.attr('src', iframe.attr("src"));
+                // Remove the src from the iframe but keep it in case the section is re-opened.
+                iframe.attr('data-src', iframe.attr("src"));
+                iframe.attr('src', "");
             });
 
             // Then Moodle media player.
@@ -299,6 +301,16 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                 // For users with screen readers, move focus to the first item within the tile.
                 contentArea.find(Selector.ACTIVITY).first().focus();
+
+                // If we have any iframes in the section which were previous emptied out, re-populate.
+                // This will happen if we have previously closed a section with videos in, and they were muted.
+                contentArea.find("iframe").each(function (index, iframe) {
+                    iframe = $(iframe);
+                    // If iframe has no src, add it from data-src.
+                    if (iframe.attr('src') === '' && iframe.attr('data-src') !== undefined) {
+                        iframe.attr('src', iframe.attr("data-src"));
+                    }
+                });
             };
 
             /**
