@@ -1894,3 +1894,57 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     transform: translateY(-50px);
     height: 0;
 }
+
+.format-tiles .course-content .tiles.pinnedsections li.pinned {
+  position: relative;
+  background-color: #19284f;
+  background-image: url("[[pix:format_grid|pushpin]]");
+  background-size: 10%;
+  background-position: 10px;
+  background-repeat: no-repeat;
+  border-radius: 14px;
+  top: -10px;
+  display: -ms-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  height: 55px;
+  line-height: 55px;
+  width: 170px;
+  overflow: hidden; }
+  .format-tiles .course-content .tiles.pinnedsections li.pinned a {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+        justify-content: center;
+    -ms-flex-positive: 1;
+        flex-grow: 1; }
+    .format-tiles .course-content .tiles.pinnedsections li.pinned a .icon_content {
+      color: #fff;
+      height: auto;
+      width: 120px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      text-align: center; }
+  .format-tiles .course-content .tiles.pinnedsections li.pinned img {
+    display: none; }
+  .format-tiles .course-content .tiles.pinnedsections li.pinned .image_holder {
+    display: none; }
+
+.format-tiles .course-content .tiles.pinnedsections li.pinned .tile-top {
+    display: none;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned .tile-textinner{
+    position: relative;
+    top: 10px;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned, .sectionname,
+.format-tiles .course-content .tiles.pinnedsections li.pinned h3{
+    font-size: 1em;
+    color: #fff;
+}

@@ -356,6 +356,7 @@ class course_output implements \renderable, \templatable
         $data['title'] = get_section_name($this->course, $thissection->section);
         $data['summary'] = $output->format_summary_text($thissection);
         $data['tileid'] = $thissection->section;
+        $data['pinned'] = $thissection->pinned;
         $data['secid'] = $thissection->id;
         $data['tileicon'] = $thissection->tileicon;
 
@@ -465,6 +466,7 @@ class course_output implements \renderable, \templatable
                 $newtile = array(
                     'tileid' => $section->section,
                     'secid' => $section->id,
+                    'pinned' => $section->pinned,
                     'title' => $title,
                     'tileicon' => $section->tileicon,
                     'current' => course_get_format($this->course)->is_section_current($section),

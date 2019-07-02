@@ -50,7 +50,7 @@ class format_tiles extends format_base {
      * @var []
      */
     public $labellikecoursemods = ['label', 'customlabel', 'unilabel'];
-
+    
     /**
      * Creates a new instance of class
      *
@@ -66,7 +66,7 @@ class format_tiles extends format_base {
         }
         parent::__construct($format, $courseid);
     }
-
+    
     /**
      * Returns true if this course format uses sections
      *
@@ -542,7 +542,6 @@ class format_tiles extends format_base {
                 'help' => 'usesubtilesseczero',
                 'help_component' => 'format_tiles',
             );
-
             $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
         return $courseformatoptions;
@@ -583,6 +582,11 @@ class format_tiles extends format_base {
                 'default' => '',
                 'type' => PARAM_TEXT,
             ),
+        );
+        $sectionformatoptions['pinned'] = array (
+            'type' => PARAM_INT,
+            'element_type' => 'hidden',
+            'default' => 0 // 0 - unpinned; 1 - pinned;
         );
         if ($course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES
             || $course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
@@ -985,12 +989,30 @@ class format_tiles extends format_base {
      */
     public function section_action($section, $action, $sr) {
         global $PAGE;
+        $course = $this->get_course();
 
         if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
             // Format 'tiles' allows to set and remove markers in addition to common section actions.
             require_capability('moodle/course:setcurrentsection', context_course::instance($this->courseid));
             course_set_marker($this->courseid, ($action === 'setmarker') ? $section->section : 0);
             return null;
+        }
+
+        if ($section->section && ($action === 'topinsection' || $action === 'tounpinsection')) {
+            require_capability('moodle/course:setcurrentsection', context_course::instance($this->courseid));
+            $nowpinned = $this->get_nowpinned($course->id);
+            if ($nowpinned < 4 && $action === 'topinsection') {
+                $newpinnedstatus = 1;
+                course_update_section($course, $section, array('pinned' => $newpinnedstatus));
+                return $nowpinned;
+            } else if ($action === 'tounpinsection') {
+                $newpinnedstatus = 0;
+                course_update_section($course, $section, array('pinned' => $newpinnedstatus));
+                return null;
+            } else if ($nowpinned >= 4) {
+                // show alert message from js
+                print_error('toomuch pinned sections');
+            }
         }
 
         // For show/hide actions call the parent method and return the new content for .section_availability element.
@@ -1001,6 +1023,23 @@ class format_tiles extends format_base {
     }
 
     /**
+     * 
+     * @param type $courseid
+     * @return int
+     */
+    protected function get_nowpinned($courseid) {
+        global $DB;
+        $sql = "SELECT COUNT(sectionid)
+                 FROM {course_format_options}
+                 WHERE courseid = ?
+                     AND format = 'tiles'
+                     AND name = 'pinned'
+                     AND value = '1'
+                ";
+        return $DB->count_records_sql($sql, array($courseid));
+    }
+
+        /**
      * Allows course format to execute code on moodle_page::set_course()
      * Used here to ensure that, before starting to load the page,
      * we establish if the user is changing their pref for using JS nav

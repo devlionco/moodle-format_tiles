@@ -111,11 +111,17 @@
     </div>
 {{/isediting}}
 
-<ul class="tiles" id="multi_section_tiles">
     {{#section_zero}}
+    <ul class="tiles" >
         {{> format_tiles/section_zero}}
+    </ul>    
     {{/section_zero}}
-
+    {{#pinned}}
+    <ul class="tiles pinnedsections">
+        {{{pinned}}}
+    </ul>
+    {{/pinned}}
+    <ul class="tiles" id="multi_section_tiles">
     {{#tiles}}
         {{^isediting}}
             {{> format_tiles/multi_section_tile}}

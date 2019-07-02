@@ -38,6 +38,8 @@ require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
  */
 class format_tiles_renderer extends format_section_renderer_base
 {
+    protected $courseformat; // Our course format object as defined in lib.php.
+    
     /**
      * Constructor method, calls the parent constructor
      *
@@ -134,6 +136,29 @@ class format_tiles_renderer extends format_section_renderer_base
                     'pixattr' => array('class' => '', 'alt' => $markthistopic),
                     'attr' => array('class' => 'editing_highlight', 'title' => $markthistopic,
                         'data-action' => 'setmarker'));
+            }
+            if ($section->pinned == 1) {  // alreday pinned section. show unpin icon
+                $url = course_get_url($course);
+                $url->param('pinned', 1);
+                $url->param('sesskey', sesskey());
+                $pinnedsection = get_string('pinnedsection', 'format_tiles');
+                $topuninsection = get_string('tounpinsection', 'format_tiles');
+                $controls['pinned'] = array('url' => $url, "icon" => 'i/unlock',
+                                               'name' => $topuninsection,
+                                               'pixattr' => array('class' => '', 'alt' => $pinnedsection),
+                                               'attr' => array('class' => 'editing_pinning tounpinsection', 'title' => $pinnedsection,
+                                               'data-action' => 'tounpinsection'));
+            } else {
+                $url = course_get_url($course);
+                $url->param('pinned', 0); // not pinned section. show pin icon
+                $url->param('sesskey', sesskey());
+                $unpinnedsection = get_string('unpinnedsection', 'format_tiles');
+                $topinsection = get_string('topinsection', 'format_tiles');
+                $controls['pinned'] = array('url' => $url, "icon" => 'i/lock',
+                                               'name' => $topinsection,
+                                               'pixattr' => array('class' => '', 'alt' => $unpinnedsection),
+                                               'attr' => array('class' => 'editing_highlight topinsection', 'title' => $unpinnedsection,
+                                               'data-action' => 'topinsection'));
             }
         }
 
@@ -263,11 +288,15 @@ class format_tiles_renderer extends format_section_renderer_base
      * @throws moodle_exception
      */
     public function print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused) {
+        global $PAGE;
+        
         $templateable = new \format_tiles\output\course_output($course, false, 0, $this->courserenderer);
         $data = $templateable->export_for_template($this);
+        $data['pinned'] = "<!-- PINNED[0] -->";
         echo $this->render_from_template('format_tiles/multi_section_page', $data);
     }
 
+    
     /**
      * Generate the display of the footer part of a section
      * @see section_header() for more explanation of this
