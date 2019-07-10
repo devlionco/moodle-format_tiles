@@ -72,7 +72,7 @@
         }
 }}
 {{! this has to be an li for drag and drop sections to work properly (or at all) }}
-<li id="section-{{tileid}}" data-section="{{tileid}}" class="section main clearfix" role="region"
+<li id="section-{{tileid}}" data-section="{{tileid}}" class="section main clearfix section-level-{{level}} {{#level}}subsection{{/level}}" role="region"
     aria-label="{{title}}">
     <div class="content">
         {{#hidden_section}}
@@ -131,6 +131,9 @@
                     </div>
                 </div>
             </div>
+            {{#isediting}}
+                {{{single_sec_add_cm_control_html}}}
+            {{/isediting}}
             {{{availabilitymessage}}}
             <div class="summary{{^visible}} dimmed{{/visible}}">{{{summary}}}</div>
             {{#isediting}}
@@ -153,10 +156,11 @@
                     <li class="activity subtile spacer" aria-hidden="true"></li>
                 {{/useSubtiles}}
             </ul>
-
-            {{#isediting}}
-                {{{single_sec_add_cm_control_html}}}
-            {{/isediting}}
+            <ul class="tiles multi_section_subtiles">
+            {{#subsections}}
+                {{> format_tiles/single_section}}
+            {{/subsections}}
+            </ul>
             {{^from_ajax}}
                 {{#single_sec_content_is_long}}
                 {{!repeat nav arrows at bottom of page if it is long}}

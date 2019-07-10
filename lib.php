@@ -29,8 +29,13 @@ define('FORMAT_TILES_FILTERBAR_NONE', 0);
 define('FORMAT_TILES_FILTERBAR_NUMBERS', 1);
 define('FORMAT_TILES_FILTERBAR_OUTCOMES', 2);
 define('FORMAT_TILES_FILTERBAR_BOTH', 3);
+define('FORMAT_TILES_COLLAPSED', 0);
+define('FORMAT_TILES_EXPANDED', 1);
+define('FORMAT_TILES_PINNED', 1);
+define('FORMAT_TILES_UNPINNED', 0);
 
 require_once($CFG->dirroot . '/course/format/lib.php');
+require_once($CFG->dirroot . '/course/format/tiles/locallib.php');
 
 /**
  * Main class for the course format Tiles
@@ -588,6 +593,17 @@ class format_tiles extends format_base {
             'element_type' => 'hidden',
             'default' => 0 // 0 - unpinned; 1 - pinned;
         );
+        $sectionformatoptions['parent'] = array (
+            'type' => PARAM_INT,
+            'label' => '',
+            'element_type' => 'hidden',
+            'default' => 0,
+            'cachedefault' => 0,
+        );
+        $sectionformatoptions['customnumber'] = array (
+            'type' => PARAM_RAW,
+                'element_type' => 'hidden'
+        );
         if ($course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES
             || $course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
             $sectionformatoptions['tileoutcomeid'] = array(
@@ -1021,7 +1037,7 @@ class format_tiles extends format_base {
         $rv['section_availability'] = $renderer->section_availability($this->get_section($section));
         return $rv;
     }
-
+    
     /**
      * 
      * @param type $courseid
@@ -1039,7 +1055,7 @@ class format_tiles extends format_base {
         return $DB->count_records_sql($sql, array($courseid));
     }
 
-        /**
+    /**
      * Allows course format to execute code on moodle_page::set_course()
      * Used here to ensure that, before starting to load the page,
      * we establish if the user is changing their pref for using JS nav
@@ -1051,6 +1067,7 @@ class format_tiles extends format_base {
      * @throws moodle_exception
      */
     public function page_set_course(moodle_page $page) {
+        
         if (get_config('format_tiles', 'usejavascriptnav')) {
             if (optional_param('stopjsnav', 0, PARAM_INT) == 1) {
                 // User is toggling JS nav setting.
@@ -1068,6 +1085,520 @@ class format_tiles extends format_base {
                 }
             }
         }
+        
+        global $PAGE;
+        if ($PAGE != $page) {
+            return;
+        }
+        
+        if ($this->on_course_view_page()) {
+            $context = context_course::instance($this->courseid);
+
+            if (!$this->is_section_real_available(get_viewed_section())) {
+                throw new moodle_exception('nopermissiontoviewpage');
+            }
+
+            if ($currentsectionnum = $this->get_viewed_section()) {
+                navigation_node::override_active_url(new moodle_url('/course/view.php',
+                        array('id' => $this->courseid,
+                            'sectionid' => $this->get_section($currentsectionnum)->id)));
+            }
+
+            // if requested, create new section and redirect to course view page
+            $addchildsection = optional_param('addchildsection', null, PARAM_INT);
+            if ($addchildsection !== null && has_capability('moodle/course:update', $context)) {
+                $sectionnum = $this->create_new_section($addchildsection);
+                $url = course_get_url($this->courseid, $sectionnum);
+                redirect($url);
+            }
+            
+            // if requested, move section
+            $movesection = optional_param('movesection', null, PARAM_INT);
+            $moveparent = optional_param('moveparent', null, PARAM_INT);
+            $movebefore = optional_param('movebefore', null, PARAM_RAW);
+            $sr = optional_param('sr', null, PARAM_RAW);
+            $options = array();
+            if ($sr !== null) {
+                $options = array('sr' => $sr);
+            }
+            if ($movesection !== null && $moveparent !== null && has_capability('moodle/course:update', $context)) {
+                $newsectionnum = $this->move_section($movesection, $moveparent, $movebefore);
+                redirect(course_get_url($this->courseid, $newsectionnum, $options));
+            }
+        }
+        
+    }
+
+    
+    /**
+     * Checks if section is really available for the current user (analyses parent section available)
+     *
+     * @param int|section_info $section
+     * @return bool
+     */
+    public function is_section_real_available($section) {
+        if (($this->get_section_number($section) == 0)) {
+            // Section 0 is always available.
+            return true;
+        }
+        $context = context_course::instance($this->courseid);
+        if (has_capability('moodle/course:viewhiddensections', $context)) {
+            // For the purpose of this function only return true for teachers.
+            return true;
+        }
+        $section = $this->get_section($section);
+        return $section->available && $this->is_section_real_available($section->parent);
+    }
+    
+    
+    /**
+     * Returns the section relative number regardless whether argument is an object or an int
+     *
+     * @param int|section_info $section
+     * @return int
+     */
+    protected function get_section_number($section) {
+        if ($section === null || $section === '') {
+            return null;
+        } else if (is_object($section)) {
+            return $section->section;
+        } else {
+            return (int)$section;
+        }
+    }
+    
+    /**
+     * If we are on course/view.php page return the 'section' attribute from query
+     *
+     * @return int
+     */
+    public function get_viewed_section() {
+        global $PAGE;
+        if ($this->on_course_view_page()) {
+            return $PAGE->url->get_param('section');
+        }
+        return 0;
+    }
+    
+    /**
+     * Returns true if we are on /course/view.php page
+     *
+     * @return bool
+     */
+    public function on_course_view_page() {
+        global $PAGE;
+        return ($PAGE->has_set_url() &&
+                $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
+                );
+    }
+    
+    /**
+     * Create a new section under given parent
+     *
+     * @param int|section_info $parent parent section
+     * @param null|int|section_info $before
+     * @return int
+     */
+    public function create_new_section($parent = 0, $before = null) {
+        $sections = get_fast_modinfo($this->courseid)->get_section_info_all();
+        $sectionnums = array_keys($sections);
+        $sectionnum = array_pop($sectionnums) + 1;
+        course_create_sections_if_missing($this->courseid, $sectionnum);
+        $sectionnum = $this->move_section($sectionnum, $parent, $before);
+        return $sectionnum;
+    }
+    
+    /**
+     * Moves section to the specified position
+     *
+     * @param int|section_info $section
+     * @param int|section_info $parent
+     * @param null|int|section_info $before
+     * @return int new section number
+     */
+    protected function move_section($section, $parent, $before = null) {
+        global $DB;
+        $section = $this->get_section($section);
+        $parent = $this->get_section($parent);
+        $newsectionnumber = $section->section;
+        if (!$this->can_move_section_to($section, $parent, $before)) {
+            return $newsectionnumber;
+        }
+        if ($section->visible != $parent->visible && $section->parent != $parent->section) {
+            // section is changing parent and new parent has different visibility than the section
+            if ($section->visible) {
+                // visible section is moved under hidden parent
+                $updatesectionvisible = 0;
+                $updatesectionvisibleold = 1;
+            } else {
+                // hidden section is moved under visible parent
+                if ($section->visibleold) {
+                    $updatesectionvisible = 1;
+                    $updatesectionvisibleold = 1;
+                }
+            }
+        }
+
+        // find the changes in the sections numbering
+        $origorder = array();
+        foreach ($this->get_sections() as $subsection) {
+            $origorder[$subsection->id] = $subsection->section;
+        }
+        $neworder = array();
+        $this->reorder_sections($neworder, 0, $section->section, $parent, $before);
+        if (count($origorder) != count($neworder)) {
+            die('Error in sections hierarchy'); // TODO
+        }
+        $changes = array();
+        foreach ($origorder as $id => $num) {
+            if ($num == $section->section) {
+                $newsectionnumber = $neworder[$id];
+            }
+            if ($num != $neworder[$id]) {
+                $changes[$id] = array('old' => $num, 'new' => $neworder[$id]);
+                if ($num && $this->get_course()->marker == $num) {
+                    $changemarker = $neworder[$id];
+                }
+            }
+            if ($this->get_section_number($parent) === $num) {
+                $newparentnum = $neworder[$id];
+            }
+        }
+
+        if (empty($changes) && $newparentnum == $section->parent) {
+            return $newsectionnumber;
+        }
+
+        // build array of required changes in field 'parent'
+        // $changeparent[sectionid] = newsectionnum;
+        $changeparent = array();
+        foreach ($this->get_sections() as $subsection) {
+            foreach ($changes as $id => $change) {
+                if ($subsection->parent == $change['old']) {
+                    $changeparent[$subsection->id] = $change['new'];
+                }
+            }
+        }
+        $changeparent[$section->id] = $newparentnum;
+
+        // Update all in database in one transaction
+        $transaction = $DB->start_delegated_transaction();
+        // Update sections numbers in 2 steps to avoid breaking database uniqueness constraint
+        foreach ($changes as $id => $change) {
+            $DB->set_field('course_sections', 'section', -$change['new'], array('id' => $id));
+        }
+        foreach ($changes as $id => $change) {
+            $DB->set_field('course_sections', 'section', $change['new'], array('id' => $id));
+        }
+        // change parents of their subsections
+        foreach ($changeparent as $id => $newnum) {
+            $this->update_section_format_options(array('id' => $id, 'parent' => $newnum));
+        }
+        $transaction->allow_commit();
+        rebuild_course_cache($this->courseid, true);
+        if (isset($changemarker)) {
+            course_set_marker($this->courseid, $changemarker);
+        }
+        if (isset($updatesectionvisible)) {
+            $this->set_section_visible($newsectionnumber, $updatesectionvisible, $updatesectionvisibleold);
+        }
+        return $newsectionnumber;
+    }
+    
+    /**
+     * Check if we can move the section to this position
+     *
+     * not allow to insert section as it's own subsection
+     * not allow to insert section directly before or after itself (it would not change anything)
+     *
+     * @param int|section_info $section
+     * @param int|section_info $parent
+     * @param null|section_info|int $before null if in the end of subsections list
+     */
+    public function can_move_section_to($section, $parent, $before = null) {
+        $section = $this->get_section($section);
+        $parent = $this->get_section($parent);
+        if ($section === null || $parent === null ||
+                !has_capability('moodle/course:update', context_course::instance($this->courseid))) {
+            return false;
+        }
+        // check that $parent is not subsection of $section
+        if ($section->section == $parent->section || $this->section_has_parent($parent, $section->section)) {
+            return false;
+        }
+
+        if ($before) {
+            if (is_string($before)) {
+                $before = (int)$before;
+            }
+            $before = $this->get_section($before);
+            // check that it's a subsection of $parent
+            if (!$before || $before->parent !== $parent->section) {
+                return false;
+            }
+        }
+
+        if ($section->parent == $parent->section) {
+            // section's parent is not being changed
+            // do not insert section directly before or after itself
+            if ($before && $before->section == $section->section) {
+                return false;
+            }
+            $subsections = array();
+            $lastsibling = null;
+            foreach ($this->get_sections() as $num => $sibling) {
+                if ($sibling->parent == $parent->section) {
+                    if ($before && $before->section == $num) {
+                        if ($lastsibling && $lastsibling->section == $section->section) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                    $lastsibling = $sibling;
+                }
+            }
+            if ($lastsibling && !$before && $lastsibling->section == $section->section) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Checks if given section has another section among it's parents
+     *
+     * @param int|section_info $section child section
+     * @param int $parentnum parent section number
+     * @return boolean
+     */
+    protected function section_has_parent($section, $parentnum) {
+        if (!$section) {
+            return false;
+        }
+        $section = $this->get_section($section);
+        if (!$section->section) {
+            return false;
+        } else if ($section->parent == $parentnum) {
+            return true;
+        } else if ($section->parent == 0) {
+            return false;
+        } else if ($section->parent >= $section->section) {
+            // some error
+            return false;
+        } else {
+            return $this->section_has_parent($section->parent, $parentnum);
+        }
+    }
+    
+    /**
+     * Function recursively reorders the sections while moving one section to the new position
+     *
+     * If $movedsectionnum is not specified, function just populates the array for each (sub)section
+     * If $movedsectionnum is specified, we ignore it on the present location but add it
+     * under $movetoparentnum before $movebeforenum
+     *
+     * @param array $neworder the result or re-ordering, array (sectionid => sectionnumber)
+     * @param int|section_info $cursection
+     * @param int|section_info $movedsectionnum
+     * @param int|section_info $movetoparentnum
+     * @param int|section_info $movebeforenum
+     */
+    protected function reorder_sections(&$neworder, $cursection, $movedsectionnum = null, $movetoparentnum = null, $movebeforenum = null) {
+        // normalise arguments
+        $cursection = $this->get_section($cursection);
+        $movetoparentnum = $this->get_section_number($movetoparentnum);
+        $movebeforenum = $this->get_section_number($movebeforenum);
+        $movedsectionnum = $this->get_section_number($movedsectionnum);
+        if ($movedsectionnum === null) {
+            $movebeforenum = $movetoparentnum = null;
+        }
+
+        // ignore section being moved
+        if ($movedsectionnum !== null && $movedsectionnum == $cursection->section) {
+            return;
+        }
+
+        // add current section to $neworder
+        $neworder[$cursection->id] = count($neworder);
+        // loop through subsections and reorder them (insert $movedsectionnum if necessary)
+        foreach ($this->get_subsections($cursection) as $subsection) {
+            if ($movebeforenum && $subsection->section == $movebeforenum) {
+                $this->reorder_sections($neworder, $movedsectionnum);
+            }
+            $this->reorder_sections($neworder, $subsection, $movedsectionnum, $movetoparentnum, $movebeforenum);
+        }
+        if (!$movebeforenum && $movetoparentnum !== null && $movetoparentnum == $cursection->section) {
+            $this->reorder_sections($neworder, $movedsectionnum);
+        }
+    }
+    
+    /**
+     * Returns the list of direct subsections of the specified section
+     *
+     * @param int|section_info $section
+     * @return array
+     */
+    public function get_subsections($section) {
+        $sectionnum = $this->get_section_number($section);
+        $subsections = array();
+        foreach ($this->get_sections() as $num => $subsection) {
+            if ($subsection->parent == $sectionnum && $num != $sectionnum) {
+                $subsections[$num] = $subsection;
+            }
+        }
+        return $subsections;
+    }
+    
+    /**
+     * Sets the section visible/hidden including subsections and modules
+     *
+     * @param int|stdClass|section_info $section
+     * @param int $visibility
+     * @param null|int $setvisibleold if specified in case of hiding the section,
+     *    this will be the value of visibleold for the section $section.
+     */
+    protected function set_section_visible($section, $visibility, $setvisibleold = null) {
+        $subsections = array();
+        $sectionnumber = $this->get_section_number($section);
+        if (!$sectionnumber && !$visibility) {
+            set_section_visible($this->courseid, $sectionnumber, 3); // SG - hack to hide section 0 content with css styling
+            // can not hide section with number 0 in reality
+            return;
+        }
+        $section = $this->get_section($section);
+        if ($visibility && $section->parent && !$this->get_section($section->parent)->visible) {
+            // can not set section visible when parent is hidden
+            return;
+        }
+        $ch = array($section);
+        while (!empty($ch)) {
+            $chlast = $ch;
+            $ch = array();
+            foreach ($chlast as $s) {
+                // store copy of attributes to avoid rebuilding course cache when we need to access section properties
+                $subsections[] = (object)array('section' => $s->section,
+                    'id' => $s->id, 'visible' => $s->visible, 'visibleold' => $s->visibleold);
+                $ch += $this->get_subsections($s);
+            }
+        }
+        foreach ($subsections as $s) {
+            if ($s->section == $sectionnumber) {
+                set_section_visible($this->courseid, $s->section, $visibility);
+                if ($setvisibleold === null) {
+                    $setvisibleold = $visibility;
+                }
+                $this->update_section_format_options(array('id' => $s->id, 'visibleold' => $setvisibleold));
+            } else {
+                if ($visibility) {
+                    if ($s->visibleold) {
+                        set_section_visible($this->courseid, $s->section, $s->visibleold);
+                    }
+                } else {
+                    if ($s->visible) {
+                        set_section_visible($this->courseid, $s->section, $visibility);
+                        $this->update_section_format_options(array('id' => $s->id, 'visibleold' => $s->visible));
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Returns a list of all controls available for particular section on particular page
+     *
+     * @param int|section_info $section
+     * @return array of format_tiles_edit_control
+     */
+    public function get_section_edit_controls($section) {
+        global $PAGE;
+        $controls = array();
+        if (!$PAGE->user_is_editing()) {
+            return $controls;
+        }
+        $section = $this->get_section($section);
+        $sectionnum = $section->section;
+        $course = $this->get_course();
+        $context = context_course::instance($this->courseid);
+        $movingsection = $this->is_moving_section();
+        $sr = $this->get_viewed_section(); // section to return to
+        
+        // Move section control
+        if ($sectionnum && !$movingsection && has_capability('moodle/course:update', $context) && $sectionnum != $sr) {
+            $moveurl = course_get_url($course, $section->section, array('sr' => $sr));
+            $moveurl->params(array('moving' => $section->section, 'section' => '', 'sesskey' => sesskey()));
+            $text = new lang_string('move');
+            $hidden = ($section->pinned) ? ' hidden' : '';
+            $controls[] = new format_tiles_edit_control('move', 'move'.$hidden, $moveurl, $text);
+        }
+
+        return $controls;
+    }
+    
+    
+    /**
+     * Returns control 'Move here' for particular parent section
+     *
+     * @param int|section_info $parent
+     * @param int|section_info $before
+     * @return array of controls (0 or 1 element)
+     */
+    public function get_edit_control_movehere($parent, $before, $sr = null) {
+        $movingsection = $this->is_moving_section();
+        if (!$movingsection || !$this->can_move_section_to($movingsection, $parent, $before)) {
+            return null;
+        }
+
+        $beforenum = $this->get_section_number($before);
+        $parentnum = $this->get_section_number($parent);
+
+        $movelink = course_get_url($this->courseid);
+        $movelink->params(array('movesection' => $movingsection, 'moveparent' => $parentnum));
+        if ($beforenum) {
+            $movelink->params(array('movebefore' => $beforenum));
+        }
+        if ($sr !== null) {
+            $movelink->params(array('sr' => $sr));
+        }
+        $str = strip_tags(get_string('movefull', '', "'".$this->get_section_name($movingsection)."'"));
+        return new format_tiles_edit_control('movehere', 'movehere', $movelink, $str);
+    }
+    
+    /**
+     * Returns a control to exit the section moving mode
+     *
+     * @return null|format_tiles_edit_control
+     */
+    public function get_edit_controls_cancelmoving() {
+        global $USER;
+        $controls = array();
+        // cancel moving section
+        $movingsection = $this->is_moving_section();
+        if ($movingsection) {
+            $cancelmovingurl = course_get_url($this->courseid, $this->get_viewed_section());
+            $str = strip_tags(get_string('cancelmoving', 'format_tiles', $this->get_section_name($movingsection)));
+            $controls[] = new format_tiles_edit_control('cancelmovingsection', 'cancelmovingsection', $cancelmovingurl, $str);
+        }
+        // cancel moving activity
+        if (ismoving($this->courseid)) {
+            $cancelmovingurl = new moodle_url('/course/mod.php',
+                    array('sesskey' => sesskey(), 'cancelcopy' => true, 'sr' => $this->get_viewed_section));
+            $str = strip_tags(get_string('cancelmoving', 'format_tiles', $USER->activitycopyname));
+            $controls[] = new format_tiles_edit_control('cancelmovingactivity', 'cancelmovingactivity', $cancelmovingurl, $str);
+        }
+        return $controls;
+    }
+    
+    /**
+     * If in section moving mode returns section number, otherwise returns null
+     *
+     * @return null|int
+     */
+    public function is_moving_section() {
+        global $PAGE;
+        if ($this->on_course_view_page() && $PAGE->user_is_editing()) {
+            return optional_param('moving', null, PARAM_INT);
+        }
+        return null;
     }
 }
 
@@ -1132,4 +1663,24 @@ function format_tiles_pluginfile($course, $cm, $context, $filearea, $args, $forc
     $filename = $args[2];
     $file = $fs->get_file($context->id, $fileapiparams['component'], $filearea, $sectionid, $filepath, $filename);
     send_stored_file($file, 86400, 0, $forcedownload, $options);
+}
+
+/**
+ * Represents one edit control
+ *
+ * @package    format_tiles
+ * @copyright  2012 Marina Glancy
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class format_tiles_edit_control implements renderable {
+    public $url;
+    public $text;
+    public $class;
+    public $type;
+    public function __construct($type, $class, $url, $text) {
+        $this->class = $class;
+        $this->url = $url;
+        $this->text = $text;
+        $this->type = $type;
+    }
 }

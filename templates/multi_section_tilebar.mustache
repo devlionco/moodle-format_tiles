@@ -39,6 +39,7 @@
         "tileid": "1",
         "title": "This is the tile title",
         "hidden": "0",
+        "level": "0",
         "isactive": "1",
         "restricted": "0",
         "rightcontent": "",
@@ -53,19 +54,28 @@
         "single_sec_add_cm_control_html": ""
     }
 }}
-
-<li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#pinned}} pinned {{/pinned}}{{#isactive}}current {{/isactive}}clearfix{{#restricted}} tile_bar_restricted{{/restricted}}{{#hastilephoto}} phototilebar{{/hastilephoto}} collapsed"
+<!-- MOVE before  -->
+{{{movebefore}}} 
+<!-- MOVE /before  -->
+<li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#pinned}} pinned {{/pinned}}{{#isactive}}current {{/isactive}}clearfix{{#restricted}} tile_bar_restricted{{/restricted}}{{#hastilephoto}} phototilebar{{/hastilephoto}} collapsed section-level-{{level}} {{#level}}subsection{{/level}}"
     role="region" data-section="{{tileid}}" data-sectionid="{{secid}}"
     aria-label="{{{title}}}">
     {{!hidden section requried for drag and drop to work, left side and right side for edit controls}}
     <span class="hidden sectionname">{{{title}}}</span>
-    <div class="left side">{{{leftcontent}}}</div>
+    <div class="left side">
+        {{#single_section_moving_control}}
+        {{{single_section_moving_control}}}
+        {{/single_section_moving_control}}
+        
+        {{{leftcontent}}}
+    </div>
     <div class="right side">
         {{{rightcontent}}}
         {{#isediting}}{{{section_edit_control}}}{{/isediting}}
     </div>
 
     <div class="content">
+        
         <div class="tile_bar narrow" data-section="{{tileid}}">
             {{^hastilephoto}}
                 <div class="tileiconcontainer" id="tileicon_{{tileid}}"
@@ -112,6 +122,9 @@
             {{/isediting}}
         </div>
         {{#isediting}}
+        <div class="mod-chooser-outer"{{#hideaddcmcontrol}} style="display: none;"{{/hideaddcmcontrol}}>{{{single_sec_add_cm_control_html}}}</div>
+        {{/isediting}}
+        {{#isediting}}
             <div class="summary">{{{section_summary}}}</div>
             <div class="section_availability">
                 {{{availabilitymessage}}}
@@ -124,10 +137,15 @@
                             {{/course_modules}}
                     {{/is_expanded}}
                 </ul>
-                <div class="mod-chooser-outer"{{#hideaddcmcontrol}} style="display: none;"{{/hideaddcmcontrol}}>{{{single_sec_add_cm_control_html}}}</div>
+                <ul class="tiles multi_section_subtiles">
+                {{#subsections}}
+                    {{> format_tiles/multi_section_tilebar}}
+                {{/subsections}}
+                
+                {{{moveend}}}
+                </ul>
+                
             </div>
-
         {{/isediting}}
-
     </div>
 </li>

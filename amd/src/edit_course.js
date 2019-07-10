@@ -106,6 +106,8 @@ define(
               text = 'Unpin section';
               classBefore = 'fa-lock';
               classAfter = 'fa-unlock';
+              target.parents('li.section').addClass('pinned');
+              target.parents('li.section').find('a.move').first().addClass('hidden');
             } else {
               pinBefore = 1;
               pinAfter = 0;
@@ -114,6 +116,8 @@ define(
               text = 'Pin Section';
               classBefore = 'fa-unlock';
               classAfter = 'fa-lock';
+              target.parents('li.section').removeClass('pinned');
+              target.parents('li.section').find('a.move').first().removeClass('hidden');
             }
 
           // TODO remove setTimeout

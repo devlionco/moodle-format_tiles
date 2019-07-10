@@ -82,7 +82,7 @@
         {{^jsSessionDisabled}}
             <div id="jswarning" class="alert alert-warning">{{#str}}nojswarning, format_tiles{{/str}}
                 {{#showJScancelLink}}
-                        <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&canceljssession=1">{{#str}}refresh{{/str}}</a>
+                <a href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&canceljssession=1">{{#str}}refresh{{/str}}</a>
                 {{/showJScancelLink}}
             </div>
         {{/jsSessionDisabled}}
@@ -116,11 +116,11 @@
         {{> format_tiles/section_zero}}
     </ul>    
     {{/section_zero}}
-    {{#pinned}}
     <ul class="tiles pinnedsections">
-        {{{pinned}}}
     </ul>
-    {{/pinned}}
+    {{#isediting}}
+        {{{cancelmoving}}}
+    {{/isediting}}
     <ul class="tiles" id="multi_section_tiles">
     {{#tiles}}
         {{^isediting}}
@@ -146,6 +146,9 @@
             <li class="section main moveablesection" style="display: none;" id="section-{{tileid}}"
                 data-section="{{tileid}}"></li>
         {{/tiles}}
+    {{/isediting}}
+    {{#isediting}}
+        {{{moveend}}}
     {{/isediting}}
 </ul>
 

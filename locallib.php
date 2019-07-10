@@ -205,4 +205,46 @@ function format_tiles_width_template_data($courseid) {
         // Feature is disabled by site admin.
         return array('hidetilesinitially' => 0);
     }
+
+}
+
+/**
+ * Returns the section relative number regardless whether argument is an object or an int
+ *
+ * @param int|section_info $section
+ * @return int
+ */
+function get_section_number($section) {
+    if ($section === null || $section === '') {
+        return null;
+    } else if (is_object($section)) {
+        return $section->section;
+    } else {
+        return (int)$section;
+    }
+}
+
+/**
+* If we are on course/view.php page return the 'section' attribute from query
+*
+* @return int
+*/
+function get_viewed_section() {
+   global $PAGE;
+   if (on_course_view_page()) {
+       return $PAGE->url->get_param('section');
+   }
+   return 0;
+}
+
+/**
+* Returns true if we are on /course/view.php page
+*
+* @return bool
+*/
+function on_course_view_page() {
+   global $PAGE;
+   return ($PAGE->has_set_url() &&
+           $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
+           );
 }

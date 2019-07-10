@@ -174,7 +174,7 @@ class course_output implements \renderable, \templatable
             // We are outputting a single section page.
             return $this->append_single_section_page_data($output, $data);
         } else {
-            // We are outputting a single section page.
+            // We are outputting a multi section page.
             return $this->append_multi_section_page_data($output, $data);
         }
     }
@@ -351,7 +351,7 @@ class course_output implements \renderable, \templatable
             $data['hidden_section'] = true;
             return $data;
         }
-
+        
         // Data for the requested section page.
         $data['title'] = get_section_name($this->course, $thissection->section);
         $data['summary'] = $output->format_summary_text($thissection);
@@ -402,11 +402,186 @@ class course_output implements \renderable, \templatable
             $data['single_sec_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control(
                 $this->course, $thissection->section, $thissection->section
             );
+            $data['single_sec_add_cm_control_html'] .= $output->add_section_control($thissection->section, $this->course);
         }
         $data['visible'] = $thissection->visible;
         // If user can view hidden items, include the explanation as to why an item is hidden.
         if ($this->canviewhidden) {
             $data['availabilitymessage'] = $output->section_availability_message($thissection, $this->canviewhidden);
+        }
+        
+        $level = 0;
+        $data['level'] = $level;
+        
+        $sectionstree = array();
+        $allsections = $this->modinfo->get_section_info_all();
+        foreach ($allsections as $section) {
+            $sectionstree[$section->parent][] = $section->section;
+        }
+        if (isset($sectionstree[$thissection->section]) and count($sectionstree[$thissection->section])) {
+            foreach($sectionstree[$thissection->section] as $subsectionnum) {
+                $subsection = $allsections[$subsectionnum];
+                $data['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, [], $sectionstree, $allsections, $level+1);
+            }
+        }
+        
+        return $data;
+    }
+    
+    private function get_tile($output, &$data, $sectionnum, $section, $phototileids, $sectionstree, $allsections, $level) {
+        
+        $allowedphototiles = get_config('format_tiles', 'allowphototiles');
+        $usingphotoaltstyle = get_config('format_tiles', 'phototilesaltstyle');
+        $sr = course_get_format($this->course)->get_viewed_section();
+        
+        $isphototile = $allowedphototiles && array_search($section->id, $phototileids) !== false;
+        
+        $title = htmlspecialchars_decode($this->truncate_title(get_section_name($this->course, $sectionnum)));
+        if ($allowedphototiles && $usingphotoaltstyle && $isphototile) {
+            // Replace the last space with &nbsp; to avoid having one word on the last line of the tile title.
+            $title = preg_replace('/\s(\S*)$/', '&nbsp;$1', $title);
+        }
+
+        $longtitlelength = 65;
+        $newtile = array(
+            'tileid' => $section->section,
+            'secid' => $section->id,
+            'pinned' => $section->pinned,
+            'title' => $title,
+            'tileicon' => $section->tileicon,
+            'current' => course_get_format($this->course)->is_section_current($section),
+            'hidden' => !$section->visible,
+            'visible' => $section->visible,
+            'restricted' => !($section->available),
+            'userclickable' => $section->available || $section->uservisible,
+            'activity_summary' => $output->section_activity_summary($section, $this->course, null),
+            'titleclass' => strlen($title) >= $longtitlelength ? ' longtitle' : '',
+            'subsections' => [],
+            'progress' => false,
+            'isactive' => $this->course->marker == $section->section,
+            'extraclasses' => ''
+        );
+
+        // If photo tile backgrounds are allowed by site admin, prepare them for this tile.
+        if ($isphototile) {
+            $tilephoto = new tile_photo($this->course->id, $section->id);
+            $tilephotourl = $tilephoto->get_image_url();
+
+            $newtile['extraclasses'] .= $phototileextraclasses;
+            $newtile['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ')";';
+            $newtile['hastilephoto'] = $tilephotourl ? 1 : 0;
+            $newtile['phototileurl'] = $tilephotourl;
+            $newtile['phototileediturl'] = new \moodle_url(
+                '/course/format/tiles/editimage.php',
+                array('courseid' => $this->course->id, 'sectionid' => $section->id)
+            );
+        }
+
+        // If user is editing, add the edit controls.
+        if ($this->isediting) {
+            $newtile['inplace_editable_title'] = $output->section_title($section, $this->course);
+            $newtile['section_edit_control'] = $output->section_edit_control_menu(
+                $output->section_edit_control_items($this->course, $section, false, $level),
+                $this->course,
+                $section
+            );
+        }
+        // Include completion tracking data for each tile (if used).
+        if ($section->visible && $this->completionenabled) {
+            if (isset($this->modinfo->sections[$sectionnum])) {
+                $completionthistile = $this->section_progress(
+                    $this->modinfo->sections[$sectionnum],
+                    $this->modinfo->cms, $this->completioninfo
+                );
+                // Keep track of overall progress so we can show this too - add this tile's completion to the totals.
+                $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
+                $data['overall_progress']['num_complete'] += $completionthistile['completed'];
+
+                // We only add the tile values to the individual tile if courseshowtileprogress is true.
+                // (Otherwise we only retain overall completion as above, not for each tile).
+                if ($this->courseformatoptions['courseshowtileprogress']) {
+                    $showaspercent = $this->courseformatoptions['courseshowtileprogress'] == 2 ? true : false;
+                    $newtile['progress'] = $this->completion_indicator(
+                        $completionthistile['completed'],
+                        $completionthistile['outof'],
+                        $showaspercent,
+                        false
+                    );
+                }
+            }
+        }
+        // If item is restricted, user needs to know why.
+        $newtile['availabilitymessage'] = $output->section_availability_message($section, $this->canviewhidden);
+
+        if ($this->courseformatoptions['displayfilterbar'] == FORMAT_TILES_FILTERBAR_OUTCOMES
+            || $this->courseformatoptions['displayfilterbar'] == FORMAT_TILES_FILTERBAR_BOTH) {
+            $newtile['tileoutcomeid'] = $section->tileoutcomeid;
+        }
+
+        // See below about when "hide add cm control" is true.
+        $newtile['hideaddcmcontrol'] = false;
+        $newtile['single_sec_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control(
+            $this->course, $section->section, 0
+        );
+
+        $newtile['single_sec_add_cm_control_html'] .= $output->add_section_control($section->section, $this->course);
+        
+        $newtile['single_section_moving_control'] = $output->add_moving_control($section, $this->course);
+
+        $newtile['course_modules'] = $this->section_course_mods($section, $output);
+        if ($this->is_section_editing_expanded($section->section)) {
+            // The list of activities on the page (HTML).
+            $newtile['course_modules'] = $this->section_course_mods($section, $output);
+            
+            $newtile['is_expanded'] = true;
+        } else {
+            $newtile['is_expanded'] = false;
+        }
+
+        $newtile['level'] = $level;
+        
+        if ($section->section) {
+            $newtile['movebefore'] = $output->display_insert_section_here($this->course, $section->parent, $section->section, $sr);
+            $newtile['moveend'] = $output->display_insert_section_here($this->course, $section->section, 0, $sr);
+        }
+        
+        if (isset($sectionstree[$section->section]) and count($sectionstree[$section->section])) {
+            foreach($sectionstree[$section->section] as $subsectionnum) {
+                $subsection = $allsections[$subsectionnum];
+                $newtile['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, $phototileids, $sectionstree, $allsections, $level+1);
+            }
+        }
+        return $newtile;
+    }
+
+
+    private function display_section($output, &$data, $sectionnum, $section, $phototileids, $sectionstree, $allsections) {
+        // Show the section if the user is permitted to access it, OR if it's not available
+        // but there is some available info text which explains the reason & should display,
+        // OR it is hidden but the course has a setting to display hidden sections as unavilable.
+
+        $showsection = $section->uservisible ||
+            ($section->visible && !$section->available && !empty($section->availableinfo));
+        if ($sectionnum != 0 && $showsection) {
+            
+            $newtile = $this->get_tile($output, $data, $sectionnum, $section, $phototileids, $sectionstree, $allsections, 0);
+            
+            // Finally add tile we constructed to the array.
+            $data['tiles'][] = $newtile;
+            $data['moveend'] = $output->display_insert_section_here($this->course, 0);
+        } else if ($sectionnum == 0) {
+            // Add in section zero completion data to overall completion count.
+            if ($section->visible && $this->completionenabled) {
+                if (isset($this->modinfo->sections[$sectionnum])) {
+                    $completionthistile = $this->section_progress(
+                        $this->modinfo->sections[$sectionnum],
+                        $this->modinfo->cms, $this->completioninfo
+                    );
+                    // Keep track of overall progress so we can show this too - add this tile's completion to the totals.
+                    $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
+                    $data['overall_progress']['num_complete'] += $completionthistile['completed'];
+                }
+            }
         }
         return $data;
     }
@@ -447,128 +622,32 @@ class course_output implements \renderable, \templatable
             }
         }
 
-        foreach ($this->modinfo->get_section_info_all() as $sectionnum => $section) {
-            // Show the section if the user is permitted to access it, OR if it's not available
-            // but there is some available info text which explains the reason & should display,
-            // OR it is hidden but the course has a setting to display hidden sections as unavilable.
-
-            $isphototile = $allowedphototiles && array_search($section->id, $phototileids) !== false;
-            $showsection = $section->uservisible ||
-                ($section->visible && !$section->available && !empty($section->availableinfo));
-            if ($sectionnum != 0 && $showsection) {
-                $title = htmlspecialchars_decode($this->truncate_title(get_section_name($this->course, $sectionnum)));
-                if ($allowedphototiles && $usingphotoaltstyle && $isphototile) {
-                    // Replace the last space with &nbsp; to avoid having one word on the last line of the tile title.
-                    $title = preg_replace('/\s(\S*)$/', '&nbsp;$1', $title);
-                }
-
-                $longtitlelength = 65;
-                $newtile = array(
-                    'tileid' => $section->section,
-                    'secid' => $section->id,
-                    'pinned' => $section->pinned,
-                    'title' => $title,
-                    'tileicon' => $section->tileicon,
-                    'current' => course_get_format($this->course)->is_section_current($section),
-                    'hidden' => !$section->visible,
-                    'visible' => $section->visible,
-                    'restricted' => !($section->available),
-                    'userclickable' => $section->available || $section->uservisible,
-                    'activity_summary' => $output->section_activity_summary($section, $this->course, null),
-                    'titleclass' => strlen($title) >= $longtitlelength ? ' longtitle' : '',
-                    'progress' => false,
-                    'isactive' => $this->course->marker == $section->section,
-                    'extraclasses' => ''
-                );
-
-                // If photo tile backgrounds are allowed by site admin, prepare them for this tile.
-                if ($isphototile) {
-                    $tilephoto = new tile_photo($this->course->id, $section->id);
-                    $tilephotourl = $tilephoto->get_image_url();
-
-                    $newtile['extraclasses'] .= $phototileextraclasses;
-                    $newtile['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ')";';
-                    $newtile['hastilephoto'] = $tilephotourl ? 1 : 0;
-                    $newtile['phototileurl'] = $tilephotourl;
-                    $newtile['phototileediturl'] = new \moodle_url(
-                        '/course/format/tiles/editimage.php',
-                        array('courseid' => $this->course->id, 'sectionid' => $section->id)
-                    );
-                }
-
-                // If user is editing, add the edit controls.
-                if ($this->isediting) {
-                    $newtile['inplace_editable_title'] = $output->section_title($section, $this->course);
-                    $newtile['section_edit_control'] = $output->section_edit_control_menu(
-                        $output->section_edit_control_items($this->course, $section, false),
-                        $this->course,
-                        $section
-                    );
-                }
-                // Include completion tracking data for each tile (if used).
-                if ($section->visible && $this->completionenabled) {
-                    if (isset($this->modinfo->sections[$sectionnum])) {
-                        $completionthistile = $this->section_progress(
-                            $this->modinfo->sections[$sectionnum],
-                            $this->modinfo->cms, $this->completioninfo
-                        );
-                        // Keep track of overall progress so we can show this too - add this tile's completion to the totals.
-                        $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
-                        $data['overall_progress']['num_complete'] += $completionthistile['completed'];
-
-                        // We only add the tile values to the individual tile if courseshowtileprogress is true.
-                        // (Otherwise we only retain overall completion as above, not for each tile).
-                        if ($this->courseformatoptions['courseshowtileprogress']) {
-                            $showaspercent = $this->courseformatoptions['courseshowtileprogress'] == 2 ? true : false;
-                            $newtile['progress'] = $this->completion_indicator(
-                                $completionthistile['completed'],
-                                $completionthistile['outof'],
-                                $showaspercent,
-                                false
-                            );
-                        }
-                    }
-                }
-
-                // If item is restricted, user needs to know why.
-                $newtile['availabilitymessage'] = $output->section_availability_message($section, $this->canviewhidden);
-
-                if ($this->courseformatoptions['displayfilterbar'] == FORMAT_TILES_FILTERBAR_OUTCOMES
-                    || $this->courseformatoptions['displayfilterbar'] == FORMAT_TILES_FILTERBAR_BOTH) {
-                    $newtile['tileoutcomeid'] = $section->tileoutcomeid;
-                }
-
-                // See below about when "hide add cm control" is true.
-                $newtile['hideaddcmcontrol'] = false;
-                $newtile['single_sec_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control(
-                    $this->course, $section->section, 0
-                );
-
-                if ($this->is_section_editing_expanded($section->section)) {
-                    // The list of activities on the page (HTML).
-                    $newtile['course_modules'] = $this->section_course_mods($section, $output);
-                    $newtile['is_expanded'] = true;
-                } else {
-                    $newtile['is_expanded'] = false;
-                }
-
-                // Finally add tile we constructed to the array.
-                $data['tiles'][] = $newtile;
-            } else if ($sectionnum == 0) {
-                // Add in section zero completion data to overall completion count.
-                if ($section->visible && $this->completionenabled) {
-                    if (isset($this->modinfo->sections[$sectionnum])) {
-                        $completionthistile = $this->section_progress(
-                            $this->modinfo->sections[$sectionnum],
-                            $this->modinfo->cms, $this->completioninfo
-                        );
-                        // Keep track of overall progress so we can show this too - add this tile's completion to the totals.
-                        $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
-                        $data['overall_progress']['num_complete'] += $completionthistile['completed'];
-                    }
-                }
+        $sectionstree = array();
+        $allsections = $this->modinfo->get_section_info_all();
+        foreach ($allsections as $sectionnum => $section) {
+            $sectionstree[$section->parent][] = $section->section;
+            $newtile = array(
+                'tileid' => $section->section,
+                'secid' => $section->id,
+                'parent' => $section->parent,
+                'customnumber' => $section->customnumber,
+                'pinned' => $section->pinned,
+                'current' => course_get_format($this->course)->is_section_current($section),
+                'hidden' => !$section->visible,
+                'visible' => $section->visible,
+                'restricted' => !($section->available),
+                'userclickable' => $section->available || $section->uservisible,
+                'isactive' => $this->course->marker == $section->section,
+                'extraclasses' => ''
+            );
+        }
+        
+        foreach ($allsections as $sectionnum => $section) {
+            if (!$section->parent) {
+                $this->display_section($output, $data, $sectionnum, $section, $phototileids, $sectionstree, $allsections);
             }
         }
+        
         $data['all_tiles_expanded'] = $this->isediting &&
             (
                 optional_param('expanded', 0, PARAM_INT) == 1
@@ -625,6 +704,9 @@ class course_output implements \renderable, \templatable
                 );
             }
         }
+        
+        $data['cancelmoving'] = $output->cancel_moving_control($this->course);
+        
         return $data;
     }
 

@@ -391,3 +391,10 @@ $string['pinnedsection'] = 'This section is pinned';
 $string['unpinnedsection'] = 'Pin this section to show it in the front';
 $string['topinsection'] = 'Pin section';
 $string['tounpinsection'] = 'Unpin section';
+
+$string['showpinned'] = 'Pin this section';
+$string['showunpinned'] = 'Unpin this section';
+$string['displaypinned'] = 'Pin or Unpin section';
+$string['addsection'] = 'Add section';
+$string['addsubsection'] = 'Add subsection';
+$string['cancelmoving'] = 'Cancel moving \'{$a}\'';
