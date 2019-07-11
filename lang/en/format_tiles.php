@@ -89,6 +89,7 @@ $string['defaulttilecolour'] = 'Default tile colour';
 $string['defaulttileicon'] = 'Tile icon';
 $string['defaultthiscourse'] = 'Default for this course';
 $string['deletesection'] = 'Delete tile';
+$string['confirmdelete'] = 'Are you sure you want to delete this section? All activities and subsections will also be deleted.';
 $string['deleteimage'] = 'Delete image';
 $string['developedby'] = '"Tiles" developed by {$a}';
 $string['developer'] = 'Developer';

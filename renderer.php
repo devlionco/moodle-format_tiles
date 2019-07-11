@@ -164,7 +164,7 @@ class format_tiles_renderer extends format_section_renderer_base
                 }
             }
         }
-
+        
         if (!$onsectionpage && $section->section && has_capability('moodle/course:update', $coursecontext)) {
             // Add controls to drop down menu on each editing tile for teacher to enter section, expand section etc.
             $urlparams = array('id' => $course->id, 'section' => $section->section);
@@ -223,7 +223,20 @@ class format_tiles_renderer extends format_section_renderer_base
         }
 
         $parentcontrols = parent::section_edit_control_items($course, $section, $onsectionpage);
-
+        
+        $endcontrols = array();
+        if (array_key_exists("delete", $parentcontrols) && $section->section && has_capability('moodle/course:update', $coursecontext)) {
+            unset($parentcontrols['delete']);
+            $url = course_get_url($course);
+            $url->param('deletesection', $section->section);
+            $url->param('sesskey', sesskey());
+            $deletesection = get_string('deletesection', 'format_tiles');
+            $endcontrols['delete'] = array('url' => $url, "icon" => 'i/delete',
+                                           'name' => $deletesection,
+                                           'pixattr' => array('class' => '', 'alt' => $deletesection),
+                                           'attr' => array('class' => '', 'title' => $deletesection));
+        }
+        
         // If the edit key exists, we are going to insert our controls after it.
         if (array_key_exists("edit", $parentcontrols)) {
             $merged = array();
@@ -236,11 +249,11 @@ class format_tiles_renderer extends format_section_renderer_base
                     $merged = array_merge($merged, $controls);
                 }
             }
-
-            return $merged;
         } else {
-            return array_merge($controls, $parentcontrols);
+            $merged = array_merge($controls, $parentcontrols);
         }
+        
+        return array_merge($merged, $endcontrols);
     }
 
     // @codingStandardsIgnoreStart - Override this here so we have access from the output class.
@@ -616,8 +629,6 @@ class format_tiles_renderer extends format_section_renderer_base
         foreach ($cancelmovingcontrols as $control) {
             $rendered .= $this->render($control);
         }
-        error_log("\r\n CANCEL =================\r\n", 3, "/home/vad/proj/devlion/davidson/logs/canc.log");
-        error_log(print_r($rendered, true), 3, "/home/vad/proj/devlion/davidson/logs/canc.log");
         return $rendered;
     }
     
@@ -659,4 +670,20 @@ class format_tiles_renderer extends format_section_renderer_base
     }
 
     
+    /**
+     * Displays a confirmation dialogue when deleting the section (for non-JS mode)
+     *
+     * @param stdClass $course
+     * @param int $sectionreturn
+     * @param int $deletesection
+     */
+    public function confirm_delete_section($course, $sectionreturn, $deletesection) {
+        echo $this->box_start('noticebox');
+        $courseurl = course_get_url($course, $sectionreturn);
+        $optionsyes = array('confirm' => 1, 'deletesection' => $deletesection, 'sesskey' => sesskey());
+        $formcontinue = new single_button(new moodle_url($courseurl, $optionsyes), get_string('yes'));
+        $formcancel = new single_button($courseurl, get_string('no'), 'get');
+        echo $this->confirm(get_string('confirmdelete', 'format_tiles'), $formcontinue, $formcancel);
+        echo $this->box_end();
+    }
 }

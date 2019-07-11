@@ -94,8 +94,9 @@ if (optional_param('canceljssession', false, PARAM_BOOL)) {
     unset($SESSION->format_tiles_jssuccessfullyused);
 }
 
-
-if (display_multiple_section_page($displaysection, $usejsnav, $context, $isediting)) {
+if (($deletesection = optional_param('deletesection', 0, PARAM_INT)) && confirm_sesskey()) {
+    $renderer->confirm_delete_section($course, $displaysection, $deletesection);
+} else  if (display_multiple_section_page($displaysection, $usejsnav, $context, $isediting)) {
     $renderer->print_multiple_section_page($course, null, null, null, null);
 } else {
     $SESSION->editing_last_edited_section = $course->id . "-" . $displaysection;
