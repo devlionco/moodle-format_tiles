@@ -76,7 +76,7 @@
 
     <div class="content">
         
-        <div class="tile_bar narrow" data-section="{{tileid}}">
+        <div class="tile_bar narrow {{#hastilephoto}}{{#tileimagebackground}}imagebackground{{/tileimagebackground}}{{/hastilephoto}}" data-section="{{tileid}}">
             {{^hastilephoto}}
                 <div class="tileiconcontainer" id="tileicon_{{tileid}}"
                     {{#isediting}}data-toggle="tooltip" data-placement="left"

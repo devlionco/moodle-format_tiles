@@ -351,7 +351,7 @@ class course_output implements \renderable, \templatable
             $data['hidden_section'] = true;
             return $data;
         }
-        
+
         // Data for the requested section page.
         $data['title'] = get_section_name($this->course, $thissection->section);
         $data['summary'] = $output->format_summary_text($thissection);
@@ -409,10 +409,10 @@ class course_output implements \renderable, \templatable
         if ($this->canviewhidden) {
             $data['availabilitymessage'] = $output->section_availability_message($thissection, $this->canviewhidden);
         }
-        
+
         $level = 0;
         $data['level'] = $level;
-        
+
         $sectionstree = array();
         $allsections = $this->modinfo->get_section_info_all();
         foreach ($allsections as $section) {
@@ -424,20 +424,27 @@ class course_output implements \renderable, \templatable
                 $data['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, [], $sectionstree, $allsections, $level+1);
             }
         }
-        
+
         return $data;
     }
-    
-    private function get_tile($output, &$data, $sectionnum, $section, $phototileids, $sectionstree, $allsections, $level) {
-        
-        $allowedphototiles = get_config('format_tiles', 'allowphototiles');
+
+    private function get_tile($output, &$data, $sectionnum, $section, $sectionstree, $allsections, $level) {
+
         $usingphotoaltstyle = get_config('format_tiles', 'phototilesaltstyle');
         $sr = course_get_format($this->course)->get_viewed_section();
-        
-        $isphototile = $allowedphototiles && array_search($section->id, $phototileids) !== false;
-        
+
+        $phototileextraclasses = 'phototile';
+        if (isset($section->tileimgtype) and $section->tileimgtype == 1) {
+            $phototileextraclasses .= ' photobacktile';
+        }
+        if ($usingphotoaltstyle) {
+            $phototileextraclasses .= ' altstyle';
+        }
+
+        $isphototile = $data['allowphototiles'] && $section->tilephoto;
+
         $title = htmlspecialchars_decode($this->truncate_title(get_section_name($this->course, $sectionnum)));
-        if ($allowedphototiles && $usingphotoaltstyle && $isphototile) {
+        if ($usingphotoaltstyle && $isphototile) {
             // Replace the last space with &nbsp; to avoid having one word on the last line of the tile title.
             $title = preg_replace('/\s(\S*)$/', '&nbsp;$1', $title);
         }
@@ -475,6 +482,14 @@ class course_output implements \renderable, \templatable
                 '/course/format/tiles/editimage.php',
                 array('courseid' => $this->course->id, 'sectionid' => $section->id)
             );
+            $newtile['tileimagebackground'] = $section->tileimgtype;
+        } else {
+            $newtile['extraclasses'] .= '';
+            $newtile['phototileinlinestyle'] = '';
+            $newtile['hastilephoto'] = 0;
+            $newtile['phototileurl'] = '';
+            $newtile['phototileediturl'] = '';
+            $newtile['tileimagebackground'] = '';
         }
 
         // If user is editing, add the edit controls.
@@ -525,37 +540,37 @@ class course_output implements \renderable, \templatable
         );
 
         $newtile['single_sec_add_cm_control_html'] .= $output->add_section_control($section->section, $this->course);
-        
+
         $newtile['single_section_moving_control'] = $output->add_moving_control($section, $this->course);
 
         $newtile['course_modules'] = $this->section_course_mods($section, $output);
         if ($this->is_section_editing_expanded($section->section)) {
             // The list of activities on the page (HTML).
             $newtile['course_modules'] = $this->section_course_mods($section, $output);
-            
+
             $newtile['is_expanded'] = true;
         } else {
             $newtile['is_expanded'] = false;
         }
 
         $newtile['level'] = $level;
-        
+
         if ($section->section) {
             $newtile['movebefore'] = $output->display_insert_section_here($this->course, $section->parent, $section->section, $sr);
             $newtile['moveend'] = $output->display_insert_section_here($this->course, $section->section, 0, $sr);
         }
-        
+
         if (isset($sectionstree[$section->section]) and count($sectionstree[$section->section])) {
             foreach($sectionstree[$section->section] as $subsectionnum) {
                 $subsection = $allsections[$subsectionnum];
-                $newtile['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, $phototileids, $sectionstree, $allsections, $level+1);
+                $newtile['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, $sectionstree, $allsections, $level+1);
             }
         }
         return $newtile;
     }
 
 
-    private function display_section($output, &$data, $sectionnum, $section, $phototileids, $sectionstree, $allsections) {
+    private function display_section($output, &$data, $sectionnum, $section, $sectionstree, $allsections) {
         // Show the section if the user is permitted to access it, OR if it's not available
         // but there is some available info text which explains the reason & should display,
         // OR it is hidden but the course has a setting to display hidden sections as unavilable.
@@ -563,9 +578,9 @@ class course_output implements \renderable, \templatable
         $showsection = $section->uservisible ||
             ($section->visible && !$section->available && !empty($section->availableinfo));
         if ($sectionnum != 0 && $showsection) {
-            
-            $newtile = $this->get_tile($output, $data, $sectionnum, $section, $phototileids, $sectionstree, $allsections, 0);
-            
+
+            $newtile = $this->get_tile($output, $data, $sectionnum, $section, $sectionstree, $allsections, 0);
+
             // Finally add tile we constructed to the array.
             $data['tiles'][] = $newtile;
             $data['moveend'] = $output->display_insert_section_here($this->course, 0);
@@ -608,18 +623,9 @@ class course_output implements \renderable, \templatable
         }
         $data['hasNoSections'] = true;
 
-        // Before we start the section loop. get key vars for photo tiles ready.
         $allowedphototiles = get_config('format_tiles', 'allowphototiles');
-        $usingphotoaltstyle = get_config('format_tiles', 'phototilesaltstyle');
         if ($allowedphototiles) {
             $data['allowphototiles'] = 1;
-            $data['showprogresssphototiles'] = get_config('format_tiles', 'showprogresssphototiles');
-            $phototileids = tile_photo::get_photo_tile_ids($this->course->id);
-            $phototileextraclasses = 'phototile';
-            if ($usingphotoaltstyle) {
-                $phototileextraclasses .= ' altstyle';
-                $data['usingaltstyle'] = 1;
-            }
         }
 
         $sectionstree = array();
@@ -641,13 +647,13 @@ class course_output implements \renderable, \templatable
                 'extraclasses' => ''
             );
         }
-        
+
         foreach ($allsections as $sectionnum => $section) {
             if (!$section->parent) {
-                $this->display_section($output, $data, $sectionnum, $section, $phototileids, $sectionstree, $allsections);
+                $this->display_section($output, $data, $sectionnum, $section, $sectionstree, $allsections);
             }
         }
-        
+
         $data['all_tiles_expanded'] = $this->isediting &&
             (
                 optional_param('expanded', 0, PARAM_INT) == 1
@@ -704,9 +710,9 @@ class course_output implements \renderable, \templatable
                 );
             }
         }
-        
+
         $data['cancelmoving'] = $output->cancel_moving_control($this->course);
-        
+
         return $data;
     }
 

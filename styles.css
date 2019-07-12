@@ -387,10 +387,13 @@ li#section-0.section.main.clearfix {
     width: 80px;
 }
 
-.format-tiles .tile a,
-.format-tiles #page-content a.quickeditlink {
+.format-tiles .tile a {
     color: #777;
     width: 100%;
+}
+.format-tiles #page-content a.quickeditlink {
+    color: #777;
+    width: 40px;
 }
 
 .format-tiles .section li.activity.label h1,
@@ -1834,7 +1837,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     font-size: 20px;
     color: #fff;
 }
-.format-tiles ul.tiles .tile.phototile .tile-text {
+.format-tiles ul.tiles .tile.photobacktile:not(.pinned) .tile-text {
     margin-top: 35px;
 }
 .format-tiles li.tile.phototile  .availabilityinfo {
@@ -1870,6 +1873,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 55px;
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
     float: left;
 }
 
@@ -1886,7 +1890,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .iconpickerheader #phototilebtn:hover {
     color: darkslategrey;
 }
-.format-tiles .tile.phototile a {
+.format-tiles .tile.photobacktile:not(.pinned) a {
     padding: 0;
 }
 .format-tiles .iconpickerphotos {

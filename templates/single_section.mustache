@@ -112,7 +112,6 @@
             {{/hastilephoto}}
 
             {{#hastilephoto}}
-                {{#isediting}}
                     <div class="tileiconcontainer hasphoto" id="tileicon_{{tileid}}"
                         {{#isediting}}data-toggle="tooltip" data-placement="left"
                          data-original-title="{{^allowphototiles}}{{#str}}picknewicon, format_tiles{{/str}}{{/allowphototiles}}{{#allowphototiles}}{{#str}}picknewiconphoto, format_tiles{{/str}}{{/allowphototiles}}"
@@ -120,7 +119,6 @@
 
                         {{>format_tiles/tilebarphoto}}
                     </div>
-                {{/isediting}}
             {{/hastilephoto}}
 
             <div class="pagesechead">

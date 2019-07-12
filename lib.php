@@ -588,8 +588,17 @@ class format_tiles extends format_base {
                 'type' => PARAM_TEXT,
             ),
         );
+        $sectionformatoptions['tileimgtype'] = array (
+            'type' => PARAM_INT,
+            'default' => 0 
+        );
+        $sectionformatoptions['tilephoto'] = array (
+            'type' => PARAM_TEXT,
+            'default' => '' 
+        );
         $sectionformatoptions['pinned'] = array (
             'type' => PARAM_INT,
+            'label' => '',
             'element_type' => 'hidden',
             'default' => 0 // 0 - unpinned; 1 - pinned;
         );
@@ -634,6 +643,17 @@ class format_tiles extends format_base {
                 'help' => 'tileicon',
             );
 
+            $tileimgtypes = array(
+                0 => 'Icon',
+                1 => 'Background'
+            );
+            $sectionformatoptionsedit['tileimgtype'] = array(
+                'label' => get_string('tileimgtype', 'format_tiles'),
+                'element_type' => 'select',
+                'element_attributes' => array($tileimgtypes),
+                'help' => 'tileimgtype',
+            );
+
             if ($course->displayfilterbar == FORMAT_TILES_FILTERBAR_OUTCOMES
                 || $course->displayfilterbar == FORMAT_TILES_FILTERBAR_BOTH) {
                 $outcomeslink = html_writer::link(
@@ -653,13 +673,6 @@ class format_tiles extends format_base {
                 );
             }
 
-            if (get_config('format_tiles', 'allowphototiles')) {
-                $sectionformatoptionsedit['tilephoto'] = array(
-                    'label' => get_string('uploadnewphoto', 'format_tiles'),
-                    'element_type' => 'hidden',
-                    'element_attributes' => array('' => '')
-                );
-            }
             $sectionformatoptions = array_merge_recursive($sectionformatoptions, $sectionformatoptionsedit);
         }
         return $sectionformatoptions;
@@ -847,11 +860,14 @@ class format_tiles extends format_base {
                 'course_format_options', 'value',
                 ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileicon']
             ),
+            'photothistile' => $DB->get_field(
+                'course_format_options', 'value',
+                ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tilephoto']
+            ),
             'outcomethistile' => $DB->get_record(
                 'course_format_options',
                 ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileoutcomeid']
-            ),
-            'photothistile' => \format_tiles\tile_photo::get_course_format_option_value($data['id'])
+            )
         );
 
         // If the edit is taking place from format_tiles_inplace_editable(),

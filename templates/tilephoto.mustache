@@ -43,20 +43,7 @@
         "title": "Introduction"
     }
 }}
-
-<span class="tile-icon{{#isediting}} launchiconpicker{{/isediting}}"
-    {{#isediting}}
-      data-section="{{tileid}}" data-sectionid="{{secid}}"
-    {{/isediting}}>
-    {{^hastilephoto}}
-        {{#tileicon}}
-            {{#pix}}tileicon/{{{tileicon}}}, format_tiles{{/pix}}
-        {{/tileicon}}
-        {{^tileicon}}
-            {{#pix}}tileicon/{{{defaulttileicon}}}, format_tiles{{/pix}}
-        {{/tileicon}}
-    {{/hastilephoto}}
-    {{#hastilephoto}}
-        {{>format_tiles/tilephoto}}
-    {{/hastilephoto}}
-</span>
+<span class="tilebarphoto"
+    id="tileicon_{{tileid}}" 
+   data-imagetype="{{#isdraftfile}}draftfile{{/isdraftfile}}{{^isdraftfile}}tilephoto{{/isdraftfile}}"
+   href="{{{phototileediturl}}}" style="background-image: url({{{phototileurl}}})"></span>
