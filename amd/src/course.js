@@ -32,7 +32,7 @@
 define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         "core/notification", "core/str", "format_tiles/tile_fitter"],
     function ($, Templates, ajax, browserStorage, Notification, str, tileFitter) {
-        "use strict";
+
 
         var body = $("body");
         var bodyHtml = $("body, html");
@@ -1007,8 +1007,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             }
                         }
                     });
-                    
-                    $('.tile.pinned').each(function(){
+
+                    $('.tile.pinned').each(function() {
                         var tileId = $(this).data('section');
                         $(this).prependTo('.pinnedsections');
                         $('#section-' + tileId).css('order', '-1');
@@ -1017,4 +1017,4 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             }
         };
     }
-);''
+);

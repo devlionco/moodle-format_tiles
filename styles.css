@@ -5,6 +5,13 @@
     /*was hidden but want to allow drop down edit menu for last item on page to be displayed in full*/
     margin: auto;
     padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.format-tiles ul.tiles.pinnedsections {
+    display: flex;
+    justify-content: space-around;
 }
 .format-tiles ul.tiles.expanded {
     max-height: unset;
@@ -287,7 +294,9 @@ li#section-0.section.main.clearfix {
     background-position: 10px 10px;
     background-repeat: no-repeat;
 }
-
+.format-tiles.editing.dir-rtl ul.tiles#multi_section_tiles li.section.pinned {
+    background-position-x: 99%;
+}
 .format-tiles .editing ul.tiles#multi_section_tiles li.section,
 .format-tiles ul.tiles#multi_section_tiles li#section-0.section {
     display: block;
@@ -1927,61 +1936,80 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 
 .format-tiles .course-content .tiles.pinnedsections li.pinned {
-  position: relative;
-  background-color: #19284f;
-  background-image: url("[[pix:format_tiles|pushpin]]");
-  background-size: 10%;
-  background-position: 10px;
-  background-repeat: no-repeat;
-  border-radius: 14px;
-  top: -10px;
-  display: -ms-flexbox;
-  display: inline-flex;
-  -ms-flex-align: center;
-      align-items: center;
-  -ms-flex-pack: center;
-      justify-content: center;
-  font-weight: 700;
-  font-size: 18px;
-  height: 55px;
-  line-height: 55px;
-  width: 170px;
-  overflow: hidden; }
-  .format-tiles .course-content .tiles.pinnedsections li.pinned a {
-    display: -ms-flexbox;
+    position: relative;
+    background-color: #19284f;
+    background-image: url("[[pix:format_tiles|pushpin]]");
+    background-size: 10%;
+    background-position: 10px;
+    background-repeat: no-repeat;
+    border-radius: 14px;
+    top: -10px;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    height: 55px;
+    line-height: 55px;
+    flex-basis: 170px;
+    flex-grow: 0;
+    overflow: hidden;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned a {
     display: flex;
     -ms-flex-pack: center;
-        justify-content: center;
+    justify-content: center;
     -ms-flex-positive: 1;
-        flex-grow: 1; }
-    .format-tiles .course-content .tiles.pinnedsections li.pinned a .icon_content {
-      color: #fff;
-      height: auto;
-      width: 120px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      text-align: center; }
-  .format-tiles .course-content .tiles.pinnedsections li.pinned img {
-    display: none; }
-  .format-tiles .course-content .tiles.pinnedsections li.pinned .image_holder {
-    display: none; }
+    flex-grow: 1;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned a .icon_content {
+    color: #fff;
+    height: auto;
+    width: 120px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned img {
+    display: none;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned .image_holder {
+    display: none;
+}
 
 .format-tiles .course-content .tiles.pinnedsections li.pinned .tile-top {
     display: none;
 }
-.format-tiles .course-content .tiles.pinnedsections li.pinned .tile-textinner{
+
+.format-tiles .course-content .tiles.pinnedsections li.pinned .tile-content .tile-text {
+    height: auto;
+    line-height: 1;
+    text-overflow: ellipsis;
+}
+
+.format-tiles .course-content .tiles.pinnedsections li.pinned .tile-textinner {
+    display: block;
+    max-width: 150px;
     position: relative;
     top: 10px;
 }
-.format-tiles .course-content .tiles.pinnedsections li.pinned, .sectionname,
-.format-tiles .course-content .tiles.pinnedsections li.pinned h3{
+.format-tiles .course-content .tiles.pinnedsections li.pinned .tile-textinner h3 {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned,
+.sectionname,
+.format-tiles .course-content .tiles.pinnedsections li.pinned h3 {
     font-size: 1em;
     color: #fff;
 }
 .format-tiles .course-content .tiles.pinnedsections li.pinned {
-  position: relative;
-  background-color: #19284f;
-  background-image: url("[[pix:format_tiles|pushpin]]");
-  background-size: 10%;
+    position: relative;
+    background-color: #19284f;
+    background-image: url("[[pix:format_tiles|pushpin]]");
+    background-size: 10%;
 }

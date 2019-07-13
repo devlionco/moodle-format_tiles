@@ -55,7 +55,7 @@ class format_tiles extends format_base {
      * @var []
      */
     public $labellikecoursemods = ['label', 'customlabel', 'unilabel'];
-    
+
     /**
      * Creates a new instance of class
      *
@@ -71,7 +71,7 @@ class format_tiles extends format_base {
         }
         parent::__construct($format, $courseid);
     }
-    
+
     /**
      * Returns true if this course format uses sections
      *
@@ -1043,19 +1043,20 @@ class format_tiles extends format_base {
                 return null;
             } else if ($nowpinned >= 4) {
                 // show alert message from js
-                print_error('toomuch pinned sections');
+                $errormessages = get_string('toomuch_pinned_sections', 'format_tiles');
+                print_error($errormessages);
             }
         }
-        
+
         // For show/hide actions call the parent method and return the new content for .section_availability element.
         $rv = parent::section_action($section, $action, $sr);
         $renderer = $PAGE->get_renderer('format_tiles');
         $rv['section_availability'] = $renderer->section_availability($this->get_section($section));
         return $rv;
     }
-    
+
     /**
-     * 
+     *
      * @param type $courseid
      * @return int
      */
@@ -1083,7 +1084,7 @@ class format_tiles extends format_base {
      * @throws moodle_exception
      */
     public function page_set_course(moodle_page $page) {
-        
+
         if (get_config('format_tiles', 'usejavascriptnav')) {
             if (optional_param('stopjsnav', 0, PARAM_INT) == 1) {
                 // User is toggling JS nav setting.
@@ -1101,12 +1102,12 @@ class format_tiles extends format_base {
                 }
             }
         }
-        
+
         global $PAGE;
         if ($PAGE != $page) {
             return;
         }
-        
+
         if ($this->on_course_view_page()) {
             $context = context_course::instance($this->courseid);
 
@@ -1127,7 +1128,7 @@ class format_tiles extends format_base {
                 $url = course_get_url($this->courseid, $sectionnum);
                 redirect($url);
             }
-            
+
             // if requested, move section
             $movesection = optional_param('movesection', null, PARAM_INT);
             $moveparent = optional_param('moveparent', null, PARAM_INT);
@@ -1141,8 +1142,8 @@ class format_tiles extends format_base {
                 $newsectionnum = $this->move_section($movesection, $moveparent, $movebefore);
                 redirect(course_get_url($this->courseid, $newsectionnum, $options));
             }
-            
-            
+
+
             // if requested, delete the section
             $deletesection = optional_param('deletesection', null, PARAM_INT);
             if ($deletesection && confirm_sesskey() && has_capability('moodle/course:update', $context)
@@ -1154,10 +1155,10 @@ class format_tiles extends format_base {
                 redirect($url);
             }
         }
-        
+
     }
 
-    
+
     /**
      * Completely removes a section, all subsections and activities they contain
      *
@@ -1206,7 +1207,7 @@ class format_tiles extends format_base {
 
         rebuild_course_cache($this->courseid, true);
     }
-    
+
     /**
      * Checks if section is really available for the current user (analyses parent section available)
      *
@@ -1226,8 +1227,8 @@ class format_tiles extends format_base {
         $section = $this->get_section($section);
         return $section->available && $this->is_section_real_available($section->parent);
     }
-    
-    
+
+
     /**
      * Returns the section relative number regardless whether argument is an object or an int
      *
@@ -1243,7 +1244,7 @@ class format_tiles extends format_base {
             return (int)$section;
         }
     }
-    
+
     /**
      * If we are on course/view.php page return the 'section' attribute from query
      *
@@ -1256,7 +1257,7 @@ class format_tiles extends format_base {
         }
         return 0;
     }
-    
+
     /**
      * Returns true if we are on /course/view.php page
      *
@@ -1268,7 +1269,7 @@ class format_tiles extends format_base {
                 $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
                 );
     }
-    
+
     /**
      * Create a new section under given parent
      *
@@ -1284,7 +1285,7 @@ class format_tiles extends format_base {
         $sectionnum = $this->move_section($sectionnum, $parent, $before);
         return $sectionnum;
     }
-    
+
     /**
      * Moves section to the specified position
      *
@@ -1381,7 +1382,7 @@ class format_tiles extends format_base {
         }
         return $newsectionnumber;
     }
-    
+
     /**
      * Check if we can move the section to this position
      *
@@ -1466,7 +1467,7 @@ class format_tiles extends format_base {
             return $this->section_has_parent($section->parent, $parentnum);
         }
     }
-    
+
     /**
      * Function recursively reorders the sections while moving one section to the new position
      *
@@ -1508,7 +1509,7 @@ class format_tiles extends format_base {
             $this->reorder_sections($neworder, $movedsectionnum);
         }
     }
-    
+
     /**
      * Returns the list of direct subsections of the specified section
      *
@@ -1525,7 +1526,7 @@ class format_tiles extends format_base {
         }
         return $subsections;
     }
-    
+
     /**
      * Sets the section visible/hidden including subsections and modules
      *
@@ -1579,7 +1580,7 @@ class format_tiles extends format_base {
             }
         }
     }
-    
+
     /**
      * Returns a list of all controls available for particular section on particular page
      *
@@ -1598,7 +1599,7 @@ class format_tiles extends format_base {
         $context = context_course::instance($this->courseid);
         $movingsection = $this->is_moving_section();
         $sr = $this->get_viewed_section(); // section to return to
-        
+
         // Move section control
         if ($sectionnum && !$movingsection && has_capability('moodle/course:update', $context) && $sectionnum != $sr) {
             $moveurl = course_get_url($course, $section->section, array('sr' => $sr));
@@ -1610,8 +1611,8 @@ class format_tiles extends format_base {
 
         return $controls;
     }
-    
-    
+
+
     /**
      * Returns control 'Move here' for particular parent section
      *
@@ -1639,7 +1640,7 @@ class format_tiles extends format_base {
         $str = strip_tags(get_string('movefull', '', "'".$this->get_section_name($movingsection)."'"));
         return new format_tiles_edit_control('movehere', 'movehere', $movelink, $str);
     }
-    
+
     /**
      * Returns a control to exit the section moving mode
      *
@@ -1664,7 +1665,7 @@ class format_tiles extends format_base {
         }
         return $controls;
     }
-    
+
     /**
      * If in section moving mode returns section number, otherwise returns null
      *

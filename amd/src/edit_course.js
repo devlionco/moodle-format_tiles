@@ -30,9 +30,9 @@
 /* eslint space-before-function-paren: 0 */
 
 define(
-    ["jquery", "core/config", "core/str", "core/ajax", "format_tiles/edit_browser_storage"],
-    function($, config, str, ajax, browserStorageEdit) {
-        "use strict";
+    ["jquery", "core/str", "format_tiles/edit_browser_storage"],
+    function($, str, browserStorageEdit) {
+
         var Selector = {
             EDITING_COLLAPSE_SECID: "#collapse",
             EDITING_COLLAPSE_SEC: ".collapse-section",
@@ -88,17 +88,17 @@ define(
             section.find(".mod-chooser-outer").fadeOut(500);
             browserStorageEdit.setSectionStatus(secNum, false);
         };
-        
-        var togglePinnedSectionIndicator = target => {
-            var pinBefore;
-            let pinAfter;
-            let title;
-            let action;
-            let text;
-            let classBefore;
-            let classAfter;
-          // TODO remove this function 
-            if(target.hasClass('tounpinsection')){
+
+        var togglePinnedSectionIndicator = function(target) {
+            var pinBefore,
+                pinAfter,
+                title,
+                action,
+                text,
+                classBefore,
+                classAfter;
+          // TODO remove this function
+            if (target.hasClass('tounpinsection')) {
               pinBefore = 0;
               pinAfter = 1;
               title = 'This section is pinned';
@@ -121,18 +121,18 @@ define(
             }
 
           // TODO remove setTimeout
-            
-            target.attr('href', target.attr('href').replace(`pinned=${pinBefore}`, `pinned=${pinAfter}`));
+
+            target.attr('href', target.attr('href').replace('pinned=' + pinBefore, 'pinned=' + pinAfter));
             target.attr('title', title);
             target.attr('data-action', action);
             target.find('.icon.fa').removeClass(classBefore).addClass(classAfter);
             target.find('.menu-action-text').text(text);
 
-        }
-        
+        };
+
         var countPinnedSections = function() {
             return $('.pinnedsections .tile').length;
-        }
+        };
 
         return {
             // All args down to "filttilestowidth" are copied from course.js.
@@ -177,7 +177,7 @@ define(
                     $(Selector.TILE_BAR_TEXT).on(Event.KEYDOWN, function(e) {
                         if (e.keyCode === Keyboard.RETURN && !$(e.target).hasClass('form-control')) {
                             // Return key has been pressed and *not* while the user was inplace editing the title.
-                            window.location = config.wwwroot + '/course/view.php?id=' + courseId
+                            window.location = M.cfg.wwwroot + '/course/view.php?id=' + courseId
                                 + '&section=' + $(e.currentTarget).parent().attr(DataAttributes.SECTION);
                         }
                     });
@@ -226,8 +226,8 @@ define(
                                 sectionMain.find(Selector.SECTION).find(Selector.ACTIVITY).slideUp(300).remove();
                             }
                         });
-                    
-                    $('.section.pinned').each(function(){
+
+                    $('.section.pinned').each(function() {
                         var newSection = $(this).clone();
                         newSection.addClass('tile').removeClass('section');
                         newSection.find('.left.side').remove();
@@ -236,8 +236,8 @@ define(
                         newSection.find('.sectionname').removeClass('hidden');
                         newSection.appendTo('.pinnedsections');
                     });
-                    
-                    $(document).on('click', '#multi_section_tiles .topinsection', function(){
+
+                    $(document).on('click', '#multi_section_tiles .topinsection', function() {
                         if (countPinnedSections() < 4) {
                             var menuItem = $(this);
                             menuItem.removeClass('editing_highlight topinsection').addClass('editing_pinning tounpinsection');
@@ -253,14 +253,14 @@ define(
                             newSection.appendTo('.pinnedsections');
                         }
                     });
-                    $(document).on('click', '.tounpinsection', function(){
+                    $(document).on('click', '.tounpinsection', function() {
                         var menuItem = $(this);
                         menuItem.removeClass('editing_pinning tounpinsection').addClass('editing_highlight topinsection');
                         var pinnedSection = menuItem.parents('.section');
                         var sectionId = pinnedSection.data('section');
                         pinnedSection.removeClass('pinned');
                         togglePinnedSectionIndicator(menuItem);
-                        $('.pinnedsections #section-' + sectionId).slideUp(500, function(){
+                        $('.pinnedsections #section-' + sectionId).slideUp(500, function() {
                             $(this).remove();
                         });
                     });

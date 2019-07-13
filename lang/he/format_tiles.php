@@ -322,8 +322,6 @@ $string['tilecolourschanged'] = 'Tiles colours have been reset.  All tiles now h
 $string['tileicon_help'] = 'Item selected here will override, for this tile only, whatever tile icon has been set at the course level.';
 $string['tileicon'] = 'Icon to display on this tile only';
 $string['tileicons'] = 'Tile icons';
-$string['tileimgtype'] = 'Show tile image as:';
-$string['tileimgtype_help'] = 'Show image as icon or background.';
 $string['tileselecttip'] = "Here's an easier way to change a tile icon or photo: in the course, with editing mode on, simply click the icon or photo you want to change.  The icon picker window will pop up.";
 $string['tip'] = 'Tip';
 $string['togglecompletion'] = 'Click to toggle completion status';
@@ -384,21 +382,17 @@ $string['usejsnavforsinglesection'] = 'Use JS navigation for single section page
 $string['usejsnavforsinglesection_desc'] = 'When checked, any call for a single section page (&section=xx) will be handled using JavaScript, by launching the course main page, animated to open at the requested section via JS, rather than calling the old style PHP single section page';
 $string['usesubtilesseczero'] = 'Use sub tiles in top section';
 $string['usesubtilesseczero_help'] = 'If selected, sub tiles will be used in top section of course as well as within all tiles.  This is as the sub tiles take up a lot of room at the very top of the course.  It may be better to leave this unselected, so that any items in the top section are shown in standard list format instead.';
-$string['showprogresssphototiles_desc'] = 'If selected, student progress (e.g. Progress 2/5) will be shown on photo tiles';
-$string['privacy:metadata:preference:format_tiles_stopjsnav'] = 'Whether the user has disabled animated JavaScript navigation.';
-
 
 $string['privacy:metadata:preference:format_tiles_stopjsnav'] = 'Whether the user has disabled animated JavaScript navigation.';
 
-$string['pinnedsection'] = 'This section is pinned';
-$string['unpinnedsection'] = 'Pin this section to show it in the front';
-$string['topinsection'] = 'Pin section';
-$string['tounpinsection'] = 'Unpin section';
-
-$string['showpinned'] = 'Pin this section';
-$string['showunpinned'] = 'Unpin this section';
-$string['displaypinned'] = 'Pin or Unpin section';
-$string['addsection'] = 'Add section';
-$string['addsubsection'] = 'Add subsection';
+$string['pinnedsection'] = 'יחידה קבוע';
+$string['unpinnedsection'] = 'קבע יחידה לתצוגה למעלה';
+$string['topinsection'] = 'יחידה קבוע';
+$string['tounpinsection'] = 'בטל הצמדת יחידה';
+$string['showpinned'] = 'הצמד יחידה';
+$string['showunpinned'] = 'בטל הצמדת יחידה';
+$string['displaypinned'] = 'הצמד או בטל הצמדה ליחידה';
+$string['addsection'] = 'הסף יחידה';
+$string['addsubsection'] = 'הסף תת יחידה';
 $string['cancelmoving'] = 'Cancel moving \'{$a}\'';
-$string['toomuch_pinned_sections'] = 'Too many fixed sections (maximum 4)';
+$string['toomuch_pinned_sections'] = 'יותר מדי יחידות קבועות (מקסימום 4)';
