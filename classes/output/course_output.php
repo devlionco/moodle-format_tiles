@@ -120,6 +120,11 @@ class course_output implements \renderable, \templatable
     private $courseformatoptions;
 
     /**
+     * @var mixed
+     */
+    private $usingjsnav;
+
+    /**
      * course_output constructor.
      * @param \stdClass $course the course object.
      * @param bool $fromajax Whether we are rendering for AJAX request.
@@ -148,6 +153,8 @@ class course_output implements \renderable, \templatable
         }
         $this->completionenabled = $course->enablecompletion && !isguestuser();
         $this->courseformatoptions = $this->get_course_format_options($this->fromajax);
+        $this->usingjsnav = get_config('format_tiles', 'usejavascriptnav')
+            && !get_user_preferences('format_tiles_stopjsnav');
     }
 
     /**
@@ -199,8 +206,7 @@ class course_output implements \renderable, \templatable
         $data['showinitialpageloadingicon'] = format_tiles_width_template_data($this->course->id)['hidetilesinitially'];
         $data['userdisabledjsnav'] = get_user_preferences('format_tiles_stopjsnav');
         $data['useSubtiles'] = get_config('format_tiles', 'allowsubtilesview') && $this->courseformatoptions['courseusesubtiles'];
-        $data['usingjsnav'] = get_config('format_tiles', 'usejavascriptnav')
-            && !get_user_preferences('format_tiles_stopjsnav');
+        $data['usingjsnav'] = $this->usingjsnav;
 
         if (!$this->isediting) {
             $data['course_activity_clipboard'] = $output->course_activity_clipboard($this->course, $this->sectionnum);
@@ -911,6 +917,9 @@ class course_output implements \renderable, \templatable
                 if ($this->devicetype == \core_useragent::DEVICETYPE_TABLET
                     || $this->devicetype == \core_useragent::DEVICETYPE_MOBILE) {
                     $moduleobject['url'] = $this->plugin_file_url($mod);
+                } else {
+                    // We are not using modal, so add the standard moodle onclick event to the link to launch pop up if appropriate.
+                    $moduleobject['onclick'] = str_replace('&amp;', '&', $mod->onclick);
                 }
             }
         }
@@ -1001,7 +1010,7 @@ class course_output implements \renderable, \templatable
             $url = $DB->get_record('url', array('id' => $mod->instance), '*', MUST_EXIST);
 
             $modifiedvideourl = $this->check_modify_embedded_url($url->externalurl);
-            if ($url->display == RESOURCELIB_DISPLAY_POPUP) {
+            if ($url->display == RESOURCELIB_DISPLAY_POPUP || $url->display == RESOURCELIB_DISPLAY_NEW) {
                 $moduleobject['pluginfileUrl'] = $url->externalurl;
                 $moduleobject['extraclasses'] .= ' urlpopup';
             } else if ($url->display == RESOURCELIB_DISPLAY_EMBED) {
@@ -1041,9 +1050,10 @@ class course_output implements \renderable, \templatable
                     $moduleobject['iconurl'] = $output->image_url('play-circle-solid', 'format_tiles');
                 }
             }
-        } else {
-            // This produces lots of unnecessary code for URL, trying to get around redirect, but we don't need it.
-            $moduleobject['onclick'] = $mod->onclick;
+        }
+
+        if ($mod->modname === 'url' || $mod->modname === 'resource') {
+            $moduleobject['url'] .= '&redirect=1'; // If the non JS link is used, it redirects from /mod/xxx/view.php to external or pluginURL.
         }
 
         // Now completion information for the individual course module.

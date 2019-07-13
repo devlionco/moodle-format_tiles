@@ -134,7 +134,7 @@
                                 {{#clickable}}
                                     {{#isEmbeddedResource}}
                                         <h4 class="activitytitle">
-                                            <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}} href="{{{config.wwwroot}}}/mod/resource/view.php?id={{{cmid}}}" data-title="{{{modtitle}}}">
+                                            <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}} href="{{{url}}}" data-title="{{{modtitle}}}">
                                                 {{{modtitle}}}
                                             </a>
                                         </h4>
@@ -142,7 +142,8 @@
 
                                     {{^isEmbeddedResource}}
                                     <h4 class="activitytitle">
-                                        <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}} onclick="{{onclick}}" href="{{url}}">{{{modtitle}}}</a>
+                                        <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}}
+                                            {{#onclick}} onclick="{{onclick}}"{{/onclick}} href="{{url}}">{{{modtitle}}}</a>
                                     </h4>
                                     {{/isEmbeddedResource}}
                                 {{/clickable}}
@@ -150,7 +151,7 @@
                                     <h4 class="activitytitle">{{{modtitle}}}</h4>
                                 {{/clickable}}
                         </div>
-                        {{#clickable}}<a class="clickable-region" href="{{url}}" data-action="launch-tiles-{{launchtype}}"></a>{{/clickable}}
+                        {{#clickable}}<a class="clickable-region" href="{{url}}" data-action="launch-tiles-{{launchtype}}"{{#onclick}} onclick="{{onclick}}"{{/onclick}}></a>{{/clickable}}
                     {{/isediting}}
 
                     {{#isediting}}
