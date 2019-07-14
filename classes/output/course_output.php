@@ -437,6 +437,7 @@ class course_output implements \renderable, \templatable
         $usingphotoaltstyle = get_config('format_tiles', 'phototilesaltstyle');
         if ($allowedphototiles) {
             $data['allowphototiles'] = 1;
+            $data['showprogresssphototiles'] = get_config('format_tiles', 'showprogresssphototiles');
             $phototileids = tile_photo::get_photo_tile_ids($this->course->id);
             $phototileextraclasses = 'phototile';
             if ($usingphotoaltstyle) {
@@ -1058,7 +1059,8 @@ class course_output implements \renderable, \templatable
         }
 
         if ($mod->modname === 'url' || $mod->modname === 'resource') {
-            $moduleobject['url'] .= '&redirect=1'; // If the non JS link is used, it redirects from /mod/xxx/view.php to external or pluginURL.
+            // If the non JS link is used, it redirects from /mod/xxx/view.php to external or pluginURL.
+            $moduleobject['url'] .= '&redirect=1';
         }
 
         // Now completion information for the individual course module.
