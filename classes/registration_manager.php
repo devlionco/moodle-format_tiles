@@ -83,7 +83,7 @@ class registration_manager {
      */
     public static function is_registered() {
         $dbvalue = get_config('format_tiles', 'registered');
-        return is_numeric($dbvalue) && $dbvalue > 1514764800; # Newer than 1/1/2018.
+        return is_numeric($dbvalue) && $dbvalue > 1514764800; // Newer than 1/1/2018.
     }
 
     /**

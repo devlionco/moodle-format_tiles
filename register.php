@@ -79,7 +79,7 @@ if ($mform->is_cancelled()) {
             $registrationmanager::process_data($data, true)
         );
         $PAGE->requires->js_call_amd('format_tiles/registration', 'attemptRegistration', $jsparams);
-        $hideform = true; # Don't want user to submit form again.
+        $hideform = true; // Don't want user to submit form again.
         // We also schedule an attempt to register by cron but this will be ignored if JS succeeds.
         // We do this because we cannot know here is JS succeeds.
         $registrationmanager->schedule_registration_attempt($data);
