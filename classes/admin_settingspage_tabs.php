@@ -96,7 +96,8 @@ class admin_settingspage_tabs extends \admin_settingpage {
             $context['tabs'][] = $data;
         }
         $context['documentationurl'] = get_config('format_tiles', 'documentationurl');
-        $context['isregistered'] = \format_tiles\registration_manager::is_registered();
+        $context['showregisterbutton'] = !\format_tiles\registration_manager::is_registered()
+            && !\format_tiles\registration_manager::has_recent_attempt();
         $context['sesskey'] = sesskey();
 
         return $OUTPUT->render_from_template('format_tiles/admin_setting_tabs', $context);

@@ -58,62 +58,50 @@ $formparams = array(
 );
 
 $mform = new registration_form(null, $formparams);
-
+$hideform = false;
 $formdata = new stdClass();
 if ($mform->is_cancelled()) {
     // Someone has hit the 'cancel' button.
     redirect($settingsurl);
 } else if ($data = $mform->get_data()) { // Form has been submitted.
     $registrationmanager = new registration_manager();
-    $result = $registrationmanager->request_key(process_data($data));
-    if ($result['status'] && registration_manager::validate_key($result['key'])) {
+    $serverresponse = $registrationmanager::make_curl_request($data, 3);
+    $result = $registrationmanager::parse_server_response($registrationmanager::process_data($serverresponse));
+    if ($result && $result['status'] && registration_manager::validate_key($result['key'])) {
         $registrationmanager->set_registered($result['key']);
+        unset_config('lastregistrationattempt', 'format_tiles');
         redirect($settingsurl);
     } else {
         // We have form data but did not succeed registering from the server. So try using JavaScript.
         $jsparams = array(
             'sesskey' => sesskey(),
             'registrationUrl' => registration_manager::registration_server_url(),
-            process_data($data, true)
+            $registrationmanager::process_data($data, true)
         );
         $PAGE->requires->js_call_amd('format_tiles/registration', 'attemptRegistration', $jsparams);
-
+        $hideform = true; # Don't want user to submit form again.
         // We also schedule an attempt to register by cron but this will be ignored if JS succeeds.
         // We do this because we cannot know here is JS succeeds.
         $registrationmanager->schedule_registration_attempt($data);
+        set_config('lastregistrationattempt', time(), 'format_tiles');
     }
 }
 
 echo $OUTPUT->header();
-echo html_writer::start_div('ml-5');
-echo html_writer::div(get_string('registerintro1', 'format_tiles'));
-echo html_writer::tag('ul',
-    html_writer::tag('li', get_string('registerintro2', 'format_tiles'), [])
-    . html_writer::tag('li', get_string('registerintro3', 'format_tiles'), [])
-    . html_writer::tag('li', get_string('registerintro4', 'format_tiles'), [])
-    , array('class' => 'ml-3')
-);
-echo html_writer::div(get_string('registerintro5', 'format_tiles'));
-echo html_writer::end_div();
-echo $OUTPUT->box_start('generalbox');
-$mform->display();
-echo $OUTPUT->box_end();
-echo $OUTPUT->footer();
-
-/**
- * Take the data submitted from the form and supplement it / remove submit button.
- * @package format_tiles
- * @param object $data
- * @param bool $forjs
- * @return array
- */
-function process_data($data, $forjs = false) {
-    $returndata = (array)$data;
-    $returndata['ip'] = getremoteaddr();
-    unset($returndata['submitbutton']);
-    if (!$forjs) {
-        $returndata['browserlanguages'] = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        $returndata['useragent'] = \core_useragent::get_user_agent_string();
-    }
-    return $returndata;
+if (!$hideform) {
+    echo html_writer::start_div('ml-5');
+    echo html_writer::div(get_string('registerintro1', 'format_tiles'));
+    echo html_writer::tag('ul',
+        html_writer::tag('li', get_string('registerintro2', 'format_tiles'), [])
+        . html_writer::tag('li', get_string('registerintro3', 'format_tiles'), [])
+        . html_writer::tag('li', get_string('registerintro4', 'format_tiles'), [])
+        , array('class' => 'ml-3')
+    );
+    echo html_writer::div(get_string('registerintro5', 'format_tiles'));
+    echo html_writer::end_div();
+    echo $OUTPUT->box_start('generalbox');
+    $mform->display();
+    echo $OUTPUT->box_end();
 }
+
+echo $OUTPUT->footer();

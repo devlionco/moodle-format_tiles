@@ -44,14 +44,19 @@ class deferred_register extends \core\task\adhoc_task {
      * i.e. after 1 min, 2, 4, 8, 16 mins etc.
      */
     public function execute() {
-        $data = $this->get_custom_data();
-        $result = registration_manager::attempt_deferred_registration($data);
-        if (!$result) {
-            // Throw exception so that it tries again later.
-            throw new moodle_exception("Failed to complete deferred registration");
-        } else {
-            mtrace("Tiles plugin registration success.");
-            return true;
+        try {
+            $data = $this->get_custom_data();
+            $result = registration_manager::attempt_deferred_registration($data);
+            if (!$result) {
+                // Do not throw exception as don't want to try again later - just trace.
+                mtrace("Failed to complete deferred registration");
+            } else {
+                mtrace("Tiles plugin registration success.");
+                return true;
+            }
+        } catch (\Exception $ex) {
+            mtrace("Failed to complete deferred registration");
+            mtrace($ex->getMessage());
         }
     }
 }

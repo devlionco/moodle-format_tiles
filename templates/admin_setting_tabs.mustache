@@ -22,7 +22,7 @@
     {
         "documentationurl": "http://evolutioncode.uk",
         "sesskey": "abcde13455",
-        "isregistered": 1,
+        "showregisterbutton": 1,
         "tabs": [
          {
             "name": "tab1",
@@ -47,7 +47,7 @@
     {{/documentationurl}}
     <a class="btn btn-primary" href="https://evolutioncode.uk/contact" target="_blank">{{#str}}contactdeveloper, format_tiles{{/str}}</a>
 </div>
-{{^isregistered}}
+{{#showregisterbutton}}
     <div class="box generalbox adminerror alert alert-danger py-3">
         {{#str}}notregistered, format_tiles{{/str}}
         {{{registerhelpicon}}}
@@ -55,7 +55,7 @@
             {{#str}}register, format_tiles{{/str}}
         </a>
     </div>
-{{/isregistered}}
+{{/showregisterbutton}}
 
 <ul class="nav nav-tabs" role="tablist">
     {{#tabs}}

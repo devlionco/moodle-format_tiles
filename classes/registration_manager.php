@@ -40,42 +40,38 @@ class registration_manager {
      * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
      * @param [] $data the registration data.
      * @return bool|mixed
-     * @throws \coding_exception
      */
-    public function request_key($data) {
+    public static function parse_server_response($serverresponse) {
         try {
-            $serverresponse = self::make_curl_request($data, 3);
+            if (isset($serverresponse['status']) && $serverresponse['status']
+                && isset($serverresponse['key']) && self::validate_key($serverresponse['key'])) {
+                return $serverresponse;
+            }
+            // In all other cases we failed to register.
             if (isset($serverresponse['errno']) && $serverresponse['errno']) {
                 debugging('Connection error' . $serverresponse['errno'], DEBUG_DEVELOPER);
-                return false;
             } else if (!isset($serverresponse['http_code'])
                 || ($serverresponse['http_code'] != 200 && $serverresponse['http_code'] != 201)) { // Code 201 is "created".
                 debugging(
                     'Unexpected HTTP code ' . $serverresponse['http_code'] . json_encode($serverresponse), DEBUG_DEVELOPER
                 );
-                return false;
             } else if (isset($serverresponse['exception'])) {
                 debugging('Exception ' . $serverresponse['exception']);
-                return false;
             } else if (!isset($serverresponse['status'])) {
                 debugging(
                     'Server JSON response did not contain status field as expected, or status was not true', DEBUG_DEVELOPER
                 );
-                return false;
             } else if (!$serverresponse['status']) {
                 debugging(
                     'Server JSON response status field was not true: '
                         . $serverresponse['status'] . ' ' . gettype($serverresponse['status']),
                     DEBUG_DEVELOPER
                 );
-                return false;
-            } else if ($serverresponse['status'] && self::validate_key($serverresponse['key'])) {
-                return $serverresponse;
             } else {
                 debugging('Unknown curl request error ' . json_encode($serverresponse), DEBUG_DEVELOPER);
-                return false;
             }
-        } catch (Exception $ex) {
+            return false;
+        } catch (\Exception $ex) {
             debugging('Curl request error ' . $ex->getMessage(), DEBUG_DEVELOPER);
             return false;
         }
@@ -86,7 +82,22 @@ class registration_manager {
      * @return bool
      */
     public static function is_registered() {
-        return get_config('format_tiles', 'registered') !== false;
+        $dbvalue = get_config('format_tiles', 'registered');
+        return is_numeric($dbvalue) && $dbvalue > 1514764800; # Newer than 1/1/2018.
+    }
+
+    /**
+     * Have we attempted to register in the last hour.
+     * @return bool
+     * @throws \dml_exception
+     */
+    public static function has_recent_attempt() {
+        $lastattempt = get_config('format_tiles', 'lastregistrationattempt');
+        if ($lastattempt && $lastattempt > time() - 60 * 60) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -103,7 +114,7 @@ class registration_manager {
             $task->set_custom_data($data);
             $task->set_component('format_tiles');
             $task->set_userid($USER->id);
-            \core\task\manager::queue_adhoc_task($task);
+            \core\task\manager::queue_adhoc_task($task, true);
         }
     }
 
@@ -114,7 +125,7 @@ class registration_manager {
      * @return mixed
      * @throws \coding_exception
      */
-    private static function make_curl_request($data, $timeout) {
+    public static function make_curl_request($data, $timeout) {
         $curl = new \curl();
         $curl->setopt( array(
                 'CURLOPT_TIMEOUT' => $timeout,
@@ -137,13 +148,15 @@ class registration_manager {
      * @throws \coding_exception
      */
     public static function attempt_deferred_registration($data) {
-        // As it's deferred user is not waiting, so we have a timeout of 30 seconds.
         if (self::is_registered()) {
             return true;
         }
-        $result = self::make_curl_request($data, 30);
-        if ($result) {
-            return self::handle_server_response($result);
+        $serverresponse = self::make_curl_request($data, 6);
+        $result = self::parse_server_response(self::process_data($serverresponse));
+        if ($result && $result['status'] && self::validate_key($result['key'])) {
+            self::set_registered($result['key']);
+            unset_config('lastregistrationattempt', 'format_tiles');
+            return true;
         } else {
             return false;
         }
@@ -176,5 +189,23 @@ class registration_manager {
         global $CFG;
         $utcyearmonth = gmdate( 'Yn'); // We use UTC not server's time zone.
         return $key === hash('sha256', $CFG->wwwroot .$utcyearmonth);
+    }
+
+    /**
+     * Take the data submitted from the form and supplement it / remove submit button.
+     * @package format_tiles
+     * @param object $data
+     * @param bool $forjs
+     * @return array
+     */
+    public static function process_data($data, $forjs = false) {
+        $returndata = (array)$data;
+        $returndata['ip'] = getremoteaddr();
+        unset($returndata['submitbutton']);
+        if (!$forjs) {
+            $returndata['browserlanguages'] = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+            $returndata['useragent'] = \core_useragent::get_user_agent_string();
+        }
+        return $returndata;
     }
 }
