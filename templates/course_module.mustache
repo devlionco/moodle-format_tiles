@@ -181,7 +181,7 @@
                     {{^isediting}}
                         {{#clickable}}
                             <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}}
-                               data-action="launch-tiles-module-modal"{{/isEmbeddedModule}}{{/clickable}}{{/clickable}}
+                               data-action="launch-tiles-module-modal"{{/isEmbeddedModule}}{{/clickable}}{{#onclick}} onclick="{{onclick}}"{{/onclick}}{{/clickable}}
                                data-title="{{{modtitle}}}" class="instancename {{{extraclasses}}}"  data-action="launch-tiles-{{launchtype}}">
                                 <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
                                      role="presentation">

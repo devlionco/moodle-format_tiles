@@ -441,6 +441,7 @@ class course_output implements \renderable, \templatable
             $phototileextraclasses = 'phototile';
             if ($usingphotoaltstyle) {
                 $phototileextraclasses .= ' altstyle';
+                $data['usingaltstyle'] = 1;
             }
         }
 
@@ -919,7 +920,10 @@ class course_output implements \renderable, \templatable
                     $moduleobject['url'] = $this->plugin_file_url($mod);
                 } else {
                     // We are not using modal, so add the standard moodle onclick event to the link to launch pop up if appropriate.
-                    $moduleobject['onclick'] = str_replace('&amp;', '&', $mod->onclick);
+                    if ($onclick = $mod->onclick) {
+                        $moduleobject['onclick'] = str_replace('&amp;', '&', $mod->onclick);
+                        $moduleobject['launchtype'] = 'resource-popup';
+                    }
                 }
             }
         }
@@ -1013,6 +1017,7 @@ class course_output implements \renderable, \templatable
             if ($url->display == RESOURCELIB_DISPLAY_POPUP || $url->display == RESOURCELIB_DISPLAY_NEW) {
                 $moduleobject['pluginfileUrl'] = $url->externalurl;
                 $moduleobject['extraclasses'] .= ' urlpopup';
+                $moduleobject['launchtype'] = 'urlpopup';
             } else if ($url->display == RESOURCELIB_DISPLAY_EMBED) {
                 // We need a secondary URL to show under the embed window so users can click it if embed doesn't work.
                 // We will also use it to redirect mobile users to YouTube or wherever since embed wont work well for them.
@@ -1233,7 +1238,7 @@ class course_output implements \renderable, \templatable
             'isComplete' => $numcomplete > 0 && $numcomplete == $numoutof ? 1 : 0,
             'isOverall' => $isoverall,
         );
-        if ($aspercent && $numcomplete != $numoutof) {
+        if ($aspercent) {
             // Percent in circle.
             $progressdata['showAsPercent'] = true;
             $circumference = 106.8;
