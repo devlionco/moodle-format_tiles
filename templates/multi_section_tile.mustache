@@ -89,6 +89,12 @@
             {{#availabilitymessage}}
                 {{>format_tiles/availability_info}}
             {{/availabilitymessage}}
+                {{#showprogresssphototiles}}
+                    {{#progress}}
+                        {{> format_tiles/progress}}
+                    {{/progress}}
+                {{/showprogresssphototiles}}
+
             <div id="tileText-{{tileid}}"
                  {{#activity_summary}}{{^ismobile}}data-original-title="{{activity_summary}}" data-toggle="tooltip" data-html="true"{{/ismobile}}{{/activity_summary}}>
             <span class="photo-tile-text{{titleclass}}" id="tileTextin-{{tileid}}">

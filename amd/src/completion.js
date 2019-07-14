@@ -46,7 +46,8 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         completeonview: ".completeonview",
         activity: "li.activity",
         section: "li.section.main",
-        togglecompletion: "form.togglecompletion"
+        togglecompletion: "form.togglecompletion",
+        tileId: "#tile-"
     };
 
     var Icon = {
@@ -77,7 +78,8 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
             percentCircumf: 106.8,
             percentOffset: Math.round(((outOf - numComplete) / outOf) * 106.8),
             isComplete: false,
-            isSingleDigit: false
+            isSingleDigit: false,
+            hastilephoto: $(Selector.tileId + tileId).hasClass("phototile"),
         };
         if (tileId === 0) {
             data.isOverall = 1;

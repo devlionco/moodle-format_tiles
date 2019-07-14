@@ -538,6 +538,9 @@ li#section-0.section.main.clearfix {
     padding-top: 5px;
     position: relative;
 }
+.format-tiles ul.tiles .tile.phototile .tile-text {
+    line-height: 1.5em;
+}
 /* centralise text vertically on tile */
 .format-tiles ul.tiles .tile .tile-textinner {
     display: inline-block;
@@ -819,7 +822,25 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles .headerabovetiles .progress-indic {
     height: 42px;
 }
-
+.format-tiles .phototile .progress-indic {
+    color: rgba(255, 255, 255, 0.85);
+    padding: 2px 7px 2px 7px;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    font-size: 0.9em;
+}
+.format-tiles .phototile.altstyle .progress-indic {
+    top: 5px;
+    right: 0;
+    bottom: unset;
+    left: unset;
+}
+.format-tiles .phototile .progress-complete-alt img {
+    height: 30px;
+    width: 30px;
+    margin-top: 4px;
+}
 .format-tiles .filterbutton {
     cursor: pointer;
     min-width: 50px;

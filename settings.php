@@ -167,6 +167,12 @@ if ($ADMIN->fulltree) {
     $default = 0;
     $page->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
+    $name = 'format_tiles/showprogresssphototiles';
+    $title = get_string('courseshowtileprogress', 'format_tiles');
+    $description = get_string('showprogresssphototiles_desc', 'format_tiles');
+    $default = 1;
+    $page->add(new admin_setting_configcheckbox($name, $title, $description, $default));
+
     // Tile title CSS adjustments.
     $page->add(
         new admin_setting_heading('transparenttitleadjustments', get_string('transparenttitleadjustments', 'format_tiles'),
