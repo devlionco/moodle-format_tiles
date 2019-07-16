@@ -330,22 +330,6 @@ $string['uploadnewphoto'] = 'Upload new photo';
 $string['uploadnewphoto_help'] = 'Upload an image to be used on this tile';
 $string['width'] = 'width';
 
-$string['displayunits'] = 'משבצת יחידות';
-$string['displayunitsdesc'] = 'משבצת יחידות';
-$string['displayunitsdesc_help'] = 'משבצת יחידות';
-$string['displaymessages'] = 'משבצת הודעות';
-$string['displaymessagesdesc'] = 'משבצת הודעות';
-$string['displaymessagesdesc_help'] = 'משבצת הודעות';
-$string['displaygrades'] = 'משבצת צלמיות';
-$string['displaygradesdesc'] = 'משבצת צלמיות';
-$string['displaygradesdesc_help'] = 'משבצת צלמיות';
-$string['showbagestag'] = 'צלמית מדליות';
-$string['showbagestagdesc'] = 'צלמית מדליות';
-$string['showbagestagdesc_help'] = 'צלמית מדליות';
-$string['showcertificatestag'] = 'צלמית תעודות';
-$string['showcertificatestagdesc'] = 'צלמית תעודות';
-$string['showcertificatestagdesc_help'] = 'צלמית תעודות';
-
 // Admin Settings page strings.
 $string['addsections'] = 'Add tiles';
 $string['assumedatastoreconsent'] = 'Assume consent to browser local storage';
