@@ -551,7 +551,7 @@ li#section-0.section.main.clearfix {
     /*z-index needs to be behind navigation-arrows as they may overlap*/
 }
 
-.format-tiles #sectionbuttons {
+.format-tiles .sectionbuttons {
     position: relative;
     right: 30px;
     top: 0;
@@ -565,6 +565,10 @@ li#section-0.section.main.clearfix {
     height: 45px;
     text-align: center;
 }
+.format-tiles .subsection .sectionbuttons .closesectionbtn,
+.format-tiles .subsection .sectionbuttons .editsectionbtn {
+    display: none;
+}
 .format-tiles .expand-section,
 .format-tiles .collapse-section {
     width: 30px;
@@ -572,6 +576,12 @@ li#section-0.section.main.clearfix {
     background-size: contain;
     margin-top: 10px;
 }
+.format-tiles .sectionbutton.expandsectionbtn.expandedcontent > .expandicon{
+    display:none;
+}    
+.format-tiles .sectionbutton.expandsectionbtn:not(.expandedcontent) > .collapseicon{
+    display:none;
+}    
 .format-tiles .expand-section {
     background-image: url([[pix:format_tiles|expand]]);
 }

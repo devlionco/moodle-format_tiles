@@ -69,8 +69,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             SECTION_ID: "#section-",
             SECTION_TITLE: ".sectiontitle",
             SECTION_MAIN: ".section.main",
-            SECTION_BUTTONS: "#sectionbuttons",
+            SECTION_BUTTONS: ".sectionbuttons",
             CLOSE_SEC_BTN: ".closesectionbtn",
+            EXPAND_SEC_BTN: ".expandsectionbtn",
             HIDE_SEC0_BTN: "#buttonhidesec0",
             SECTION_ZERO: "#section-0",
             MOODLE_VIDEO: ".mediaplugin.mediaplugin_videojs",
@@ -175,6 +176,19 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             sectionIsOpen = false;
             openTile = 0;
         };
+        
+        var toggleSectionContent = function (sectionToFocus) {
+            var section = $(Selector.SECTION_ID + sectionToFocus);
+            if (section.hasClass('expandedcontent')) {
+                section.removeClass('expandedcontent');
+                section.find('.expandsectionbtn').first().removeClass('expandedcontent');
+                section.find('.sectioncontent').first().slideUp(500);
+            } else {
+                section.addClass('expandedcontent');
+                section.find('.expandsectionbtn').first().addClass('expandedcontent');
+                section.find('.sectioncontent').first().slideDown(500);
+            }
+        };
 
         /**
          * Set the HTML for a course section to the correct div in the page
@@ -225,7 +239,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                     // Allow very short delay so we dont skip forward on the basis of our last key press.
                                     contentArea.find(Selector.SECTION_TITLE).focus();
                                     bodyHtml.animate({scrollTop: contentArea.offset().top - HEADER_BAR_HEIGHT}, "slow");
-                                    contentArea.find('#sectionbuttons').css("top", "");
+                                    contentArea.find('.sectionbuttons').css("top", "");
                                 }, 200);
                             }
                         });
@@ -368,7 +382,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             contentArea.slideDown(350, function () {
                 // Wait until we have finished sliding down before we work out where the top is for scroll.
                 expandAndScroll();
-                holdSectionButtonPosition();
+                //holdSectionButtonPosition();
             });
             openTile = tileId;
         };
@@ -866,6 +880,11 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         // When user clicks to close a section using cross at top right in section.
                         pageContent.on(Event.CLICK, Selector.CLOSE_SEC_BTN, function (e) {
                             cancelTileSelections($(e.currentTarget).attr("data-section"));
+                        });
+
+                        // When user clicks to close a section using cross at top right in section.
+                        pageContent.on(Event.CLICK, Selector.EXPAND_SEC_BTN, function (e) {
+                            toggleSectionContent($(e.currentTarget).attr("data-section"));
                         });
 
                         // If user clicks a sub tile body below the link, treat it as a click on the link itself.

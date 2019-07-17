@@ -86,19 +86,30 @@
                 {{>format_tiles/single_section_nav}}
             {{/from_ajax}}
             {{#from_ajax}}
-                <div id="sectionbuttons">
+                <div class="sectionbuttons">
+                    {{^level}}
                         <span class="sectionbutton closesectionbtn pull-right" id="closesectionbtn-{{tileid}}"
                               title="{{#str}}close, format_tiles{{/str}}" tabindex="3" data-section="{{tileid}}">
                             {{#pix}}close, format_tiles, {{#str}}close, format_tiles{{/str}}{{/pix}}
                         </span>
                     {{#canedit}}
                         {{^isediting}}
-                            <a class="sectionbutton pull-right" id="editsectiontbtn-{{tileid}}"
+                            <a class="sectionbutton editsectionbtn pull-right" id="editsectionbtn-{{tileid}}"
                                href="{{{ config.wwwroot }}}/course/view.php?id={{courseid}}&section={{tileid}}&sesskey={{sesskey}}&edit=on">
                             {{#pix}}pencil, format_tiles, {{#str}}edit{{/str}}{{/pix}}
                             </a>
                         {{/isediting}}
                     {{/canedit}}
+                    {{/level}}
+                    <span class="sectionbutton expandsectionbtn pull-right" id="expandsectionbtn-{{tileid}}"
+                          title="{{#str}}expand, format_tiles{{/str}}" tabindex="3" data-section="{{tileid}}">
+                        <span class="expandicon">
+                        {{#pix}}expand, format_tiles, {{#str}}expand, format_tiles{{/str}}{{/pix}}
+                        </span>
+                        <span class="collapseicon" >
+                        {{#pix}}collapse, format_tiles, {{#str}}collapse, format_tiles{{/str}}{{/pix}}
+                        </span>
+                    </span>
                 </div>
 
             {{/from_ajax}}
@@ -128,53 +139,55 @@
                     </div>
                 </div>
             </div>
-            {{#isediting}}
-                {{{single_sec_add_cm_control_html}}}
-            {{/isediting}}
-            {{{availabilitymessage}}}
-            <div class="summary{{^visible}} dimmed{{/visible}}">{{{summary}}}</div>
-            {{#isediting}}
-                <a title="{{#str}}editsummary, core{{/str}}"
-                   href="{{{config.wwwroot}}}/course/editsection.php?id={{secid}}&sr={{tileid}}">{{#pix}}
-                    i/settings, core{{/pix}}
-                </a>
-            {{/isediting}}
-            <ul class="section img-text {{^useSubtiles}}no{{/useSubtiles}}subtiles">
-                {{#course_modules}}
-                    {{>format_tiles/course_module}}
-                {{/course_modules}}
-                {{#useSubtiles}}
-                    <li class="activity subtile spacer" aria-hidden="true"></li>
-                    <li class="activity subtile spacer" aria-hidden="true"></li>
-                    <li class="activity subtile spacer" aria-hidden="true"></li>
-                    <li class="activity subtile spacer" aria-hidden="true"></li>
-                    <li class="activity subtile spacer" aria-hidden="true"></li>
-                    <li class="activity subtile spacer" aria-hidden="true"></li>
-                    <li class="activity subtile spacer" aria-hidden="true"></li>
-                {{/useSubtiles}}
-            </ul>
+            <div class="sectioncontent" {{^isediting}} style="display:none"{{/isediting}}>
+                {{#isediting}}
+                    {{{single_sec_add_cm_control_html}}}
+                {{/isediting}}
+                {{{availabilitymessage}}}
+                <div class="summary{{^visible}} dimmed{{/visible}}">{{{summary}}}</div>
+                {{#isediting}}
+                    <a title="{{#str}}editsummary, core{{/str}}"
+                       href="{{{config.wwwroot}}}/course/editsection.php?id={{secid}}&sr={{tileid}}">{{#pix}}
+                        i/settings, core{{/pix}}
+                    </a>
+                {{/isediting}}
+                <ul class="section img-text {{^useSubtiles}}no{{/useSubtiles}}subtiles">
+                    {{#course_modules}}
+                        {{>format_tiles/course_module}}
+                    {{/course_modules}}
+                    {{#useSubtiles}}
+                        <li class="activity subtile spacer" aria-hidden="true"></li>
+                        <li class="activity subtile spacer" aria-hidden="true"></li>
+                        <li class="activity subtile spacer" aria-hidden="true"></li>
+                        <li class="activity subtile spacer" aria-hidden="true"></li>
+                        <li class="activity subtile spacer" aria-hidden="true"></li>
+                        <li class="activity subtile spacer" aria-hidden="true"></li>
+                        <li class="activity subtile spacer" aria-hidden="true"></li>
+                    {{/useSubtiles}}
+                </ul>
+                {{^from_ajax}}
+                    {{#single_sec_content_is_long}}
+                    {{!repeat nav arrows at bottom of page if it is long}}
+                        {{>format_tiles/single_section_nav}}
+                    {{/single_sec_content_is_long}}
+                {{/from_ajax}}
+
+                {{#completion_help}}
+                    <span class="pull-right">{{#str}}yourprogress, completion{{/str}}
+                        <a id="completionhelp_{{tileid}}" class="btn btn-link p-a-0 progresshelp" role="button"
+                           data-container="body" data-toggle="popover"
+                           data-placement="left" data-content="{{#str}}completion_help, format_tiles{{/str}}"
+                           data-html="true" tabindex="-1" data-trigger="focus">
+                            {{#pix}}help, core, {{alt}}{{/pix}}
+                        </a>
+                        </span>
+                {{/completion_help}}
+            </div>
             <ul class="tiles multi_section_subtiles">
             {{#subsections}}
                 {{> format_tiles/single_section}}
             {{/subsections}}
             </ul>
-            {{^from_ajax}}
-                {{#single_sec_content_is_long}}
-                {{!repeat nav arrows at bottom of page if it is long}}
-                    {{>format_tiles/single_section_nav}}
-                {{/single_sec_content_is_long}}
-            {{/from_ajax}}
-
-            {{#completion_help}}
-                <span class="completionhelp pull-right">{{#str}}yourprogress, completion{{/str}}
-                    <a id="completionhelp_{{tileid}}" class="btn btn-link p-a-0 progresshelp" role="button"
-                       data-container="body" data-toggle="popover"
-                       data-placement="left" data-content="{{#str}}completion_help, format_tiles{{/str}}"
-                       data-html="true" tabindex="-1" data-trigger="focus">
-                        {{#pix}}help, core, {{alt}}{{/pix}}
-                    </a>
-                    </span>
-            {{/completion_help}}
         {{/hidden_section}}
     </div>
 </li>
