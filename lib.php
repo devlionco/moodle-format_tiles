@@ -428,6 +428,66 @@ class format_tiles extends format_base {
                 'courseusebarforheadings' => array(
                     'default' => 1,
                     'type' => PARAM_INT,
+                ),
+                'displayunits' => array(
+                    'label' => new lang_string('displayunits', 'format_tiles'),
+                    'element_type' => 'select',
+                    'element_attributes' => array(
+                        array(
+                            1 => new lang_string('yes'),
+                            0 => new lang_string('no'),
+                        )
+                    ),
+                    'help' => "displayunitsdesc",
+                    'help_component' => 'format_tiles',
+                ),
+                'displaymessages' => array(
+                    'label' => new lang_string('displaymessages', 'format_tiles'),
+                    'element_type' => 'select',
+                    'element_attributes' => array(
+                        array(
+                            1 => new lang_string('yes'),
+                            0 => new lang_string('no'),
+                        )
+                    ),
+                    'help' =>"displaymessagesdesc",
+                    'help_component' => 'format_tiles',
+                ),
+                'displaygrades' => array(
+                    'label' => new lang_string('displaygrades', 'format_tiles'),
+                    'element_type' => 'select',
+                    'element_attributes' => array(
+                        array(
+                            1 => new lang_string('yes'),
+                            0 => new lang_string('no'),
+                        )
+                    ),
+                    'help' => "displaygradesdesc",
+                    'help_component' => 'format_tiles',
+                ),
+                'showbagestag' => array(
+                    'label' => new lang_string('showbagestag', 'format_tiles'),
+                    'element_type' => 'select',
+                    'element_attributes' => array(
+                        array(
+                            1 => new lang_string('yes'),
+                            0 => new lang_string('no'),
+                        )
+                    ),
+                    'help' => "showbagestagdesc",
+                    'help_component' => 'format_tiles',
+                ),
+                'showcertificatestag' => array(
+                    'label' => new lang_string('showcertificatestag', 'format_tiles'),
+                    'element_type' => 'select',
+                    'element_attributes' => array(
+                        array(
+                            1 => new lang_string('yes'),
+                            0 => new lang_string('no'),
+                        )
+                    ),
+                    'help' => "showcertificatestagdesc",
+                    'help_component' => 'format_tiles',
                 )
             );
             if ((get_config('format_tiles', 'followthemecolour'))) {
@@ -594,6 +654,8 @@ class format_tiles extends format_base {
         );
         $sectionformatoptions['tilephoto'] = array (
             'type' => PARAM_TEXT,
+            'label' => '',
+            'element_type' => 'hidden',
             'default' => '' 
         );
         $sectionformatoptions['pinned'] = array (
@@ -623,6 +685,8 @@ class format_tiles extends format_base {
         if (get_config('format_tiles', 'allowphototiles')) {
             $sectionformatoptions['tilephoto'] = array(
                 'default' => '',
+                'label' => '',
+                'element_type' => 'hidden',
                 'type' => PARAM_TEXT
             );
         }
