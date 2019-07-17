@@ -72,7 +72,7 @@
         }
 }}
 {{! this has to be an li for drag and drop sections to work properly (or at all) }}
-<li id="section-{{tileid}}" data-section="{{tileid}}" class="section main clearfix section-level-{{level}} {{#level}}subsection{{/level}}" role="region"
+<li id="section-{{tileid}}" data-section="{{tileid}}" class="section main clearfix singlesection section-level-{{level}}{{#level}} subsection{{/level}}" role="region"
     aria-label="{{title}}">
     <div class="content">
         {{#hidden_section}}
@@ -110,7 +110,6 @@
                     {{>format_tiles/tileicon}}
                 </div>
             {{/hastilephoto}}
-
             {{#hastilephoto}}
                     <div class="tileiconcontainer hasphoto" id="tileicon_{{tileid}}"
                         {{#isediting}}data-toggle="tooltip" data-placement="left"

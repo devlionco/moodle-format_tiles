@@ -280,7 +280,9 @@ li#section-0.section.main.clearfix {
     justify-content: flex-start;
     flex-wrap: wrap;
 }
-.format-tiles ul.tiles.editing#multi_section_tiles {
+.format-tiles ul.tiles.editing#multi_section_tiles,
+.format-tiles ul.tiles.multi_section_subtiles
+{
     display: block;
 }
 .format-tiles #single_section_tiles {
