@@ -137,7 +137,7 @@
                             {{/course_modules}}
                     {{/is_expanded}}
                 </ul>
-                <ul class="tiles multi_section_subtiles">
+                <ul class="tiles{{#isediting}} editing{{/isediting}} multi_section_subtiles">
                 {{#subsections}}
                     {{> format_tiles/multi_section_tilebar}}
                 {{/subsections}}

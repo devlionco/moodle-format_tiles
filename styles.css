@@ -8,6 +8,9 @@
     display: flex;
     justify-content: center;
 }
+.format-tiles ul.tiles.editing {
+    display: inline-block;
+}
 
 .format-tiles ul.tiles.pinnedsections {
     display: flex;
@@ -277,6 +280,9 @@ li#section-0.section.main.clearfix {
     justify-content: flex-start;
     flex-wrap: wrap;
 }
+.format-tiles ul.tiles.editing#multi_section_tiles {
+    display: block;
+}
 .format-tiles #single_section_tiles {
     display: block;
     padding-left: 0;
@@ -312,6 +318,7 @@ li#section-0.section.main.clearfix {
     background-image: none;
     margin-top: 10px;
     margin-left: 15px;
+    margin-bottom: 10px;
     padding-top: 12px;
 }
 .format-tiles .course-content ul li.section.main:target {

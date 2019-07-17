@@ -112,16 +112,16 @@
 {{/isediting}}
 
     {{#section_zero}}
-    <ul class="tiles" >
+    <ul class="tiles{{#isediting}} editing{{/isediting}}" >
         {{> format_tiles/section_zero}}
     </ul>    
     {{/section_zero}}
-    <ul class="tiles pinnedsections">
+    <ul class="tiles{{#isediting}} editing{{/isediting}} pinnedsections">
     </ul>
     {{#isediting}}
         {{{cancelmoving}}}
     {{/isediting}}
-    <ul class="tiles" id="multi_section_tiles">
+    <ul class="tiles{{#isediting}} editing{{/isediting}}" id="multi_section_tiles">
     {{#tiles}}
         {{^isediting}}
             {{> format_tiles/multi_section_tile}}
