@@ -63,6 +63,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             TILE_COLLAPSED: ".tile-collapsed",
             TILE_CLICKABLE: ".tile-clickable",
             TILES: "ul.tiles",
+            SUBTILES: "ul.tiles.multi_section_subtiles",
             ACTIVITY: ".activity",
             SPACER: ".spacer",
             SECTION_MOVEABLE: ".moveablesection",
@@ -189,6 +190,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 section.find('.sectioncontent').first().slideDown(500);
             }
         };
+        
+        var unHideSubTiles = function () {
+            $(Selector.SUBTILES).animate({opacity: 1}, "fast");
+        }
 
         /**
          * Set the HTML for a course section to the correct div in the page
@@ -614,6 +619,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     getSectionContentFromServer(courseId, dataSection).done(function (response) {
                         if (browserStorage.storageEnabledSession()) {
                             browserStorage.storeCourseContent(courseId, dataSection, $(response.html).html());
+                            unHideSubTiles();
                         }
                     });
                 }
@@ -646,6 +652,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             if (browserStorage.storageEnabledSession()) {
                                 browserStorage.storeCourseContent(courseId, dataSection, contentToDisplay);
                             }
+                            unHideSubTiles();
                         }).fail(function (failResult) {
                             failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
                             cancelTileSelections(dataSection);
@@ -656,6 +663,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     getSectionContentFromServer(courseId, dataSection).done(function (response) {
                         setCourseContentHTML(relatedContentArea, $(response.html).html());
                         expandSection(relatedContentArea, dataSection);
+                        unHideSubTiles();
                     }).fail(function (failResult) {
                         failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
                         cancelTileSelections(dataSection);
