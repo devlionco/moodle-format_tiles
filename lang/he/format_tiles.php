@@ -345,6 +345,9 @@ $string['showbagestagdesc_help'] = 'צלמית מדליות';
 $string['showcertificatestag'] = 'צלמית תעודות';
 $string['showcertificatestagdesc'] = 'צלמית תעודות';
 $string['showcertificatestagdesc_help'] = 'צלמית תעודות';
+$string['showcoursefullname'] = 'Show course full name';
+$string['showcoursefullnamedesc'] = 'Show course full name';
+$string['showcoursefullnamedesc_help'] = 'This setting will show / hide course full name on the course header.';
 
 // Admin Settings page strings.
 $string['addsections'] = 'Add tiles';

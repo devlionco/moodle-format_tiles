@@ -487,7 +487,21 @@ class format_tiles extends format_base {
                         )
                     ),
                     'help' => "showcertificatestagdesc",
+
                     'help_component' => 'format_tiles',
+                ),
+                'showcoursefullname' => array(
+                    'label' => get_string('showcoursefullname', 'format_tiles'),
+                    'element_type' => 'advcheckbox',
+                    'default' => 1,
+                    'element_attributes' => array(
+                        '',
+                        array('group' => 1),
+                        array(0, 1)
+                    ),
+                    'help' => "showcoursefullnamedesc",
+                    'help_component' => 'format_tiles',
+
                 )
             );
             if ((get_config('format_tiles', 'followthemecolour'))) {
@@ -650,13 +664,13 @@ class format_tiles extends format_base {
         );
         $sectionformatoptions['tileimgtype'] = array (
             'type' => PARAM_INT,
-            'default' => 0 
+            'default' => 0
         );
         $sectionformatoptions['tilephoto'] = array (
             'type' => PARAM_TEXT,
             'label' => '',
             'element_type' => 'hidden',
-            'default' => '' 
+            'default' => ''
         );
         $sectionformatoptions['pinned'] = array (
             'type' => PARAM_INT,

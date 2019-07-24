@@ -347,6 +347,9 @@ $string['showbagestagdesc_help'] = 'Show or hide block';
 $string['showcertificatestag'] = 'Display Certificates block';
 $string['showcertificatestagdesc'] = 'Show or hide block';
 $string['showcertificatestagdesc_help'] = 'Show or hide block';
+$string['showcoursefullname'] = 'Show course full name';
+$string['showcoursefullnamedesc'] = 'Show course full name';
+$string['showcoursefullnamedesc_help'] = 'This setting will show / hide course full name on the course header.';
 
 // Admin Settings page strings.
 $string['addsections'] = 'Add tiles';
