@@ -81,7 +81,24 @@
     display: none;
 }
 
+.format-tiles ul.tiles li.section .customnumber,
+.format-tiles ul#single_section_tiles li.section .customnumber {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 42px;
+    color: #777;
+    border-right: 1px solid #aaa;
+    padding-right: 15px;
+    margin-right: 10px;
+}
+
+.format-tiles.editing ul.tiles li.section .customnumber {
+    vertical-align: -8px;
+}
+
 .format-tiles ul.tiles li.section .activity-count {
+
     margin-right: 3px;
 }
 
@@ -321,7 +338,7 @@ li#section-0.section.main.clearfix {
     margin-top: 10px;
     margin-left: 15px;
     margin-bottom: 10px;
-    padding-top: 12px;
+    padding-top: 30px;
 }
 .format-tiles .course-content ul li.section.main:target {
     padding-top: 0;
@@ -578,10 +595,10 @@ li#section-0.section.main.clearfix {
 }
 .format-tiles .sectionbutton.expandsectionbtn.expandedcontent > .expandicon{
     display:none;
-}    
+}
 .format-tiles .sectionbutton.expandsectionbtn:not(.expandedcontent) > .collapseicon{
     display:none;
-}    
+}
 .format-tiles .expand-section {
     background-image: url([[pix:format_tiles|expand]]);
 }
@@ -938,8 +955,9 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles.theme-snap ul.tiles .tile .tile-textinner.longtitle h3 {
     font-size: 1em;
 }
+
 .format-tiles .sectiontitlecontainer {
-    margin: 0 0 0.5em 0.5em;
+    margin: 0.5em 0 0.5em 0.5em;
     display: inline-block;
 }
 
@@ -947,13 +965,6 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
     display: inline-block;
     padding-left: 10px;
     font-size: 2em;
-}
-
-.format-tiles .sectiontitle::after,
-.format-tiles .sectiontitle::after {
-    content: "";
-    display: block;
-    height: 4px;
 }
 
 .format-tiles .sectiontitle h2 {

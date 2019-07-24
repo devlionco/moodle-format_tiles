@@ -55,7 +55,7 @@
     }
 }}
 <!-- MOVE before  -->
-{{{movebefore}}} 
+{{{movebefore}}}
 <!-- MOVE /before  -->
 <li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#pinned}} pinned {{/pinned}}{{#isactive}}current {{/isactive}}clearfix{{#restricted}} tile_bar_restricted{{/restricted}}{{#hastilephoto}} phototilebar{{/hastilephoto}} collapsed section-level-{{level}} {{#level}}subsection{{/level}}"
     role="region" data-section="{{tileid}}" data-sectionid="{{secid}}"
@@ -66,7 +66,7 @@
         {{#single_section_moving_control}}
         {{{single_section_moving_control}}}
         {{/single_section_moving_control}}
-        
+
         {{{leftcontent}}}
     </div>
     <div class="right side">
@@ -75,8 +75,11 @@
     </div>
 
     <div class="content">
-        
+
         <div class="tile_bar narrow {{#hastilephoto}}{{#tileimagebackground}}imagebackground{{/tileimagebackground}}{{/hastilephoto}}" data-section="{{tileid}}">
+            <div class="customnumber">
+                {{customnumber}}
+            </div>
             {{^hastilephoto}}
                 <div class="tileiconcontainer" id="tileicon_{{tileid}}"
                     {{#isediting}}data-toggle="tooltip" data-placement="left"
@@ -141,10 +144,10 @@
                 {{#subsections}}
                     {{> format_tiles/multi_section_tilebar}}
                 {{/subsections}}
-                
+
                 {{{moveend}}}
                 </ul>
-                
+
             </div>
         {{/isediting}}
     </div>

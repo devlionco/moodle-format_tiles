@@ -68,9 +68,7 @@
     .format-tiles ul.tiles .tile.selected {
         border-top-color: {{tile_hover_colour}};
     }
-    .format-tiles ul.tiles .current .sectiontitle::after{
-        background-color: red;
-    }
+
     .format-tiles ul.tiles .headerabovetiles button.selected,
     .headerabovetiles button:active, .headerabovetiles button:focus,
     .format-tiles .modal-header {
@@ -92,9 +90,12 @@
     .format-tiles a.nav-link {
         color: {{base_colour}};
     }
-    .format-tiles .sectiontitle::after,
+
     .format-tiles .tag-info {
         background-color: {{base_colour}};
+    }
+    .format-tiles :not(.subsection) > div > div > div > .sectiontitle > h2{
+        border-bottom: 4px solid {{base_colour}};
     }
     .format-tiles ul.tiles .headerabovetiles button:hover {
         border-color: {{tile_hover_colour}};

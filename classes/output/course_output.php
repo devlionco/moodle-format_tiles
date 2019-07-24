@@ -122,7 +122,8 @@ class course_output implements \renderable, \templatable
     /**
      * @var mixed
      */
-    private $usingjsnav;
+
+    private $customnumbers;
 
     /**
      * course_output constructor.
@@ -352,6 +353,13 @@ class course_output implements \renderable, \templatable
             return $data;
         }
 
+        $sectionstree = array();
+        $allsections = $this->modinfo->get_section_info_all();
+        foreach ($allsections as $section) {
+            $sectionstree[$section->parent][] = $section->section;
+        }
+        $this->customnumbers = $this->get_custom_numbers($sectionstree);
+
         // Data for the requested section page.
         $data['title'] = get_section_name($this->course, $thissection->section);
         $data['summary'] = $output->format_summary_text($thissection);
@@ -359,6 +367,7 @@ class course_output implements \renderable, \templatable
         $data['pinned'] = $thissection->pinned;
         $data['secid'] = $thissection->id;
         $data['tileicon'] = $thissection->tileicon;
+        $data['customnumber'] = $this->customnumbers[$thissection->section];
 
         // If photo tile backgrounds are allowed by site admin, prepare the image for this section.
         if (get_config('format_tiles', 'allowphototiles')) {
@@ -414,11 +423,6 @@ class course_output implements \renderable, \templatable
         $level = 0;
         $data['level'] = $level;
 
-        $sectionstree = array();
-        $allsections = $this->modinfo->get_section_info_all();
-        foreach ($allsections as $section) {
-            $sectionstree[$section->parent][] = $section->section;
-        }
         if (isset($sectionstree[$thissection->section]) and count($sectionstree[$thissection->section])) {
             foreach($sectionstree[$thissection->section] as $subsectionnum) {
 
@@ -432,7 +436,7 @@ class course_output implements \renderable, \templatable
 
     private function get_tile($output, &$data, $sectionnum, $section, $sectionstree, $allsections, $level) {
 
-        $usingphotoaltstyle = get_config('format_tiles', 'phototilesaltstyle');
+        $usingphotoaltstyle = get_config('format_supertiles', 'phototilesaltstyle');
         $sr = course_get_format($this->course)->get_viewed_section();
 
         $phototileextraclasses = 'phototile';
@@ -468,7 +472,8 @@ class course_output implements \renderable, \templatable
             'subsections' => [],
             'progress' => false,
             'isactive' => $this->course->marker == $section->section,
-            'extraclasses' => ''
+            'extraclasses' => '',
+            'customnumber' => $this->customnumbers[$section->section]
         );
 
         // If photo tile backgrounds are allowed by site admin, prepare them for this tile.
@@ -634,21 +639,9 @@ class course_output implements \renderable, \templatable
         $allsections = $this->modinfo->get_section_info_all();
         foreach ($allsections as $sectionnum => $section) {
             $sectionstree[$section->parent][] = $section->section;
-            $newtile = array(
-                'tileid' => $section->section,
-                'secid' => $section->id,
-                'parent' => $section->parent,
-                'customnumber' => $section->customnumber,
-                'pinned' => $section->pinned,
-                'current' => course_get_format($this->course)->is_section_current($section),
-                'hidden' => !$section->visible,
-                'visible' => $section->visible,
-                'restricted' => !($section->available),
-                'userclickable' => $section->available || $section->uservisible,
-                'isactive' => $this->course->marker == $section->section,
-                'extraclasses' => ''
-            );
         }
+
+        $this->customnumbers = $this->get_custom_numbers($sectionstree);
 
         foreach ($allsections as $sectionnum => $section) {
             if (!$section->parent) {
@@ -716,6 +709,16 @@ class course_output implements \renderable, \templatable
         $data['cancelmoving'] = $output->cancel_moving_control($this->course);
 
         return $data;
+    }
+
+    private function get_custom_numbers($sectionstree) {
+        $customnumbers = array();
+        foreach($sectionstree as $par => $secarray) {
+            foreach($secarray as $num => $sec) {
+                $customnumbers[$sec] = ($par == 0) ? $num : $customnumbers[$par] . "." . (string)($num + 1);
+            }
+        }
+        return $customnumbers;
     }
 
     /**
