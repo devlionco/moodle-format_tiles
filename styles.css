@@ -71,7 +71,7 @@
     margin-right: 3px;
 }
 
-li#section-0.section.main.clearfix {
+.format-tiles li#section-0.section.main.clearfix {
     border-bottom: 0;
 }
 
@@ -98,7 +98,7 @@ li#section-0.section.main.clearfix {
 .format-tiles .progress-indic i.fa-check {
     color: darkgreen;
 }
-.format-tiles  .progress-indic svg circle.partial {
+.format-tiles .progress-indic svg circle.partial {
     stroke: #888;
     fill: none;
 }
@@ -608,7 +608,7 @@ li#section-0.section.main.clearfix {
 }
 
 .format-tiles  #section-0 .content .summary .no-overflow,
-#section-0 .content .summary .no-overflow p {
+.format-tiles #section-0 .content .summary .no-overflow p {
     margin-bottom: 0;
 }
 
@@ -617,7 +617,7 @@ li#section-0.section.main.clearfix {
 }
 
 .format-tiles ul.tiles li.section .content .modtype_label .no-overflow,
-#section-0 .content .summary .no-overflow {
+.format-tiles #section-0 .content .summary .no-overflow {
     margin-bottom: 5px;
 }
 .format-tiles ul.tiles li.section .content {
@@ -922,7 +922,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles li.section .availabilityinfo {
     margin-left: 3em;
 }
-.availabilityinfo.isstealth .tag {
+.format-tiles .availabilityinfo.isstealth .tag {
     font-size: 0.6em;
 }
 .format-tiles .hidden #hiddeneye {
