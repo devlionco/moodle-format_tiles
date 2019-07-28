@@ -163,7 +163,7 @@ define(["jquery"], function ($) {
 
                 if (assumeConsent) {
                     userChoice = true;
-                } else if (storageAllowed() === null) {
+                } else if (storageAllowed() === null && Enabled.local) {
                     // We wait 3 seconds before launching the dialog to ensure content finished loading.
                     setTimeout(function() {
                         userChoice = obtainUserPreference(cleanUpFunc);
