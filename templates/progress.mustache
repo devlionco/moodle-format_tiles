@@ -73,7 +73,7 @@
                 <div class="progress-indic percent{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
                      data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}"
                      title="{{#str}}progress, format_tiles{{/str}}:<br>{{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}}<br>{{percent}}%<br>{{#str}}complete, format_tiles{{/str}}"
-                    {{#numOutOf}}data-toggle="tooltip" data-html="true" {{/numOutOf}}>
+                    data-toggle="tooltip" data-html="true">
 
                     <div class="progress-indic-label">
                       {{#isOverall}}{{#str}}overallprogressshort, format_tiles{{/str}}{{/isOverall}}{{^isOverall}}{{#str}}progress, format_tiles{{/str}}{{/isOverall}} %
@@ -95,7 +95,7 @@
             {{^showAsPercent}}
                 <div class="progress-indic{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
                      title="{{#str}}progress, format_tiles{{/str}}:<br> {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) <br>{{#str}}complete, format_tiles{{/str}}"
-                     {{#numOutOf}}data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip" data-html="true"{{/numOutOf}}>
+                     data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip" data-html="true">
                     {{#str}}progress, format_tiles{{/str}}:
                     <span id="num-complete-{{tileid}}">{{numComplete}} / {{numOutOf}}</span>
                 </div>
@@ -114,14 +114,14 @@
         {{^isComplete}}
             {{#showAsPercent}}
                 <div class="progress-indic percent" id="tileprogress-{{tileid}}"
-                    {{#numOutOf}}data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}"{{/numOutOf}}>
+                    data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}">
                     {{#str}}progress, format_tiles{{/str}}: {{percent}}%
                 </div>
             {{/showAsPercent}}
             {{^showAsPercent}}
                 <div class="progress-indic{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
                      title="{{#str}}progress, format_tiles{{/str}}:<br> {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) <br>{{#str}}complete, format_tiles{{/str}}"
-                    {{#numOutOf}}data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip" data-html="true"{{/numOutOf}}>
+                    data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip" data-html="true">
                     {{#str}}progress, format_tiles{{/str}}:
                     <span id="num-complete-{{tileid}}">{{numComplete}} / {{numOutOf}}</span>
                 </div>
