@@ -1640,7 +1640,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     font-size: 0.8em;
 }
 .format-tiles li.tile .availabilityinfo {
-    line-height: 30px;
+    line-height: 15px;
 }
 
 .format-tiles .inplaceeditable input.form-control {
