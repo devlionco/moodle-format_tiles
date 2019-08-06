@@ -165,9 +165,9 @@ define(["jquery"], function ($) {
                     userChoice = true;
                 } else if (storageAllowed() === null && Enabled.local) {
                     // We wait 3 seconds before launching the dialog to ensure content finished loading.
-                    setTimeout(function() {
-                        userChoice = obtainUserPreference(cleanUpFunc);
-                    }, 3000);
+                    // setTimeout(function() {
+                    //     userChoice = obtainUserPreference(cleanUpFunc);
+                    // }, 3000);
                 }
 
                 // If the user clicks the "Data preference" item in the navigation menu,

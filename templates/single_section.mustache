@@ -101,8 +101,9 @@
                         {{/isediting}}
                     {{/canedit}}
                     {{/level}}
-                    <span class="sectionbutton expandsectionbtn pull-right" id="expandsectionbtn-{{tileid}}"
-                          title="{{#str}}expand, format_tiles{{/str}}" tabindex="3" data-section="{{tileid}}">
+
+                    <span class="sectionbutton expandsectionbtn {{^level}}expandedcontent{{/level}} pull-right" id="expandsectionbtn-{{tileid}}"
+                          title="{{#str}}expand, format_supertiles{{/str}}" tabindex="3" data-section="{{tileid}}">
                         <span class="expandicon">
                         {{#pix}}expand, format_tiles, {{#str}}expand, format_tiles{{/str}}{{/pix}}
                         </span>
@@ -141,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            <div class="sectioncontent" {{^isediting}} style="display:none"{{/isediting}}>
+            <div class="sectioncontent"   {{#level}} style ="display:none" {{/level}}>
                 {{#isediting}}
                     {{{single_sec_add_cm_control_html}}}
                 {{/isediting}}

@@ -113,8 +113,8 @@
 
     {{#section_zero}}
     <ul class="tiles{{#isediting}} editing{{/isediting}}" >
-        {{> format_tiles/section_zero}}
-    </ul>    
+        {{> format_supertiles/section_zero}}
+    </ul>
     {{/section_zero}}
     <ul class="tiles{{#isediting}} editing{{/isediting}} pinnedsections">
     </ul>
@@ -143,7 +143,7 @@
 
         {{!moveable sections for JS to add content to and move around (one relating to each tile)}}
         {{#tiles}}
-            <li class="section main moveablesection" style="display: none;" id="section-{{tileid}}"
+            <li class="section main moveablesection expandedcontent" style="display: none;" id="section-{{tileid}}"
                 data-section="{{tileid}}"></li>
         {{/tiles}}
     {{/isediting}}

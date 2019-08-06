@@ -455,6 +455,8 @@ class course_output implements \renderable, \templatable
             $title = preg_replace('/\s(\S*)$/', '&nbsp;$1', $title);
         }
 
+        $defaultsubtileicon = $output->image_url('subtiles', 'format_tiles');
+
         $longtitlelength = 65;
         $newtile = array(
             'tileid' => $section->section,
@@ -473,7 +475,8 @@ class course_output implements \renderable, \templatable
             'progress' => false,
             'isactive' => $this->course->marker == $section->section,
             'extraclasses' => '',
-            'customnumber' => $this->customnumbers[$section->section]
+            'customnumber' => $this->customnumbers[$section->section],
+            'defaultsubtileicon' => $defaultsubtileicon
         );
 
         // If photo tile backgrounds are allowed by site admin, prepare them for this tile.

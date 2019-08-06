@@ -53,7 +53,12 @@
             {{#pix}}tileicon/{{{tileicon}}}, format_tiles{{/pix}}
         {{/tileicon}}
         {{^tileicon}}
-            {{#pix}}tileicon/{{{defaulttileicon}}}, format_tiles{{/pix}}
+            {{#level}}
+              {{#pix}}tileicon/{{{defaultsubtileicon}}}, format_supertiles{{/pix}}
+            {{/level}}
+            {{^level}}
+              {{#pix}}tileicon/{{{defaulttileicon}}}, format_supertiles{{/pix}}
+            {{/level}}
         {{/tileicon}}
     {{/hastilephoto}}
     {{#hastilephoto}}
