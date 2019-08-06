@@ -110,8 +110,10 @@ define(["jquery", "core/notification", "core/str", "core/templates", "format_til
                             $("#colourpick_" + colourSelectMenu.val().replace("#", "")).addClass("selected");
                         });
 
-                        // If the course is being switched in to "Tiles", body will still have old format class e.g. format-topics.
-                        // This comes from core.  We want body to have format-tiles class for our colour picker CSS, so we add it.
+                        // If the course is being switched in to "Tiles",
+                        // Body will still have old format class e.g. format-topics.
+                        // This comes from core.  We want body to have format-supertiles
+                        // Class for our colour picker CSS, so we add it.
                         var body = $("body");
                         if (!body.hasClass("format-tiles")) {
                             body.addClass("format-tiles");

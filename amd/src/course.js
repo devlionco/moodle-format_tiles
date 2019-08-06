@@ -177,7 +177,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             sectionIsOpen = false;
             openTile = 0;
         };
-        
         var toggleSectionContent = function (sectionToFocus) {
             var section = $(Selector.SECTION_ID + sectionToFocus);
             if (section.hasClass('expandedcontent')) {
@@ -190,10 +189,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 section.find('.sectioncontent').first().slideDown(500);
             }
         };
-        
         var unHideSubTiles = function () {
             $(Selector.SUBTILES).animate({opacity: 1}, "fast");
-        }
+        };
 
         /**
          * Set the HTML for a course section to the correct div in the page
@@ -335,59 +333,61 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             /**
              * Make sure that the section close and edit buttons always appear at the top of the section on scroll
              */
-            var holdSectionButtonPosition = function () {
-                var buttons = contentArea.find(Selector.SECTION_BUTTONS);
-                $(window).on(Event.SCROLL, function () {
-                    if (!scrollFuncLock && sectionIsOpen) {
-                        scrollFuncLock = true;
-                        buttons.fadeOut(300);
-                        setTimeout(function () {
-                            var windowTop = $(window).scrollTop();
-                            var desiredNewPositionInSection = (windowTop - contentArea.offset().top + 50);
-                            if (desiredNewPositionInSection > 0
-                                    && desiredNewPositionInSection < contentArea.outerHeight() - 100) {
-                                desiredNewPositionInSection = (windowTop - contentArea.offset().top + 50);
-                                buttons.css("top", desiredNewPositionInSection);
-                                if (windowOverlay.css(CSS.DISPLAY) === "none") {
-                                    windowOverlay.fadeIn(300);
-                                }
-                            } else if (desiredNewPositionInSection < 0) {
-                                buttons.css("top", 0);
-                            }
-                            if (windowTop > contentArea.offset().top + contentArea.outerHeight() - 50) {
-                                // We have scrolled down and content bottom has gone out of the top of window.
-                                if (windowOverlay.css(CSS.DISPLAY) === "block") {
-                                    windowOverlay.fadeOut(300);
-                                    headerOverlayFadeInOut(false);
-                                }
-                                buttons.css("top", 0);
-                            } else if (contentArea.offset().top > windowTop + $(window).outerHeight()) {
-                                // We have scrolled up and  content bottom has gone out of the bottom of window.
-                                if (windowOverlay.css(CSS.DISPLAY) === "block") {
-                                    windowOverlay.fadeOut(300);
-                                    headerOverlayFadeInOut(false);
-                                }
-                                buttons.css("top", 0);
-                            } else if (windowOverlay.css(CSS.DISPLAY) === "none") {
-                                windowOverlay.fadeIn(300);
-                            }
-                            buttons.fadeIn(300, function () {
-                                // Release lock on this function.
-                                scrollFuncLock = false;
-                            });
-                        }, 500);
-                    }
-                });
-                if (!scrollFuncLock && !sectionIsOpen && windowOverlay.is(":visible")) {
-                    windowOverlay.fadeOut(300);
-                }
-            };
+            // var holdSectionButtonPosition = function () {
+            //     var buttons = contentArea.find(Selector.SECTION_BUTTONS);
+            //     $(window).on(Event.SCROLL, function () {
+            //         if (!scrollFuncLock && sectionIsOpen) {
+            //             scrollFuncLock = true;
+            //             buttons.fadeOut(300);
+            //             setTimeout(function () {
+            //                 var windowTop = $(window).scrollTop();
+            //                 var desiredNewPositionInSection = (windowTop - contentArea.offset().top + 50);
+            //                 if (desiredNewPositionInSection > 0
+            //                         && desiredNewPositionInSection < contentArea.outerHeight() - 100) {
+            //                     desiredNewPositionInSection = (windowTop - contentArea.offset().top + 50);
+            //                     buttons.css("top", desiredNewPositionInSection);
+            //                     if (windowOverlay.css(CSS.DISPLAY) === "none") {
+            //                         windowOverlay.fadeIn(300);
+            //                     }
+            //                 } else if (desiredNewPositionInSection < 0) {
+            //                     buttons.css("top", 0);
+            //                 }
+            //                 if (windowTop > contentArea.offset().top + contentArea.outerHeight() - 50) {
+            //                     // We have scrolled down and content bottom has gone out of the top of window.
+            //                     if (windowOverlay.css(CSS.DISPLAY) === "block") {
+            //                         windowOverlay.fadeOut(300);
+            //                         headerOverlayFadeInOut(false);
+            //                     }
+            //                     buttons.css("top", 0);
+            //                 } else if (contentArea.offset().top > windowTop + $(window).outerHeight()) {
+            //                     // We have scrolled up and  content bottom has gone out of the bottom of window.
+            //                     if (windowOverlay.css(CSS.DISPLAY) === "block") {
+            //                         windowOverlay.fadeOut(300);
+            //                         headerOverlayFadeInOut(false);
+            //                     }
+            //                     buttons.css("top", 0);
+            //                 } else if (windowOverlay.css(CSS.DISPLAY) === "none") {
+            //                     windowOverlay.fadeIn(300);
+            //                 }
+            //                 buttons.fadeIn(300, function () {
+            //                     // Release lock on this function.
+            //                     scrollFuncLock = false;
+            //                 });
+            //             }, 500);
+            //         }
+            //     });
+            //     if (!scrollFuncLock && !sectionIsOpen && windowOverlay.is(":visible")) {
+            //         windowOverlay.fadeOut(300);
+            //     }
+            // };
 
             contentArea.addClass(ClassNames.STATE_VISIBLE);
             contentArea.slideDown(350, function () {
                 // Wait until we have finished sliding down before we work out where the top is for scroll.
                 expandAndScroll();
-                //holdSectionButtonPosition();
+                /** Temporary unavialable
+                holdSectionButtonPosition();
+                */
             });
             openTile = tileId;
         };
