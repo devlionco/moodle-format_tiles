@@ -421,3 +421,4 @@ $string['addsection'] = 'Add section';
 $string['addsubsection'] = 'Add subsection';
 $string['cancelmoving'] = 'Cancel moving \'{$a}\'';
 $string['toomuch_pinned_sections'] = 'Too many fixed sections (maximum 4)';
+$string['showcoursefullname'] = 'Show course full name';

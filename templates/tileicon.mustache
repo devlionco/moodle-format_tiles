@@ -44,7 +44,7 @@
     }
 }}
 
-<span class="tile-icon{{#isediting}} launchiconpicker{{/isediting}}"
+<span expanded-{{expanded}} class="tile-icon{{#isediting}} launchiconpicker{{/isediting}}"
     {{#isediting}}
       data-section="{{tileid}}" data-sectionid="{{secid}}"
     {{/isediting}}>
@@ -53,12 +53,12 @@
             {{#pix}}tileicon/{{{tileicon}}}, format_tiles{{/pix}}
         {{/tileicon}}
         {{^tileicon}}
-            {{#level}}
-              {{#pix}}tileicon/{{{defaultsubtileicon}}}, format_supertiles{{/pix}}
-            {{/level}}
-            {{^level}}
-              {{#pix}}tileicon/{{{defaulttileicon}}}, format_supertiles{{/pix}}
-            {{/level}}
+            {{^expanded}}
+              {{#pix}}tileicon/{{{defaultsubtileicon}}}, format_tiles{{/pix}}
+            {{/expanded}}
+            {{#expanded}}
+              {{#pix}}tileicon/{{{defaulttileicon}}}, format_tiles{{/pix}}
+            {{/expanded}}
         {{/tileicon}}
     {{/hastilephoto}}
     {{#hastilephoto}}

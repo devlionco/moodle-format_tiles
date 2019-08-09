@@ -72,9 +72,9 @@
         }
 }}
 {{! this has to be an li for drag and drop sections to work properly (or at all) }}
-<li atttr id="section-{{tileid}}" data-section="{{tileid}}" class="section main clearfix singlesection section-level-{{level}}{{#level}} subsection{{/level}}" role="region"
+<li id="section-{{tileid}}" data-section="{{tileid}}" class="section main clearfix singlesection section-level-{{level}}{{#level}} subsection{{/level}} {{#expanded}}expandedcontent{{/expanded}}" role="region"
     aria-label="{{title}}">
-    <div class="content">
+    <div class="content sectioncontentlevel-{{level}}">
         {{#hidden_section}}
             {{#str}}notavailable{{/str}}
         {{/hidden_section}}
@@ -102,8 +102,8 @@
                     {{/canedit}}
                     {{/level}}
 
-                    <span class="sectionbutton expandsectionbtn {{^level}}expandedcontent{{/level}} pull-right" id="expandsectionbtn-{{tileid}}"
-                          title="{{#str}}expand, format_supertiles{{/str}}" tabindex="3" data-section="{{tileid}}">
+                    <span class="sectionbutton expandsectionbtn  {{#expanded}}expandedcontent{{/expanded}} pull-right" id="expandsectionbtn-{{tileid}}"
+                          title="{{#str}}expand, format_tiles{{/str}}" tabindex="3" data-section="{{tileid}}">
                         <span class="expandicon">
                         {{#pix}}expand, format_tiles, {{#str}}expand, format_tiles{{/str}}{{/pix}}
                         </span>
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            <div class="sectioncontent"   {{#level}} style ="display:none" {{/level}}>
+            <div class="sectioncontent" exppp{{expanded}} {{^isediting}}{{^expanded}}style="display:none"{{/expanded}}{{/isediting}}>
                 {{#isediting}}
                     {{{single_sec_add_cm_control_html}}}
                 {{/isediting}}

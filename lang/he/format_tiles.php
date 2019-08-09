@@ -415,3 +415,5 @@ $string['addsection'] = 'הסף יחידה';
 $string['addsubsection'] = 'הסף תת יחידה';
 $string['cancelmoving'] = 'Cancel moving \'{$a}\'';
 $string['toomuch_pinned_sections'] = 'יותר מדי יחידות קבועות (מקסימום 4)';
+
+$string['showcoursefullname'] = 'Show course full name';

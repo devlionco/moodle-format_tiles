@@ -359,6 +359,9 @@ class course_output implements \renderable, \templatable
             $sectionstree[$section->parent][] = $section->section;
         }
         $this->customnumbers = $this->get_custom_numbers($sectionstree);
+        $level = count(explode(".", $this->customnumbers[$thissection->section])) - 1;
+
+        $defaultsubtileicon = $output->image_url('subtiles', 'format_tiles');
 
         // Data for the requested section page.
         $data['title'] = get_section_name($this->course, $thissection->section);
@@ -368,6 +371,9 @@ class course_output implements \renderable, \templatable
         $data['secid'] = $thissection->id;
         $data['tileicon'] = $thissection->tileicon;
         $data['customnumber'] = $this->customnumbers[$thissection->section];
+        $data['level'] = $level;
+        $data['expanded'] = (!$level) ? 1 : 0;
+        $data['defaultsubtileicon'] = $defaultsubtileicon;
 
         // If photo tile backgrounds are allowed by site admin, prepare the image for this section.
         if (get_config('format_tiles', 'allowphototiles')) {
@@ -420,23 +426,19 @@ class course_output implements \renderable, \templatable
             $data['availabilitymessage'] = $output->section_availability_message($thissection, $this->canviewhidden);
         }
 
-        $level = 0;
-        $data['level'] = $level;
-
         if (isset($sectionstree[$thissection->section]) and count($sectionstree[$thissection->section])) {
             foreach($sectionstree[$thissection->section] as $subsectionnum) {
-
                 $subsection = $allsections[$subsectionnum];
-                $data['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, $sectionstree, $allsections, $level+1);
+                $data['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, $sectionstree, $allsections);
             }
         }
 
         return $data;
     }
 
-    private function get_tile($output, &$data, $sectionnum, $section, $sectionstree, $allsections, $level) {
+    private function get_tile($output, &$data, $sectionnum, $section, $sectionstree, $allsections) {
 
-        $usingphotoaltstyle = get_config('format_supertiles', 'phototilesaltstyle');
+        $usingphotoaltstyle = get_config('format_tiles', 'phototilesaltstyle');
         $sr = course_get_format($this->course)->get_viewed_section();
 
         $phototileextraclasses = 'phototile';
@@ -457,6 +459,8 @@ class course_output implements \renderable, \templatable
 
         $defaultsubtileicon = $output->image_url('subtiles', 'format_tiles');
 
+        $level = count(explode(".", $this->customnumbers[$section->section])) - 1;
+
         $longtitlelength = 65;
         $newtile = array(
             'tileid' => $section->section,
@@ -476,6 +480,8 @@ class course_output implements \renderable, \templatable
             'isactive' => $this->course->marker == $section->section,
             'extraclasses' => '',
             'customnumber' => $this->customnumbers[$section->section],
+            'level' => $level,
+            'expanded' => (!$level) ? 1 : 0,
             'defaultsubtileicon' => $defaultsubtileicon
         );
 
@@ -563,8 +569,6 @@ class course_output implements \renderable, \templatable
             $newtile['is_expanded'] = false;
         }
 
-        $newtile['level'] = $level;
-
         if ($section->section) {
             $newtile['movebefore'] = $output->display_insert_section_here($this->course, $section->parent, $section->section, $sr);
             $newtile['moveend'] = $output->display_insert_section_here($this->course, $section->section, 0, $sr);
@@ -573,12 +577,11 @@ class course_output implements \renderable, \templatable
         if (isset($sectionstree[$section->section]) and count($sectionstree[$section->section])) {
             foreach($sectionstree[$section->section] as $subsectionnum) {
                 $subsection = $allsections[$subsectionnum];
-                $newtile['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, $sectionstree, $allsections, $level+1);
+                $newtile['subsections'][] = $this->get_tile($output, $data, $subsectionnum, $subsection, $sectionstree, $allsections);
             }
         }
         return $newtile;
     }
-
 
     private function display_section($output, &$data, $sectionnum, $section, $sectionstree, $allsections) {
         // Show the section if the user is permitted to access it, OR if it's not available
@@ -589,7 +592,7 @@ class course_output implements \renderable, \templatable
             ($section->visible && !$section->available && !empty($section->availableinfo));
         if ($sectionnum != 0 && $showsection) {
 
-            $newtile = $this->get_tile($output, $data, $sectionnum, $section, $sectionstree, $allsections, 0);
+            $newtile = $this->get_tile($output, $data, $sectionnum, $section, $sectionstree, $allsections);
 
             // Finally add tile we constructed to the array.
             $data['tiles'][] = $newtile;
