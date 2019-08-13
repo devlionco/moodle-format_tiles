@@ -896,6 +896,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 }
 .format-tiles .headerabovetiles .progress-indic {
     height: 42px;
+    display: none;
 }
 .format-tiles .phototile .progress-indic {
     color: rgba(255, 255, 255, 0.85);
