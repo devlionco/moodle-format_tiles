@@ -2024,13 +2024,14 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     display: block;
     max-width: 150px;
     position: relative;
-    top: 10px;
-}
-.format-tiles .course-content .tiles.pinnedsections li.pinned .tile-textinner h3 {
+    top: 5px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    color: #fff;
+    padding: 0 16px;
 }
+
 .format-tiles .course-content .tiles.pinnedsections li.pinned,
 .sectionname,
 .format-tiles .course-content .tiles.pinnedsections li.pinned h3 {
