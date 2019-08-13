@@ -1037,7 +1037,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                     $('.tile.pinned').each(function() {
                         var tileId = $(this).data('section');
-                        $(this).prependTo('.pinnedsections');
+                        $(this).appendTo('.pinnedsections');
                         $('#section-' + tileId).css('order', '-1');
                     });
                 });
