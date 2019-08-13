@@ -83,12 +83,19 @@
             </div>
         </div>
         {{/tileimagebackground}}
-        
+
         {{#tileimagebackground}}
             {{^pinned}}
             {{#availabilitymessage}}
                 {{>format_tiles/availability_info}}
             {{/availabilitymessage}}
+            <div class="" id="tileText-{{tileid}}"
+                 {{#activity_summary}}title="{{activity_summary}}"{{^ismobile}} data-toggle="tooltip" data-html="true"{{/ismobile}}{{/activity_summary}}>
+            <span class="photo-tile-text{{titleclass}}" id="tileTextin-{{tileid}}">
+                {{#title}}<h3>{{{title}}}</h3>{{/title}}
+            </span>
+                <div class="tile-text" {{#activity_summary}}title="{{activity_summary}}"{{^ismobile}} data-toggle="tooltip" data-html="true"{{/ismobile}}{{/activity_summary}}>
+<!--                    This ensures that the bottom section of the tile shows the activity summary on hover, too-->
                 {{#showprogresssphototiles}}
                     {{#progress}}
                         {{> format_tiles/progress}}
@@ -98,14 +105,14 @@
             <div id="tileText-{{tileid}}"
                  {{#activity_summary}}{{^ismobile}}data-original-title="{{activity_summary}}" data-toggle="tooltip" data-html="true"{{/ismobile}}{{/activity_summary}}>
             <span class="photo-tile-text{{titleclass}}" id="tileTextin-{{tileid}}">
-                {{#title}}{{{title}}}{{/title}}
+                {{#title}}<h3>{{{title}}}</h3>{{/title}}
             </span>
                 <div class="tile-text" {{#activity_summary}}{{^ismobile}}data-original-title="{{activity_summary}}" data-toggle="tooltip" data-html="true"{{/ismobile}}{{/activity_summary}}>
                 {{! This ensures that the bottom section of the tile shows the activity summary on hover, too}}
                 </div>
             </div>
             {{/pinned}}
-            
+
             {{#pinned}}
             <div class="tile-content" id="tilecontent-{{tileid}}">
             <div class="tile-top" id="tileTop-{{tileid}}">
@@ -138,7 +145,7 @@
             </div>
             </div>
             {{/pinned}}
-            
+
         {{/tileimagebackground}}
     </a>
     {{#usingjsnav}}
