@@ -296,6 +296,7 @@ li#section-0.section.main.clearfix {
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
+    padding-top: 16px;
 }
 .format-tiles ul.tiles.editing#multi_section_tiles,
 .format-tiles ul.tiles.multi_section_subtiles
@@ -1986,7 +1987,17 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     line-height: 55px;
     flex-basis: 170px;
     flex-grow: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
+}
+
+.format-tiles .course-content .tiles.pinnedsections li.pinned .availabilityinfo.isrestricted.isfullinfo {
+    position: absolute;
+    bottom: -22px;
+    width: 170px;
+}
+.format-tiles .course-content .tiles.pinnedsections li.pinned .availabilityinfo.isrestricted.isfullinfo span{
+    display: block;
+    border-radius: 14px;
 }
 .format-tiles .course-content .tiles.pinnedsections li.pinned a {
     display: flex;
