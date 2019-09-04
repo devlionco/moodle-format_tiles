@@ -40,7 +40,7 @@ require_once($CFG->dirroot . '/course/format/tiles/lib.php');
 class format_tiles_renderer extends format_section_renderer_base
 {
     protected $courseformat; // Our course format object as defined in lib.php.
-    
+
     /**
      * Constructor method, calls the parent constructor
      *
@@ -164,7 +164,7 @@ class format_tiles_renderer extends format_section_renderer_base
                 }
             }
         }
-        
+
         if (!$onsectionpage && $section->section && has_capability('moodle/course:update', $coursecontext)) {
             // Add controls to drop down menu on each editing tile for teacher to enter section, expand section etc.
             $urlparams = array('id' => $course->id, 'section' => $section->section);
@@ -223,7 +223,7 @@ class format_tiles_renderer extends format_section_renderer_base
         }
 
         $parentcontrols = parent::section_edit_control_items($course, $section, $onsectionpage);
-        
+
         $endcontrols = array();
         if (array_key_exists("delete", $parentcontrols) && $section->section && has_capability('moodle/course:update', $coursecontext)) {
             unset($parentcontrols['delete']);
@@ -236,7 +236,7 @@ class format_tiles_renderer extends format_section_renderer_base
                                            'pixattr' => array('class' => '', 'alt' => $deletesection),
                                            'attr' => array('class' => '', 'title' => $deletesection));
         }
-        
+
         // If the edit key exists, we are going to insert our controls after it.
         if (array_key_exists("edit", $parentcontrols)) {
             $merged = array();
@@ -252,7 +252,7 @@ class format_tiles_renderer extends format_section_renderer_base
         } else {
             $merged = array_merge($controls, $parentcontrols);
         }
-        
+
         return array_merge($merged, $endcontrols);
     }
 
@@ -305,13 +305,13 @@ class format_tiles_renderer extends format_section_renderer_base
      */
     public function print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused) {
         global $PAGE;
-        
+
         $templateable = new \format_tiles\output\course_output($course, false, 0, $this->courserenderer);
         $data = $templateable->export_for_template($this);
         echo $this->render_from_template('format_tiles/multi_section_page', $data);
     }
 
-    
+
     /**
      * Generate the display of the footer part of a section
      * @see section_header() for more explanation of this
@@ -535,8 +535,8 @@ class format_tiles_renderer extends format_section_renderer_base
         $formatoptions->context = $context;
         return format_text($text, $record->contentformat, $formatoptions);
     }
-    
-    
+
+
     /**
      * renders HTML for format_tiles_edit_control
      *
@@ -563,7 +563,7 @@ class format_tiles_renderer extends format_section_renderer_base
                 $control->type === 'hide' || $control->type === 'show' || $control->type === 'delete') {
             $icon = new pix_icon('t/'. $control->type, $control->text, 'moodle', array('class' => 'iconsmall', 'title' => $control->text));
         }
-        
+
         if (isset($icon)) {
             if ($control->url) {
                 // icon with a link
@@ -577,13 +577,13 @@ class format_tiles_renderer extends format_section_renderer_base
         // unknown control
         return ' '. html_writer::link($control->url, $control->text, array('class' => $control->class)). '';
     }
-    
+
     public function add_section_control($parentsection, $courseid) {
         global $PAGE;
         if (!$PAGE->user_is_editing()) {
             return null;
         }
-        $parentsection = get_section_number($parentsection);
+        $parentsection = format_tiles_get_section_number($parentsection);
         $url = course_get_url($courseid, get_viewed_section());
         $url->param('addchildsection', $parentsection);
         if ($parentsection) {
@@ -593,13 +593,13 @@ class format_tiles_renderer extends format_section_renderer_base
         }
         return $this->render(new format_tiles_edit_control('addsection', 'addsection', $url, $text));
     }
-    
+
     public function display_insert_section_here($courseorid, $parent, $before = null, $sr = null) {
         if ($control = course_get_format($courseorid)->get_edit_control_movehere($parent, $before, $sr)) {
             return $this->render($control);
         }
     }
-    
+
     public function add_moving_control($section, $courseid) {
         // display controls except for expanded/collapsed
         $controls = course_get_format($courseid)->get_section_edit_controls($section);
@@ -622,7 +622,7 @@ class format_tiles_renderer extends format_section_renderer_base
             return html_writer::tag('div', $controlsstr, array('class' => 'controls'));
         }
     }
-    
+
     public function cancel_moving_control($courseorid) {
         $rendered = '';
         $cancelmovingcontrols = course_get_format($courseorid)->get_edit_controls_cancelmoving();
@@ -631,7 +631,7 @@ class format_tiles_renderer extends format_section_renderer_base
         }
         return $rendered;
     }
-    
+
     /**
      * renders HTML for format_tiles_moving_control
      *
@@ -654,7 +654,7 @@ class format_tiles_renderer extends format_section_renderer_base
             $icon = new pix_icon('t/'. $control->type, $control->text, 'moodle', array('class' => 'iconsmall', 'title' => $control->text));
         }
 
-        
+
         if (isset($icon)) {
             if ($control->url) {
                 // icon with a link
@@ -669,7 +669,7 @@ class format_tiles_renderer extends format_section_renderer_base
         return ' '. html_writer::link($control->url, $control->text, array('class' => $control->class)). '';
     }
 
-    
+
     /**
      * Displays a confirmation dialogue when deleting the section (for non-JS mode)
      *

@@ -315,7 +315,7 @@ class course_output implements \renderable, \templatable
         // Custom course settings not in course object if called from AJAX, so make sure we get them.
         $options = [
             'defaulttileicon', 'basecolour', 'courseusesubtiles', 'courseshowtileprogress',
-            'displayfilterbar', 'usesubtilesseczero', 'courseusebarforheadings'
+            'displayfilterbar', 'usesubtilesseczero', 'courseusebarforheadings', 'showsectionnumbers'
         ];
         $data = [];
         if (!$fromajax) {
@@ -370,7 +370,7 @@ class course_output implements \renderable, \templatable
         $data['pinned'] = $thissection->pinned;
         $data['secid'] = $thissection->id;
         $data['tileicon'] = $thissection->tileicon;
-        $data['customnumber'] = $this->customnumbers[$thissection->section];
+        $data['customnumber'] = ($this->courseformatoptions['showsectionnumbers']) ? $this->customnumbers[$thissection->section] : '';
         $data['level'] = $level;
         $data['expanded'] = (!$level) ? 1 : 0;
         $data['defaultsubtileicon'] = $defaultsubtileicon;
@@ -438,6 +438,9 @@ class course_output implements \renderable, \templatable
 
     private function get_tile($output, &$data, $sectionnum, $section, $sectionstree, $allsections) {
 
+        $showsection = $section->uservisible ||
+            ($section->visible && !$section->available && !empty($section->availableinfo));
+
         $usingphotoaltstyle = get_config('format_tiles', 'phototilesaltstyle');
         $sr = course_get_format($this->course)->get_viewed_section();
 
@@ -471,6 +474,7 @@ class course_output implements \renderable, \templatable
             'current' => course_get_format($this->course)->is_section_current($section),
             'hidden' => !$section->visible,
             'visible' => $section->visible,
+            'hidden_section' => !$showsection,
             'restricted' => !($section->available),
             'userclickable' => $section->available || $section->uservisible,
             'activity_summary' => $output->section_activity_summary($section, $this->course, null),
@@ -479,7 +483,7 @@ class course_output implements \renderable, \templatable
             'progress' => false,
             'isactive' => $this->course->marker == $section->section,
             'extraclasses' => '',
-            'customnumber' => $this->customnumbers[$section->section],
+            'customnumber' => ($this->courseformatoptions['showsectionnumbers']) ? $this->customnumbers[$section->section] : '',
             'level' => $level,
             'expanded' => (!$level) ? 1 : 0,
             'defaultsubtileicon' => $defaultsubtileicon
@@ -718,6 +722,7 @@ class course_output implements \renderable, \templatable
     }
 
     private function get_custom_numbers($sectionstree) {
+        ksort($sectionstree);
         $customnumbers = array();
         foreach($sectionstree as $par => $secarray) {
             foreach($secarray as $num => $sec) {
