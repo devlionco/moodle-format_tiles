@@ -348,6 +348,8 @@ $string['showcertificatestagdesc_help'] = 'צלמית תעודות';
 $string['showcoursefullname'] = 'Show course full name';
 $string['showcoursefullnamedesc'] = 'Show course full name';
 $string['showcoursefullnamedesc_help'] = 'This setting will show / hide course full name on the course header.';
+$string['showsectionnumbers'] = 'Show section numbers';
+$string['showsectionnumbersdesc'] = 'Show/hide section numbers';
 
 // Admin Settings page strings.
 $string['addsections'] = 'Add tiles';

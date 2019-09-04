@@ -502,7 +502,20 @@ class format_tiles extends format_base {
                     'help' => "showcoursefullnamedesc",
                     'help_component' => 'format_tiles',
 
-                )
+                ),
+                'showsectionnumbers' => array(
+                    'label' => new lang_string('showsectionnumbers', 'format_tiles'),
+                    'element_type' => 'select',
+                    'default' => 1,
+                    'element_attributes' => array(
+                        array(
+                            1 => new lang_string('yes'),
+                            0 => new lang_string('no'),
+                        )
+                    ),
+                    'help' => "showsectionnumbersdesc",
+                    'help_component' => 'format_tiles',
+                ),
             );
             if ((get_config('format_tiles', 'followthemecolour'))) {
                 unset($courseformatoptions['basecolour']);

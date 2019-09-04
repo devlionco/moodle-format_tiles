@@ -214,7 +214,7 @@ function format_tiles_width_template_data($courseid) {
  * @param int|section_info $section
  * @return int
  */
-function get_section_number($section) {
+function format_tiles_get_section_number($section) {
     if ($section === null || $section === '') {
         return null;
     } else if (is_object($section)) {
@@ -231,7 +231,7 @@ function get_section_number($section) {
 */
 function get_viewed_section() {
    global $PAGE;
-   if (on_course_view_page()) {
+   if (format_tiles_on_course_view_page()) {
        return $PAGE->url->get_param('section');
    }
    return 0;
@@ -242,7 +242,7 @@ function get_viewed_section() {
 *
 * @return bool
 */
-function on_course_view_page() {
+function format_tiles_on_course_view_page() {
    global $PAGE;
    return ($PAGE->has_set_url() &&
            $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
