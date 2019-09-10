@@ -425,16 +425,17 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     });
             };
 
-            if (fitTilesToScreenWidth) {
-                setTimeout(function() {
-                    tileFitter.resizeTilesDivWidth(courseId).done(function() {
-                        reOrgFunc(false);
-                    }, delayBefore);
-                });
-
-            } else {
-                reOrgFunc(delayBefore);
-            }
+            // if (fitTilesToScreenWidth) {
+            //     setTimeout(function() {
+            //         tileFitter.resizeTilesDivWidth(courseId).done(function() {
+            //             reOrgFunc(false);
+            //         }, delayBefore);
+            //     });
+            //
+            // } else {
+            //     reOrgFunc(delayBefore);
+            // }
+            reOrgFunc(delayBefore);
             return dfd.promise();
         };
 
