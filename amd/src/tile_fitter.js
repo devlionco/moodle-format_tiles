@@ -57,7 +57,7 @@ define(["jquery", "core/ajax"], function ($, ajax) {
      * @see format_tiles_width_template_data() in locallib.php for more information.
      * @return {Promise}
      */
-    var resizeTilesDivWidth = function() {
+    var resizeTilesDivWidth = function() { return;
         var winWidth = $(window).width();
         // Create a new Deferred.
         var dfd = new $.Deferred();
@@ -380,17 +380,18 @@ define(["jquery", "core/ajax"], function ($, ajax) {
                         unHideTiles();
                     });
                 };
-                if (fitTilesToWidth && !isEditing) {
-                    // If we have a single tile on the last row it looks odd so resize window.
-                    resizeTilesDivWidth().done(function() {
-                        organiseAndRevealTiles();
-                    }).fail(function() {
-                        // If resize is rejected e.g. as screen is to narrow e.g. mobile.
-                        organiseAndRevealTiles();
-                    });
-                } else {
-                    organiseAndRevealTiles();
-                }
+                // if (fitTilesToWidth && !isEditing) {
+                //     // If we have a single tile on the last row it looks odd so resize window.
+                //     resizeTilesDivWidth().done(function() {
+                //         organiseAndRevealTiles();
+                //     }).fail(function() {
+                //         // If resize is rejected e.g. as screen is to narrow e.g. mobile.
+                //         organiseAndRevealTiles();
+                //     });
+                // } else {
+                //     organiseAndRevealTiles();
+                // }
+                organiseAndRevealTiles();
             });
         },
         resizeTilesDivWidth: function() {

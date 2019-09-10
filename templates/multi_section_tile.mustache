@@ -46,7 +46,7 @@
         "restricted": 0
         }
 }}
-<li class="tile{{#hidden}} tile-hidden{{/hidden}} {{#pinned}} pinned {{/pinned}} {{#restricted}} tile-restricted{{/restricted}}{{#isactive}} current{{/isactive}}{{#userclickable}} tile-clickable{{/userclickable}} {{extraclasses}}"
+<li class="tile{{#hidden}} tile-hidden{{/hidden}} {{#pinned}} pinned spacer{{/pinned}} {{#restricted}} tile-restricted{{/restricted}}{{#isactive}} current{{/isactive}}{{#userclickable}} tile-clickable{{/userclickable}} {{extraclasses}}"
     id="tile-{{tileid}}" data-section="{{tileid}}" data-sectionid="{{secid}}" tabindex="2" aria-role="button" {{^pinned}}{{#hastilephoto}}{{#tileimagebackground}}{{{phototileinlinestyle}}}{{/tileimagebackground}}{{/hastilephoto}}{{/pinned}}>
     <a{{#userclickable}} href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&section={{tileid}}"{{/userclickable}}
        data-section="{{tileid}}" id="sectionlink-{{tileid}}">
