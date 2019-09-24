@@ -1149,7 +1149,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         margin: 5px;
     }
     .format-tiles .course-content ul.tiles .tile:not(.spacer) {
-        min-height: 210px;
+        /* min-height: 210px; */
     }
     .format-tiles .clickable-region {
         /* stylelint-disable-next-line declaration-no-important */
